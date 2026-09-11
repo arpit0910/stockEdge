@@ -1,0 +1,1 @@
+<div class="prose cms-page-body">@foreach(preg_split('/\r?\n\r?\n/',$pageContent->body) as $paragraph)@php($lines=preg_split('/\r?\n/',$paragraph,2))<h2>{{ $lines[0] }}</h2>@if(isset($lines[1]))<p>{{ $lines[1] }}</p>@endif @endforeach</div>

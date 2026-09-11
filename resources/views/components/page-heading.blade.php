@@ -1,0 +1,1 @@
+<section class="page-heading container"><span class="eyebrow">{{ $pageContent->eyebrow }}</span><h1>{{ $pageContent->title }}</h1><p>{{ $pageContent->summary }}</p></section>

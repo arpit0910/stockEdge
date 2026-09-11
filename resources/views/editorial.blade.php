@@ -1,0 +1,5 @@
+@extends('layouts.app')
+@section('title','Market insights')
+@section('content')
+<section class="page-heading container"><span class="eyebrow">BEYOND THE NUMBERS</span><h1>{{ request('topic','A wider lens on the market.') }}</h1><p>Ideas, context and considered perspectives for your investment journey.</p></section><section class="container section compact"><div class="filter-tabs"><a @class(['selected'=>!request('topic')]) href="{{ route('editorial') }}">All insights</a>@foreach(config('stockedge.topics') as $topic)<a @class(['selected'=>request('topic')===$topic]) href="{{ route('editorial',['topic'=>$topic]) }}">{{ $topic }}</a>@endforeach</div><div class="articles-grid">@forelse($articles as $article)<x-article-card :article="$article"/>@empty<p>No stories found.</p>@endforelse</div>{{ $articles->links() }}</section>
+@endsection

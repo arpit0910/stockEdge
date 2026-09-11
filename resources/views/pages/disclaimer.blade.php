@@ -1,0 +1,5 @@
+@extends('layouts.app')
+@section('title','Disclaimer')
+@section('content')
+<section class="page-heading container"><span class="eyebrow">PLATFORM INFORMATION · DRAFT</span><h1>Disclaimer</h1><p>Understand the limits of this demonstration.</p></section><section class="container section compact prose legal"><h2>Illustrative information</h2><p>Quotes, company ratings, articles and performance examples are sample content. No live market feed is connected and no accuracy or currentness of these examples is claimed.</p><h2>Investment risk</h2><p>Investment values can fall as well as rise. Past performance does not predict future returns. This platform does not assess your personal objectives, circumstances or needs.</p><h2>Tools and calculations</h2><p>Portfolio valuations use demo prices and exclude fees and tax. The retirement tool is a constant-return mathematical illustration. It is not a forecast or personal recommendation.</p><a class="text-link" href="{{ route('page','contact') }}">Contact us ↗</a></section>
+@endsection

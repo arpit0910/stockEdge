@@ -1,0 +1,5 @@
+@extends('layouts.app')
+@section('title','Privacy policy')
+@section('content')
+<section class="page-heading container"><span class="eyebrow">PLATFORM INFORMATION · DRAFT</span><h1>Privacy policy</h1><p>This is a draft privacy notice for the demonstration platform.</p></section><section class="container section compact prose legal"><h2>Information stored</h2><p>The platform stores account details, encrypted password hashes, portfolio entries, watchlist preferences and submitted enquiries. Newsletter and free-report forms record your consent.</p><h2>How information is used</h2><p>Account data supports the features you request. Enquiries are visible to site administrators. The local demo does not send marketing campaigns or share data with external market or payment providers.</p><h2>Before commercial launch</h2><p>The operator must publish its legal identity, contact details, retention periods, access and deletion processes, hosting locations and any third-party processors. Do not treat this draft as an approved commercial privacy policy.</p><a class="text-link" href="{{ route('page','contact') }}">Contact us ↗</a></section>
+@endsection

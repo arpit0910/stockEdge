@@ -1,0 +1,5 @@
+@extends('layouts.app')
+@section('title','Terms of use')
+@section('content')
+<section class="page-heading container"><span class="eyebrow">PLATFORM INFORMATION · DRAFT</span><h1>Terms of use</h1><p>Draft terms for the StockEdge demonstration.</p></section><section class="container section compact prose legal"><h2>Using the platform</h2><p>Research, ratings and quoted prices are examples. Accounts provide access to a seven-day demonstration trial and private tracking tools. Do not rely on the demonstration for trading decisions.</p><h2>Membership and payments</h2><p>Illustrative plan prices are displayed. A plan request does not create a paid subscription, charge a payment method or activate ongoing premium access.</p><h2>Before commercial launch</h2><p>The operator must finalise service terms, billing and cancellation conditions, complaints procedures and applicable consumer protections with qualified review.</p><a class="text-link" href="{{ route('page','contact') }}">Contact us ↗</a></section>
+@endsection

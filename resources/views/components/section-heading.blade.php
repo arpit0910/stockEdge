@@ -1,0 +1,1 @@
+<div class="section-heading"><div><span class="eyebrow">{{ $section->eyebrow }}</span><h2>{{ $section->title }}</h2><p>{{ $section->description }}</p></div>@if($section->button_label)<a class="text-link" href="{{ url($section->button_url) }}">{{ $section->button_label }} <span>↗</span></a>@endif</div>
