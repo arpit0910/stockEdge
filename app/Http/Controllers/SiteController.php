@@ -16,7 +16,16 @@ class SiteController extends Controller
 {
     public function home(): View
     {
-        return view('home', ['sections' => DB::table('site_sections')->where('published', true)->orderBy('position')->orderBy('id')->get(), 'collections' => DB::table('taxonomies')->where('kind', 'category')->orderBy('position')->get(), 'stocks' => Stock::take(12)->get(), 'reports' => Report::with('stock')->where('published', true)->latest()->take(12)->get(), 'articles' => Article::where('published', true)->latest()->take(12)->get()]);
+        return view('home', [
+            'sections' => DB::table('site_sections')->where('published', true)->orderBy('position')->orderBy('id')->get(),
+            'siteSections' => DB::table('site_sections')->where('published', true)->orderBy('position')->orderBy('id')->get()->keyBy('layout'),
+            'collections' => DB::table('taxonomies')->where('kind', 'category')->orderBy('position')->get(),
+            'stocks' => Stock::take(12)->get(),
+            'reports' => Report::with('stock')->where('published', true)->latest()->take(12)->get(),
+            'articles' => Article::where('published', true)->latest()->take(12)->get(),
+            'plans' => DB::table('plans')->where('published', true)->orderBy('position')->get(),
+            'testimonials' => DB::table('testimonials')->where('published', true)->orderBy('position')->get(),
+        ]);
     }
 
     public function research(Request $request): View

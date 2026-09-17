@@ -10,7 +10,7 @@ class AdminResources
     public static function navigation(): array
     {
         return [
-            'Publishing' => ['reports' => 'Research reports', 'articles' => 'Editorial library', 'pages' => 'Website pages', 'sections' => 'Homepage builder', 'media' => 'Media library'],
+            'Publishing' => ['reports' => 'Research reports', 'articles' => 'Editorial library', 'testimonials' => 'Client testimonials', 'pages' => 'Website pages', 'sections' => 'Homepage builder', 'media' => 'Media library'],
             'Market & products' => ['stocks' => 'Company coverage', 'taxonomies' => 'Collections & sectors', 'plans' => 'Membership plans'],
             'Relationships' => ['members' => 'Members & access', 'leads' => 'Enquiries & signups', 'requests' => 'Plan requests'],
         ];
@@ -19,6 +19,15 @@ class AdminResources
     public static function definition(string $resource): array
     {
         $definitions = [
+            'testimonials' => ['table' => 'testimonials', 'singular' => 'Testimonial', 'title' => 'Client testimonials', 'description' => 'Manage the investor testimonials displayed on the homepage.', 'columns' => ['name' => 'Client name', 'role' => 'Role', 'rating' => 'Rating', 'position' => 'Order', 'published' => 'Status'], 'search' => ['name', 'role', 'quote'], 'status' => 'published', 'fields' => [
+                'name' => self::field('Client name', 'text', 'required|string|max:120', 'Client'),
+                'role' => self::field('Client role / occupation', 'text', 'required|string|max:120', 'Client', [], 'e.g., Retired Investor, Financial Adviser, Full-Time Trader'),
+                'quote' => self::field('Testimonial quote', 'textarea', 'required|string|max:1000', 'Content'),
+                'rating' => self::field('Rating (Stars)', 'select', ['required', Rule::in(['1', '2', '3', '4', '5'])], 'Rating', ['5' => '5 Stars ★★★★★', '4' => '4 Stars ★★★★', '3' => '3 Stars ★★★', '2' => '2 Stars ★★', '1' => '1 Star ★']),
+                'avatar_initials' => self::field('Avatar initials', 'text', 'nullable|string|max:4', 'Client', [], 'e.g., MD, SK, JT'),
+                'position' => self::field('Display order', 'integer', 'required|integer|min:0|max:9999', 'Display', [], 'Lower numbers appear first.'),
+                'published' => self::field('Published on homepage', 'checkbox', 'boolean', 'Publication'),
+            ]],
             'reports' => ['table' => 'reports', 'singular' => 'Research report', 'title' => 'Research reports', 'description' => 'Manage the investment case, company association and access level for every report.', 'columns' => ['title' => 'Report', 'category' => 'Collection', 'rating' => 'Rating', 'premium' => 'Access', 'published' => 'Status'], 'search' => ['title', 'slug', 'category'], 'status' => 'published', 'fields' => [
                 'title' => self::field('Report title', 'text', 'required|string|max:200', 'Content'),
                 'slug' => self::field('URL slug', 'slug', 'required|alpha_dash|max:200', 'Content'),
