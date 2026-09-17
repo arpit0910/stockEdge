@@ -102,7 +102,7 @@
 
             <div class="nav-actions">
                 <a href="{{ route('research') }}" class="nav-search-btn" title="Search Research" aria-label="Search Research">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 </a>
                 @auth
                     <a class="nav-login-link" href="{{ route('dashboard') }}">My Dashboard</a>
