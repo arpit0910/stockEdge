@@ -34,6 +34,9 @@ class LoadSiteContent
             if (Schema::hasTable('plans')) {
                 config(['stockedge.plan_records' => DB::table('plans')->where('published', true)->orderBy('position')->get()]);
             }
+            if (Schema::hasTable('stocks')) {
+                config(['stockedge.market_snapshot' => DB::table('stocks')->orderBy('symbol')->limit(4)->get()]);
+            }
         } catch (\Throwable) {
             // Silently fall back to default configurations
         }

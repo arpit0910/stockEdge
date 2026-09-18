@@ -1,5 +1,8 @@
 @extends('layouts.app')
-@section('title','Financial services guide')
+@section('title', $pageContent->title)
 @section('content')
-<section class="page-heading container"><span class="eyebrow">PLATFORM INFORMATION · DRAFT</span><h1>Financial services guide</h1><p>A commercial Financial Services Guide has not yet been issued.</p></section><section class="container section compact prose legal"><h2>Current status</h2><p>StockEdge is a demonstration website. No Australian financial services licence, authorised representative status, analyst credentials or regulatory authorisation is claimed.</p><h2>Required before launch</h2><p>The operating entity must determine its authorisation requirements and publish an approved guide with service scope, remuneration, conflicts of interest and complaints arrangements where applicable.</p><h2>Contact</h2><p>Use the contact form for platform questions. The guide and operating details must be completed before commercial financial research services are offered.</p><a class="text-link" href="{{ route('page','contact') }}">Contact us ↗</a></section>
+@include('components.page-heading')
+<section class="container section compact">
+    @include('components.page-body')
+</section>
 @endsection

@@ -22,7 +22,7 @@ class AdminContentSeeder extends Seeder
             ['Research collections', 'collections', 'CHOOSE YOUR RESEARCH LENS', 'Follow a theme.', 'Find the research collections relevant to your interests and investment horizon.', 'All collections', '/research', 4],
             ['Investor tools', 'tools', 'YOUR INVESTOR WORKSPACE', 'Keep your research and holdings together.', 'Track positions, save companies and revisit the assumptions behind your decisions.', 'Open your workspace', '/dashboard', 3],
             ['Editorial desk', 'editorial', 'MARKET CONTEXT', 'Beyond individual companies.', 'Develop a broader understanding of the industries, trends and decisions that shape investing.', 'All insights', '/insights', 3],
-            ['Trial invitation', 'callout', 'START EXPLORING', 'Take a closer look at StockEdge.', 'Explore the research library with seven days of member access.', 'Start your free trial', '/register', 3],
+            ['Trial invitation', 'callout', 'START EXPLORING', 'Take a closer look at SharesRise.', 'Explore the research library with seven days of member access.', 'Start your free trial', '/register', 3],
         ];
         foreach ($sections as $i => [$name,$layout,$eyebrow,$title,$description,$button_label,$button_url,$item_limit]) {
             $this->insert('site_sections', ['name' => $name], compact('layout', 'eyebrow', 'title', 'description', 'button_label', 'button_url', 'item_limit') + ['position' => ($i + 1) * 10, 'published' => true]);
@@ -36,7 +36,7 @@ class AdminContentSeeder extends Seeder
         }
         $pages = [
             'about' => ['About SharesRise', 'Independent research. Practical tools.', 'A platform built around Australian company research and considered investing.', "Our approach\nStart with the business, examine the assumptions and keep the risks in view. SharesRise combines company research with a workspace for your holdings and watchlist.\n\nOur current stage\nThis platform contains demonstration research and market snapshots. Commercial services and analyst credentials will be established before launch."],
-            'contact' => ['Contact the team', 'A QUESTION ABOUT SHAERSRISE?', 'Ask about research coverage, memberships or using the platform.', "Getting in touch\nSubmit the form below. Your enquiry will be available to the site administrator."],
+            'contact' => ['Contact the team', 'A QUESTION ABOUT SHARESRISE?', 'Ask about research coverage, memberships or using the platform.', "Getting in touch\nSubmit the form below. Your enquiry will be available to the site administrator."],
             'privacy' => ['Privacy policy', 'PLATFORM INFORMATION · DRAFT', 'Draft privacy information for this demonstration.', "Information we store\nWe store account details, password hashes, holdings, watchlists and enquiries submitted through the website.\n\nYour information\nThe data supports the features you request. Administrators review enquiries and membership requests.\n\nBefore launch\nThe operator must publish approved retention, access, deletion and processor details before commercial use."],
             'terms' => ['Terms of use', 'PLATFORM INFORMATION · DRAFT', 'Draft terms for the SharesRise demonstration.', "Using this platform\nPrices, research and ratings are examples. Do not rely on this demonstration for trading decisions.\n\nMembership\nA plan request does not charge your account or activate paid access.\n\nBefore launch\nCommercial terms, cancellation conditions and operator details must be finalised before launch."],
             'disclaimer' => ['Disclaimer', 'PLATFORM INFORMATION', 'Understand the scope of this demonstration.', "Example information\nContent, quotes and ratings are illustrative and are not current recommendations.\n\nInvestment risk\nInvestment values can fall as well as rise. Past performance does not predict future returns.\n\nCalculation tools\nPortfolio values use demo snapshots. The retirement calculator is a mathematical illustration and excludes fees, inflation and taxes."],
@@ -51,6 +51,9 @@ class AdminContentSeeder extends Seeder
             $this->insert('site_pages', ['slug' => $slug], compact('title', 'eyebrow', 'summary', 'body') + ['published' => true, 'system' => true, 'show_in_footer' => in_array($slug, ['about', 'contact', 'privacy', 'terms', 'disclaimer', 'financial-services-guide']), 'position' => 10]);
         }
         foreach (['brand_name' => 'SharesRise', 'announcement' => 'Australia Stock Market Research Platform · Modern, Trustworthy & Data-Driven.', 'footer_description' => 'Independent research. Expert insights. Smarter investments.', 'newsletter_title' => 'Stay updated with our latest research and market insights.', 'newsletter_description' => 'Research updates and market perspectives, in your inbox.', 'contact_email' => 'support@sharesrise.com.au', 'contact_phone' => '', 'contact_address' => 'Sydney, NSW, Australia', 'meta_description' => 'SharesRise: Independent Australian equity research, market insights and tools for confident investors.'] as $key => $value) {
+            $this->insert('site_settings', ['key' => $key], ['value' => $value]);
+        }
+        foreach (['seo_title_suffix' => 'SharesRise', 'default_social_image' => '/images/city.jpg', 'social_facebook' => '', 'social_x' => '', 'social_linkedin' => '', 'social_youtube' => ''] as $key => $value) {
             $this->insert('site_settings', ['key' => $key], ['value' => $value]);
         }
     }

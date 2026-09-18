@@ -27,7 +27,7 @@ class AccountController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard')->with('success', 'Welcome to StockEdge. Your seven-day research trial has started.');
+        return redirect()->route('dashboard')->with('success', 'Welcome to SharesRise. Your seven-day research trial has started.');
     }
 
     public function login(Request $request): RedirectResponse
@@ -105,7 +105,9 @@ class AccountController extends Controller
 
     public function subscribe(Request $request): RedirectResponse
     {
-        $data = $request->validate(['plan' => ['required', Rule::exists('plans', 'name')->where('published', true)->where('is_trial', false)], 'billing' => ['required', Rule::in(['monthly', 'yearly'])]]);
+        $publishedPlans = DB::table('plans')->where('published', true)->where('is_trial', false)->pluck('name');
+        $validPlans = $publishedPlans->isNotEmpty() ? $publishedPlans->all() : array_keys(config('stockedge.plans', []));
+        $data = $request->validate(['plan' => ['required', Rule::in($validPlans)], 'billing' => ['required', Rule::in(['monthly', 'yearly'])]]);
         DB::table('subscription_requests')->updateOrInsert(['user_id' => $request->user()->id, 'status' => 'pending'], $data + ['created_at' => now(), 'updated_at' => now()]);
 
         return redirect()->route('account', ['tab' => 'subscription'])->with('success', 'Plan request saved. No payment has been taken; paid activation is not yet connected.');

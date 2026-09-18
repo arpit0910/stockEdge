@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title','Admin studio')
 @section('content')
-<section class="page-heading container"><span class="eyebrow">STOCKEDGE ADMIN STUDIO</span><h1>Your publishing desk.</h1><p>Manage research, editorial content and incoming enquiries.</p><a href="{{ route('dashboard') }}">← Member workspace</a></section><section class="container section compact">
+<section class="page-heading container"><span class="eyebrow">SHARESRISE ADMIN STUDIO</span><h1>Your publishing desk.</h1><p>Manage research, editorial content and incoming enquiries.</p><a href="{{ route('dashboard') }}">← Member workspace</a></section><section class="container section compact">
 <div class="metric-grid"><div class="metric"><small>Research reports</small><strong>{{ $reports->count() }}</strong></div><div class="metric"><small>Articles</small><strong>{{ $articles->count() }}</strong></div><div class="metric"><small>Enquiries</small><strong>{{ $leads->count() }}</strong></div><div class="metric"><small>Plan requests</small><strong>{{ $subscriptions->count() }}</strong></div></div>
 @foreach(['report','article'] as $type)
 <details class="admin-section"><summary><h2>{{ ucfirst($type) }} publishing</h2><span>+</span></summary>

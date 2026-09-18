@@ -18,7 +18,6 @@ class SiteController extends Controller
     {
         return view('home', [
             'sections' => DB::table('site_sections')->where('published', true)->orderBy('position')->orderBy('id')->get(),
-            'siteSections' => DB::table('site_sections')->where('published', true)->orderBy('position')->orderBy('id')->get()->keyBy('layout'),
             'collections' => DB::table('taxonomies')->where('kind', 'category')->orderBy('position')->get(),
             'stocks' => Stock::take(12)->get(),
             'reports' => Report::with('stock')->where('published', true)->latest()->take(12)->get(),
@@ -89,6 +88,30 @@ class SiteController extends Controller
         $template = in_array($page, ['contact', 'free-report', 'performance', 'retirement', 'pricing', 'sectors']) ? 'pages.'.$page : 'pages.cms';
 
         return view($template, ['stocks' => Stock::all(), 'pageContent' => $pageContent]);
+    }
+
+    public function sitemap(): Response
+    {
+        $urls = collect([
+            ['location' => route('home'), 'modified' => null, 'frequency' => 'daily', 'priority' => '1.0'],
+            ['location' => route('research'), 'modified' => Report::where('published', true)->max('updated_at'), 'frequency' => 'daily', 'priority' => '0.9'],
+            ['location' => route('editorial'), 'modified' => Article::where('published', true)->max('updated_at'), 'frequency' => 'daily', 'priority' => '0.9'],
+        ]);
+
+        $urls = $urls
+            ->concat(DB::table('site_pages')->where('published', true)->get()->map(fn (object $page): array => ['location' => route('page', $page->slug), 'modified' => $page->updated_at, 'frequency' => 'monthly', 'priority' => '0.7']))
+            ->concat(Article::where('published', true)->get()->map(fn (Article $article): array => ['location' => route('article', $article->slug), 'modified' => $article->updated_at, 'frequency' => 'monthly', 'priority' => '0.8']))
+            ->concat(Report::where('published', true)->get()->map(fn (Report $report): array => ['location' => route('report', $report->slug), 'modified' => $report->updated_at, 'frequency' => 'monthly', 'priority' => '0.8']))
+            ->concat(Stock::all()->map(fn (Stock $stock): array => ['location' => route('stock', $stock->symbol), 'modified' => $stock->updated_at, 'frequency' => 'weekly', 'priority' => '0.7']));
+
+        return response(view('sitemap', ['urls' => $urls]))->header('Content-Type', 'application/xml; charset=UTF-8');
+    }
+
+    public function robots(): Response
+    {
+        $content = "User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /account\nDisallow: /dashboard\nDisallow: /login\nDisallow: /register\n\nSitemap: ".route('sitemap')."\n";
+
+        return response($content)->header('Content-Type', 'text/plain; charset=UTF-8');
     }
 
     public function lead(Request $request): RedirectResponse

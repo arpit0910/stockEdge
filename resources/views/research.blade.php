@@ -179,7 +179,7 @@
                 @empty
                     <div class="sr-empty-results">
                         <div class="sr-empty-icon">🔍</div>
-                        <h3>No research reports matched your criteria</h3>
+                        <h3>No reports match your criteria</h3>
                         <p>Try searching for a different company or clear your filters to view all available coverage.</p>
                         <a href="{{ route('research') }}" class="btn-green">View All Research →</a>
                     </div>

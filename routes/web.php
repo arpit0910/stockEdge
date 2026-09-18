@@ -7,6 +7,8 @@ use App\Http\Controllers\SiteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [SiteController::class, 'home'])->name('home');
+Route::get('/sitemap.xml', [SiteController::class, 'sitemap'])->name('sitemap');
+Route::get('/robots.txt', [SiteController::class, 'robots'])->name('robots');
 Route::get('/research', [SiteController::class, 'research'])->name('research');
 Route::get('/reports/{report:slug}', [SiteController::class, 'report'])->name('report');
 Route::get('/stocks/{stock:symbol}', [SiteController::class, 'stock'])->name('stock');

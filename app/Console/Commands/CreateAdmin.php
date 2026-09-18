@@ -8,7 +8,7 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
 #[Signature('stockedge:admin {email : Email of an existing registered user}')]
-#[Description('Grant admin access to an existing StockEdge account')]
+#[Description('Grant admin access to an existing SharesRise account')]
 class CreateAdmin extends Command
 {
     public function handle(): int

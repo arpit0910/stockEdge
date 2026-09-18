@@ -254,7 +254,7 @@ class AdminWorkspaceController extends Controller
 
     public function saveSettings(Request $request): RedirectResponse
     {
-        $data = $request->validate(['brand_name' => 'required|string|max:40', 'announcement' => 'required|string|max:180', 'footer_description' => 'required|string|max:300', 'newsletter_title' => 'required|string|max:100', 'newsletter_description' => 'required|string|max:300', 'contact_email' => 'nullable|email|max:150', 'contact_phone' => 'nullable|string|max:40', 'contact_address' => 'nullable|string|max:300', 'meta_description' => 'required|string|max:300']);
+        $data = $request->validate(['brand_name' => 'required|string|max:40', 'announcement' => 'required|string|max:180', 'footer_description' => 'required|string|max:300', 'newsletter_title' => 'required|string|max:100', 'newsletter_description' => 'required|string|max:300', 'contact_email' => 'nullable|email|max:150', 'contact_phone' => 'nullable|string|max:40', 'contact_address' => 'nullable|string|max:300', 'meta_description' => 'required|string|max:170', 'seo_title_suffix' => 'nullable|string|max:60', 'default_social_image' => ['nullable', 'string', 'max:250', 'regex:~^(https?://|/)[^\s]+$~'], 'social_facebook' => 'nullable|url:http,https|max:250', 'social_x' => 'nullable|url:http,https|max:250', 'social_linkedin' => 'nullable|url:http,https|max:250', 'social_youtube' => 'nullable|url:http,https|max:250']);
         DB::transaction(function () use ($request, $data): void {
             foreach ($data as $key => $value) {
                 DB::table('site_settings')->updateOrInsert(['key' => $key], ['value' => $value, 'updated_at' => $this->timestamp(), 'created_at' => $this->timestamp()]);
@@ -325,8 +325,8 @@ class AdminWorkspaceController extends Controller
         return now()->format('Y-m-d H:i:s.u');
     }
 
-    private function audit(Request $request,string $action,string $resource,?int $id,string $label,array $fields): void
+    private function audit(Request $request, string $action, string $resource, ?int $id, string $label, array $fields): void
     {
-        DB::table('admin_activities')->insert(['user_id' => $request->user()?->id, 'actor' => $request->user()?->name ?? 'Admin', 'action' => $action, 'resource' => $resource, 'record_id' => $id, 'label' => Str::limit($label,250,''), 'changed_fields' => json_encode(array_values(array_diff($fields,['password', 'remember_token']))), 'created_at' => $this->timestamp(), 'updated_at' => $this->timestamp()]);
+        DB::table('admin_activities')->insert(['user_id' => $request->user()?->id, 'actor' => $request->user()?->name ?? 'Admin', 'action' => $action, 'resource' => $resource, 'record_id' => $id, 'label' => Str::limit($label, 250, ''), 'changed_fields' => json_encode(array_values(array_diff($fields, ['password', 'remember_token']))), 'created_at' => $this->timestamp(), 'updated_at' => $this->timestamp()]);
     }
 }

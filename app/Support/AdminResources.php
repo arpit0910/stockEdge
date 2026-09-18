@@ -36,6 +36,8 @@ class AdminResources
                 'rating' => self::field('Research rating', 'select', ['required', Rule::in(['Buy', 'Hold', 'Sell'])], 'Classification', self::options(['Buy', 'Hold', 'Sell'])),
                 'summary' => self::field('Executive summary', 'textarea', 'required|string|max:2000', 'Content'),
                 'body' => self::field('Report body', 'editor', 'required|string|max:50000', 'Content', [], 'Write a heading, then a paragraph on the next line. Separate sections with a blank line. Plain text is safely rendered; HTML is not executed.'),
+                'seo_title' => self::field('SEO title', 'text', 'nullable|string|max:70', 'Search visibility', [], 'Optional. The report title is used when this is empty.'),
+                'meta_description' => self::field('Meta description', 'textarea', 'nullable|string|max:170', 'Search visibility', [], 'Optional. The executive summary is used when this is empty.'),
                 'premium' => self::field('Member-only report', 'checkbox', 'boolean', 'Publication'),
                 'published' => self::field('Published on website', 'checkbox', 'boolean', 'Publication'),
             ]],
@@ -45,6 +47,8 @@ class AdminResources
                 'topic' => self::field('Editorial topic', 'select', ['required', Rule::in(config('stockedge.topics'))], 'Classification', self::options(config('stockedge.topics'))),
                 'summary' => self::field('Standfirst / summary', 'textarea', 'required|string|max:2000', 'Content'),
                 'body' => self::field('Article body', 'editor', 'required|string|max:50000', 'Content', [], 'Use a heading and paragraph, with a blank line between sections.'),
+                'seo_title' => self::field('SEO title', 'text', 'nullable|string|max:70', 'Search visibility', [], 'Optional. The article title is used when this is empty.'),
+                'meta_description' => self::field('Meta description', 'textarea', 'nullable|string|max:170', 'Search visibility', [], 'Optional. The article summary is used when this is empty.'),
                 'image_path' => self::field('Cover image', 'media', ['nullable', Rule::in(self::mediaPaths())], 'Presentation', self::mediaOptions(), 'Upload images in the media library first. Leave empty to use the existing editorial image.'),
                 'image_alt' => self::field('Image description', 'text', 'nullable|string|max:200', 'Presentation'),
                 'published' => self::field('Published on website', 'checkbox', 'boolean', 'Publication'),
@@ -55,6 +59,8 @@ class AdminResources
                 'sector' => self::field('Sector', 'select', ['required', Rule::in(config('stockedge.sectors'))], 'Company', self::options(config('stockedge.sectors'))),
                 'cap' => self::field('Market capitalisation group', 'select', ['required', Rule::in(['Blue Chip', 'Mid Cap', 'Small Cap'])], 'Company', self::options(['Blue Chip', 'Mid Cap', 'Small Cap'])),
                 'description' => self::field('Company overview', 'editor', 'required|string|max:10000', 'Company'),
+                'seo_title' => self::field('SEO title', 'text', 'nullable|string|max:70', 'Search visibility', [], 'Optional. The company name and ASX symbol are used when this is empty.'),
+                'meta_description' => self::field('Meta description', 'textarea', 'nullable|string|max:170', 'Search visibility', [], 'Optional. The company overview is used when this is empty.'),
                 'price' => self::field('Snapshot price (AUD)', 'number', 'required|numeric|min:0|max:99999999', 'Snapshot', [], 'Manual demonstration price. This does not connect a live market feed.'),
                 'change' => self::field('Snapshot change (%)', 'number', 'required|numeric|min:-100|max:99999', 'Snapshot'),
                 'yield' => self::field('Dividend yield (%)', 'number', 'required|numeric|min:0|max:100', 'Snapshot'),
@@ -71,14 +77,14 @@ class AdminResources
                 'eyebrow' => self::field('Section label', 'text', 'nullable|string|max:120', 'Content'),
                 'summary' => self::field('Introduction', 'textarea', 'required|string|max:2000', 'Content'),
                 'body' => self::field('Page body', 'editor', 'required|string|max:50000', 'Content', [], 'Heading then paragraph, separated by blank lines. Existing calculator and contact form functionality is retained.'),
-                'meta_description' => self::field('Search engine description', 'textarea', 'nullable|string|max:300', 'Discovery'),
+                'meta_description' => self::field('Search engine description', 'textarea', 'nullable|string|max:170', 'Discovery', [], 'Keep this concise and useful in search results. The page introduction is used when empty.'),
                 'show_in_footer' => self::field('Show a footer link', 'checkbox', 'boolean', 'Discovery'),
                 'position' => self::field('Footer display order', 'integer', 'required|integer|min:0|max:9999', 'Discovery'),
                 'published' => self::field('Published on website', 'checkbox', 'boolean', 'Publication'),
             ]],
             'sections' => ['table' => 'site_sections', 'singular' => 'Homepage section', 'title' => 'Homepage builder', 'description' => 'Compose the homepage with supported layouts. Edit the message, change the order or add a new section.', 'columns' => ['name' => 'Section', 'layout' => 'Layout', 'position' => 'Order', 'published' => 'Visibility'], 'search' => ['name', 'title', 'layout'], 'status' => 'published', 'fields' => [
                 'name' => self::field('Internal section name', 'text', 'required|string|max:150', 'Layout', [], 'Only shown to administrators.'),
-                'layout' => self::field('Section layout', 'select', ['required', Rule::in(['hero', 'research', 'market', 'collections', 'tools', 'editorial', 'callout', 'text'])], 'Layout', ['hero' => 'Opening story', 'research' => 'Research report grid', 'market' => 'Company snapshot table', 'collections' => 'Research collection directory', 'tools' => 'Investor tools', 'editorial' => 'Editorial story grid', 'callout' => 'Call to action', 'text' => 'Text with optional image']),
+                'layout' => self::field('Section layout', 'select', ['required', Rule::in(['hero', 'research', 'market', 'collections', 'tools', 'editorial', 'pricing', 'testimonials', 'callout', 'text'])], 'Layout', ['hero' => 'Opening story', 'research' => 'Research report grid', 'market' => 'Company snapshot table', 'collections' => 'Research collection directory', 'tools' => 'Investor tools', 'editorial' => 'Editorial story grid', 'pricing' => 'Membership plan grid', 'testimonials' => 'Client testimonial grid', 'callout' => 'Call to action', 'text' => 'Text with optional image']),
                 'position' => self::field('Page order', 'integer', 'required|integer|min:0|max:9999', 'Layout', [], 'Lower numbers appear first. You can also reorder sections from the list.'),
                 'item_limit' => self::field('Maximum records to show', 'integer', 'required|integer|min:1|max:12', 'Layout', [], 'Applies to research, market, collection and editorial layouts.'),
                 'eyebrow' => self::field('Section label', 'text', 'nullable|string|max:120', 'Content'),
@@ -146,7 +152,7 @@ class AdminResources
 
     private static function mediaOptions(): array
     {
-        return DB::table('media_assets')->latest()->pluck('name','path')->all();
+        return DB::table('media_assets')->latest()->pluck('name', 'path')->all();
     }
 
     public static function label(object $row): string
@@ -154,12 +160,12 @@ class AdminResources
         return (string) ($row->title ?? $row->name ?? $row->email ?? $row->plan ?? 'Record #'.$row->id);
     }
 
-    public static function publicUrl(string $resource,object $record): ?string
+    public static function publicUrl(string $resource, object $record): ?string
     {
         return match ($resource) {
-            'reports' => route('report',$record->slug), 'articles' => route('article',$record->slug),
-            'pages' => route('page',$record->slug), 'sections' => route('home'), 'plans' => route('page','pricing'),
-            'stocks' => route('stock',$record->symbol), default => null,
+            'reports' => route('report', $record->slug), 'articles' => route('article', $record->slug),
+            'pages' => route('page', $record->slug), 'sections' => route('home'), 'plans' => route('page', 'pricing'),
+            'stocks' => route('stock', $record->symbol), default => null,
         };
     }
 }
