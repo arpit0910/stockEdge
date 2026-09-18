@@ -15,7 +15,7 @@
         $robots = request()->routeIs('login', 'register', 'password.*', 'dashboard', 'account', 'sample') || request()->filled('q') ? 'noindex, follow' : 'index, follow, max-image-preview:large';
         $socialProfiles = array_values(array_filter([config('stockedge.site.social_facebook'), config('stockedge.site.social_x'), config('stockedge.site.social_linkedin'), config('stockedge.site.social_youtube')]));
         $schemaGraph = [
-            ['@type' => 'Organization', '@id' => url('/').'#organization', 'name' => $brandName, 'url' => url('/'), 'logo' => asset('favicon.svg'), 'sameAs' => $socialProfiles],
+            ['@type' => 'Organization', '@id' => url('/').'#organization', 'name' => $brandName, 'url' => url('/'), 'logo' => asset('images/sharesrise-logo.svg'), 'sameAs' => $socialProfiles],
             ['@type' => 'WebSite', '@id' => url('/').'#website', 'url' => url('/'), 'name' => $brandName, 'publisher' => ['@id' => url('/').'#organization'], 'potentialAction' => ['@type' => 'SearchAction', 'target' => route('research').'?q={search_term_string}', 'query-input' => 'required name=search_term_string']],
         ];
         if (isset($item)) {
@@ -66,9 +66,7 @@
     <header class="site-header">
         <div class="container nav-row">
             <a class="brand" href="{{ route('home') }}" aria-label="{{ $brandName }} home">
-                <span class="brand-bars-icon" aria-hidden="true">
-                    <span></span><span></span><span></span><span></span>
-                </span>
+                <img class="brand-mark" src="{{ asset('images/sharesrise-mark.svg') }}" alt="" width="36" height="36">
                 <span>{{ $brandName }}</span>
             </a>
 

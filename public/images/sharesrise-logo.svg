@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 48" role="img" aria-labelledby="title desc">
+  <title id="title">SharesRise</title>
+  <desc id="desc">SharesRise logo with rising market bars</desc>
+  <rect width="48" height="48" rx="12" fill="#145848"/>
+  <path d="M11 35V25h6v10zm10 0V18h6v17zm10 0V11h6v24z" fill="#e3efd6"/>
+  <path d="m12 20 9-7 7 3 9-8" fill="none" stroke="#9fc76f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M31 8h6v6" fill="none" stroke="#9fc76f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="62" y="32" fill="#173d35" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" letter-spacing="-.7">SharesRise</text>
+</svg>

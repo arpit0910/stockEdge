@@ -345,23 +345,13 @@ small { font-size: 12px; }
   color: #ffffff;
   white-space: nowrap;
 }
-.brand-bars-icon {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 22px;
-  width: 22px;
-  padding-bottom: 2px;
+.brand-mark {
+  display: block;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border-radius: 9px;
 }
-.brand-bars-icon span {
-  width: 4px;
-  background: #ffffff;
-  border-radius: 2px;
-}
-.brand-bars-icon span:nth-child(1) { height: 7px; opacity: 0.6; }
-.brand-bars-icon span:nth-child(2) { height: 12px; opacity: 0.8; }
-.brand-bars-icon span:nth-child(3) { height: 16px; background: var(--green-400); }
-.brand-bars-icon span:nth-child(4) { height: 21px; background: var(--green-400); }
 
 .nav-row nav {
   display: flex;
@@ -2579,7 +2569,7 @@ td small { display: block; color: var(--slate-500); }
   .sr-topbar-inner, .sr-topbar-left { justify-content: center; }
   .sr-topbar-title { text-align: center; }
   .brand { font-size: 20px; }
-  .brand-bars-icon { width: 19px; height: 20px; }
+  .brand-mark { width: 32px; height: 32px; flex-basis: 32px; }
   .nav-row nav { left: -16px; right: -16px; }
   .nav-search-btn { width: 42px; height: 42px; }
   .mega-menu { grid-template-columns: 1fr; gap: 16px; }
