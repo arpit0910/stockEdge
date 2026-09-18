@@ -98,6 +98,15 @@
                 </details>
 
                 <a href="{{ route('page', 'about') }}" @class(['active' => request()->is('about')])>About Us</a>
+
+                <div class="mobile-nav-actions">
+                    @auth
+                        <a class="button outline" href="{{ route('dashboard') }}">My Dashboard</a>
+                    @else
+                        <a class="button outline" href="{{ route('login') }}">Login</a>
+                    @endauth
+                    <a class="btn-green" href="{{ route('register') }}">Start Free Trial</a>
+                </div>
             </nav>
 
             <div class="nav-actions">
