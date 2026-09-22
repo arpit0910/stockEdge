@@ -16,14 +16,34 @@ class SiteController extends Controller
 {
     public function home(): View
     {
+        $marketIndices = [
+            ['name' => 'S&P/ASX 200', 'code' => 'XJO', 'price' => '7,812.60', 'high' => '7,845.20', 'low' => '7,120.40', 'change' => '+1.28%'],
+            ['name' => 'All Ordinaries', 'code' => 'XAO', 'price' => '8,064.30', 'high' => '8,095.10', 'low' => '7,340.50', 'change' => '+1.15%'],
+            ['name' => 'S&P/ASX Small Ords', 'code' => 'XSO', 'price' => '3,088.10', 'high' => '3,110.40', 'low' => '2,780.20', 'change' => '+0.84%'],
+            ['name' => 'S&P/ASX 50', 'code' => 'XFL', 'price' => '7,245.90', 'high' => '7,280.00', 'low' => '6,610.80', 'change' => '+1.42%'],
+            ['name' => 'ASX MidCap 50', 'code' => 'XMD', 'price' => '9,415.70', 'high' => '9,480.20', 'low' => '8,520.10', 'change' => '+0.95%'],
+        ];
+
+        $pastRecommendations = [
+            ['symbol' => 'BHP', 'name' => 'BHP Group Limited', 'sector' => 'Mining', 'buy' => 38.40, 'target' => 46.50, 'return' => '+21.1%', 'status' => 'Target Achieved', 'active' => false],
+            ['symbol' => 'CBA', 'name' => 'Commonwealth Bank', 'sector' => 'Banking', 'buy' => 108.20, 'target' => 135.00, 'return' => '+24.8%', 'status' => 'Target Achieved', 'active' => false],
+            ['symbol' => 'CSL', 'name' => 'CSL Limited', 'sector' => 'Healthcare', 'buy' => 264.50, 'target' => 310.00, 'return' => '+17.2%', 'status' => 'Active', 'active' => true],
+            ['symbol' => 'WDS', 'name' => 'Woodside Energy Group', 'sector' => 'Energy', 'buy' => 24.80, 'target' => 32.00, 'return' => '+29.0%', 'status' => 'Target Achieved', 'active' => false],
+            ['symbol' => 'XRO', 'name' => 'Xero Limited', 'sector' => 'Technology', 'buy' => 118.00, 'target' => 155.00, 'return' => '+31.4%', 'status' => 'Active', 'active' => true],
+        ];
+
         return view('home', [
             'sections' => DB::table('site_sections')->where('published', true)->orderBy('position')->orderBy('id')->get(),
+            'siteSections' => DB::table('site_sections')->where('published', true)->get()->keyBy('layout'),
             'collections' => DB::table('taxonomies')->where('kind', 'category')->orderBy('position')->get(),
             'stocks' => Stock::take(12)->get(),
             'reports' => Report::with('stock')->where('published', true)->latest()->take(12)->get(),
-            'articles' => Article::where('published', true)->latest()->take(12)->get(),
+            'articles' => Article::where('published', true)->latest()->take(3)->get(),
             'plans' => DB::table('plans')->where('published', true)->orderBy('position')->get(),
             'testimonials' => DB::table('testimonials')->where('published', true)->orderBy('position')->get(),
+            'faqs' => DB::table('faqs')->where('published', true)->orderBy('position')->get(),
+            'marketIndices' => $marketIndices,
+            'pastRecommendations' => $pastRecommendations,
         ]);
     }
 

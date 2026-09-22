@@ -56,6 +56,15 @@ class AdminContentSeeder extends Seeder
         foreach (['seo_title_suffix' => 'SharesRise', 'default_social_image' => '/images/city.jpg', 'social_facebook' => '', 'social_x' => '', 'social_linkedin' => '', 'social_youtube' => ''] as $key => $value) {
             $this->insert('site_settings', ['key' => $key], ['value' => $value]);
         }
+        foreach ([
+            ['What is SharesRise and how does it work?', 'SharesRise is an independent Australian equity research desk. We analyze ASX-listed companies using institutional-grade fundamental valuation models, risk assessments, and macroeconomic insights to help retail and self-directed investors make data-backed investment decisions.', 1],
+            ['How do you select your stock recommendations?', 'Our analyst team filters the ASX universe by evaluating cash conversion, return on equity, competitive moat, balance sheet health, and structural industry tailwinds. We then construct detailed valuation models to identify asymmetric risk-reward opportunities.', 2],
+            ['How do you calculate returns and track record?', 'Returns are calculated based on the entry price at publication date versus current market price or target exit price, including gross dividend yields. All historical reports remain fully archived for total transparency.', 3],
+            ['What if I want to cancel my subscription?', 'You can cancel anytime directly from your account settings with a single click. There are no lock-in contracts or cancellation fees. You will maintain access until the end of your billing cycle.', 4],
+            ['Is this considered personal financial advice or general advice?', 'All research, reports, and insights provided by SharesRise are strictly general in nature and do not consider your individual objectives, financial situation, or needs. Please read our Financial Services Guide and Disclaimer before investing.', 5],
+        ] as [$question, $answer, $pos]) {
+            $this->insert('faqs', ['question' => $question], ['answer' => $answer, 'position' => $pos * 10, 'published' => true]);
+        }
     }
 
     private function insert(string $table, array $key, array $values): void

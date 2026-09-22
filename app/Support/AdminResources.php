@@ -10,7 +10,7 @@ class AdminResources
     public static function navigation(): array
     {
         return [
-            'Publishing' => ['reports' => 'Research reports', 'articles' => 'Editorial library', 'testimonials' => 'Client testimonials', 'pages' => 'Website pages', 'sections' => 'Homepage builder', 'media' => 'Media library'],
+            'Publishing' => ['reports' => 'Research reports', 'articles' => 'Editorial library', 'testimonials' => 'Client testimonials', 'faqs' => 'Frequently asked questions', 'pages' => 'Website pages', 'sections' => 'Homepage builder', 'media' => 'Media library'],
             'Market & products' => ['stocks' => 'Company coverage', 'taxonomies' => 'Collections & sectors', 'plans' => 'Membership plans'],
             'Relationships' => ['members' => 'Members & access', 'leads' => 'Enquiries & signups', 'requests' => 'Plan requests'],
         ];
@@ -19,6 +19,12 @@ class AdminResources
     public static function definition(string $resource): array
     {
         $definitions = [
+            'faqs' => ['table' => 'faqs', 'singular' => 'FAQ item', 'title' => 'Frequently asked questions', 'description' => 'Manage FAQ questions and answers displayed on the homepage.', 'columns' => ['question' => 'Question', 'position' => 'Order', 'published' => 'Status'], 'search' => ['question', 'answer'], 'status' => 'published', 'fields' => [
+                'question' => self::field('Question', 'text', 'required|string|max:250', 'Content'),
+                'answer' => self::field('Answer', 'textarea', 'required|string|max:2000', 'Content'),
+                'position' => self::field('Display order', 'integer', 'required|integer|min:0|max:9999', 'Display', [], 'Lower numbers appear first.'),
+                'published' => self::field('Published on homepage', 'checkbox', 'boolean', 'Publication'),
+            ]],
             'testimonials' => ['table' => 'testimonials', 'singular' => 'Testimonial', 'title' => 'Client testimonials', 'description' => 'Manage the investor testimonials displayed on the homepage.', 'columns' => ['name' => 'Client name', 'role' => 'Role', 'rating' => 'Rating', 'position' => 'Order', 'published' => 'Status'], 'search' => ['name', 'role', 'quote'], 'status' => 'published', 'fields' => [
                 'name' => self::field('Client name', 'text', 'required|string|max:120', 'Client'),
                 'role' => self::field('Client role / occupation', 'text', 'required|string|max:120', 'Client', [], 'e.g., Retired Investor, Financial Adviser, Full-Time Trader'),
