@@ -3097,6 +3097,95 @@ td small { display: block; color: var(--slate-500); }
 }
 
 /* ==========================================================================
+   EDITORIAL VISUAL SYSTEM
+   A restrained treatment keeps the financial content—not decoration—primary.
+   ========================================================================== */
+.sr-hero {
+  background: var(--navy-900);
+}
+.sr-hero::before,
+.sr-mockup-glow {
+  display: none;
+}
+.btn-green,
+.btn-primary-green,
+.btn-yellow-action {
+  border-radius: 6px;
+  box-shadow: none;
+}
+.btn-green:hover,
+.btn-primary-green:hover,
+.btn-yellow-action:hover {
+  box-shadow: none;
+  transform: none;
+}
+.sr-stat-card,
+.sr-market-dark-panel,
+.sr-market-light-panel,
+.sr-news-card,
+.sr-testimonial-featured-card,
+.sr-video-review-card,
+.sr-pricing-card,
+.sr-lead-right-card {
+  border-radius: 8px;
+  box-shadow: none;
+}
+.sr-stat-card:hover,
+.sr-news-card:hover,
+.sr-pricing-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+.sr-market-dark-panel {
+  box-shadow: none;
+}
+.sr-sector-banner-section {
+  background: #0b1e3d;
+}
+.sr-sector-bubble:hover {
+  transform: none;
+}
+.sr-sector-icon-circle {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 6px;
+  box-shadow: none;
+  color: #ffffff;
+  font-family: var(--heading);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+.sr-cat-photo-card {
+  border-radius: 8px;
+  box-shadow: none;
+}
+.sr-cat-photo-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+.sr-cat-photo-card:hover img {
+  transform: none;
+}
+.sr-faq-item,
+.sr-faq-item[open] {
+  border-radius: 6px;
+  box-shadow: none;
+}
+.sr-lead-gen-banner {
+  background: var(--navy-900);
+  border-radius: 10px;
+  box-shadow: none;
+}
+.btn-yellow-action,
+.btn-yellow-action:hover {
+  background: var(--green-600);
+}
+.sr-pricing-card.featured {
+  box-shadow: none;
+}
+
+/* ==========================================================================
    RESPONSIVE MEDIA QUERIES (100% Mobile Friendly)
    ========================================================================== */
 @media (max-width: 1200px) {
@@ -3281,7 +3370,7 @@ td small { display: block; color: var(--slate-500); }
   }
   .sr-sector-pills-row::-webkit-scrollbar { display: none; }
   .sr-sector-bubble { flex: 0 0 72px; min-width: 72px; scroll-snap-align: start; }
-  .sr-sector-icon-circle { width: 44px; height: 44px; font-size: 18px; }
+  .sr-sector-icon-circle { width: 44px; height: 44px; font-size: 11px; }
 
   .sr-section-heading {
     display: flex;
@@ -3294,15 +3383,41 @@ td small { display: block; color: var(--slate-500); }
   .sr-section-heading p { font-size: 14px; }
   .sr-slider-nav { align-self: flex-end; }
   .sr-category-cards-grid {
-    grid-template-columns: repeat(4, minmax(0, calc(100vw - 64px)));
-    gap: 14px;
-    scroll-padding-inline: 0;
-    overscroll-behavior-inline: contain;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    overflow: visible;
+    scroll-snap-type: none;
   }
-  .sr-cat-photo-card { scroll-snap-align: start; }
-  .sr-cat-photo-card { height: 300px; }
+  .sr-slider-nav { display: none; }
+  .sr-cat-photo-card {
+    display: block;
+    height: auto;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--slate-200);
+    background: #ffffff;
+  }
+  .sr-cat-photo-card img {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 180px;
+  }
+  .sr-cat-overlay {
+    margin: 0;
+    padding: 18px;
+    background: #ffffff;
+    color: var(--slate-900);
+  }
+  .sr-cat-pill-tag {
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--green-700);
+  }
+  .sr-cat-overlay h3 { color: var(--slate-900); font-size: 19px; }
+  .sr-cat-overlay p { color: var(--slate-600); font-size: 13px; }
+  .sr-cat-link { color: var(--green-700); }
   .sr-news-grid { grid-template-columns: 1fr; }
   .sr-testimonial-featured-card { padding: 22px 18px; border-radius: 14px; }
   .sr-featured-quote { font-size: 15px; line-height: 1.6; }

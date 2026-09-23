@@ -306,24 +306,24 @@
             <div class="sr-sector-pills-row">
                 @php
                     $sectors = [
-                        ['name' => 'Healthcare', 'icon' => '🏥', 'bg' => '#f43f5e'],
-                        ['name' => 'Mining', 'icon' => '⛏️', 'bg' => '#eab308'],
-                        ['name' => 'Banks', 'icon' => '🏦', 'bg' => '#3b82f6'],
-                        ['name' => 'Technology', 'icon' => '💻', 'bg' => '#8b5cf6'],
-                        ['name' => 'Energy', 'icon' => '⚡', 'bg' => '#f97316'],
-                        ['name' => 'Materials', 'icon' => '🏗️', 'bg' => '#10b981'],
-                        ['name' => 'Property', 'icon' => '🏢', 'bg' => '#06b6d4'],
-                        ['name' => 'Industrials', 'icon' => '⚙️', 'bg' => '#64748b'],
-                        ['name' => 'Retail', 'icon' => '🛍️', 'bg' => '#ec4899'],
-                        ['name' => 'Telecom', 'icon' => '📡', 'bg' => '#14b8a6'],
-                        ['name' => 'Agriculture', 'icon' => '🌾', 'bg' => '#84cc16'],
+                        ['name' => 'Healthcare', 'code' => 'HC'],
+                        ['name' => 'Mining', 'code' => 'MN'],
+                        ['name' => 'Banks', 'code' => 'BK'],
+                        ['name' => 'Technology', 'code' => 'TC'],
+                        ['name' => 'Energy', 'code' => 'EN'],
+                        ['name' => 'Materials', 'code' => 'MT'],
+                        ['name' => 'Property', 'code' => 'PR'],
+                        ['name' => 'Industrials', 'code' => 'IN'],
+                        ['name' => 'Retail', 'code' => 'RT'],
+                        ['name' => 'Telecom', 'code' => 'TL'],
+                        ['name' => 'Agriculture', 'code' => 'AG'],
                     ];
                 @endphp
 
                 @foreach($sectors as $sec)
                     <a href="{{ route('research', ['sector' => $sec['name']]) }}" class="sr-sector-bubble" title="{{ $sec['name'] }}">
-                        <div class="sr-sector-icon-circle" style="background: {{ $sec['bg'] }};">
-                            <span>{{ $sec['icon'] }}</span>
+                        <div class="sr-sector-icon-circle">
+                            <span>{{ $sec['code'] }}</span>
                         </div>
                         <span class="sr-sector-name">{{ $sec['name'] }}</span>
                     </a>
