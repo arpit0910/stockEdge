@@ -39,11 +39,11 @@
                 @endforeach
             </div>
 
-            <div style="margin-top: 40px; display: flex; gap: 14px;">
-                <button class="button outline no-print" onclick="window.print()">
+            <div class="inline-actions no-print" style="margin-top: 40px;">
+                <button class="button outline" onclick="window.print()">
                     🖨️ Print / Save as PDF
                 </button>
-                <a href="{{ route('research') }}" class="button light no-print">
+                <a href="{{ route('research') }}" class="button light">
                     Browse More Research →
                 </a>
             </div>

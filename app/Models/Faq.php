@@ -21,4 +21,3 @@ class Faq extends Model
         'position' => 'integer',
     ];
 }
-
