@@ -53,12 +53,10 @@
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <!-- Top Bar -->
+    <!-- Top Bar (Centered Announcement) -->
     <div class="sr-topbar">
         <div class="container sr-topbar-inner">
-            <div class="sr-topbar-left">
-                <span class="sr-topbar-title">{{ config('stockedge.site.announcement', 'Australia Stock Market Research Platform') }}</span>
-            </div>
+            <span class="sr-topbar-title">{{ config('stockedge.site.announcement', 'Australia Stock Market Research Platform · Independent Research & High-Conviction ASX Analysis') }}</span>
         </div>
     </div>
 
@@ -74,73 +72,12 @@
 
             <nav id="navigation" aria-label="Main navigation">
                 <a href="{{ route('home') }}" @class(['active' => request()->routeIs('home')])>Home</a>
-
-                <details class="nav-dropdown">
-                    <summary>Research <span>⌄</span></summary>
-                    <div class="mega-menu">
-                        <div>
-                            <small>RESEARCH COLLECTIONS</small>
-                            @foreach(config('stockedge.categories', []) as $category)
-                                <a href="{{ route('research', ['category' => $category]) }}">{{ $category }}</a>
-                            @endforeach
-                        </div>
-                        <div>
-                            <small>EXPLORE THE MARKET</small>
-                            <a href="{{ route('research') }}">All Research Library →</a>
-                            <a href="{{ route('page', 'sectors') }}">Sector Insights</a>
-                            @foreach(['Blue Chip', 'Mid Cap', 'Small Cap'] as $cap)
-                                <a href="{{ route('research', ['cap' => $cap]) }}">{{ $cap }} Equities</a>
-                            @endforeach
-                            <a href="{{ route('page', 'performance') }}">Methodology & Record</a>
-                        </div>
-                    </div>
-                </details>
-
-                <a href="{{ route('research', ['category' => 'Stock of the Week']) }}">Stock Picks</a>
-
-                <details class="nav-dropdown">
-                    <summary>Markets <span>⌄</span></summary>
-                    <div class="small-menu">
-                        <a href="{{ route('page', 'sectors') }}">ASX Sectors Overview</a>
-                        <a href="{{ route('research', ['cap' => 'Blue Chip']) }}">ASX 200 Leaders</a>
-                        <a href="{{ route('research', ['cap' => 'Mid Cap']) }}">Mid Cap Opportunities</a>
-                        <a href="{{ route('research', ['cap' => 'Small Cap']) }}">Small Cap Growth</a>
-                    </div>
-                </details>
-
-                <details class="nav-dropdown">
-                    <summary>Learn <span>⌄</span></summary>
-                    <div class="small-menu">
-                        <a href="{{ route('editorial') }}">Market Insights</a>
-                        <a href="{{ route('page', 'free-report') }}">Free Research Guide</a>
-                        <a href="{{ route('page', 'retirement') }}">Retirement Planner</a>
-                        <a href="{{ route('page', 'pricing') }}">Membership Plans</a>
-                    </div>
-                </details>
-
-                <a href="{{ route('page', 'about') }}" @class(['active' => request()->is('about')])>About Us</a>
-
-                <div class="mobile-nav-actions">
-                    @auth
-                        <a class="button outline" href="{{ route('dashboard') }}">My Dashboard</a>
-                    @else
-                        <a class="button outline" href="{{ route('login') }}">Login</a>
-                    @endauth
-                    <a class="btn-green" href="{{ route('register') }}">Start Free Trial</a>
-                </div>
+                <a href="{{ route('page', 'pricing') }}" @class(['active' => request()->is('pricing')])>Subscribe</a>
+                <a href="{{ route('research') }}" @class(['active' => request()->routeIs('research', 'report', 'stock')])>Research &amp; Report</a>
+                <a href="{{ route('editorial') }}" @class(['active' => request()->routeIs('editorial', 'article')])>Editorial</a>
+                <a href="{{ route('page', 'about') }}" @class(['active' => request()->is('about')])>About US</a>
+                <a href="{{ route('page', 'contact') }}" @class(['active' => request()->is('contact')])>Contact</a>
             </nav>
-
-            <div class="nav-actions">
-                <a href="{{ route('research') }}" class="nav-search-btn" title="Search Research" aria-label="Search Research">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                </a>
-                @auth
-                    <a class="nav-login-link" href="{{ route('dashboard') }}">My Dashboard</a>
-                @else
-                    <a class="nav-login-link" href="{{ route('login') }}">Login</a>
-                @endauth
-                <a class="btn-green" href="{{ route('register') }}">Start Free Trial</a>
-            </div>
         </div>
     </header>
 
@@ -189,27 +126,25 @@
                 <!-- Brand Column -->
                 <div class="sr-footer-brand">
                     <a class="brand" href="{{ route('home') }}">
-                        <span class="brand-bars-icon" aria-hidden="true">
-                            <span></span><span></span><span></span><span></span>
-                        </span>
+                        <img class="brand-mark" src="{{ asset('images/sharesrise-mark.svg') }}" alt="" width="36" height="36">
                         <span>{{ $brandName }}</span>
                     </a>
                     <p class="sr-footer-brand-bio">
                         {{ config('stockedge.site.footer_description', 'Independent research. Expert insights. Smarter investments.') }}
                     </p>
                     <div class="sr-social-links">
-                        @if(config('stockedge.site.social_facebook'))<a href="{{ config('stockedge.site.social_facebook') }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="Facebook">
-                            <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                        </a>@endif
-                        @if(config('stockedge.site.social_x'))<a href="{{ config('stockedge.site.social_x') }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="X Twitter">
-                            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                        </a>@endif
-                        @if(config('stockedge.site.social_linkedin'))<a href="{{ config('stockedge.site.social_linkedin') }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="LinkedIn">
-                            <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
-                        </a>@endif
-                        @if(config('stockedge.site.social_youtube'))<a href="{{ config('stockedge.site.social_youtube') }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="YouTube">
-                            <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="#040914"/></svg>
-                        </a>@endif
+                        <a href="{{ config('stockedge.site.social_facebook') ?: 'https://facebook.com' }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="Facebook">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                        </a>
+                        <a href="{{ config('stockedge.site.social_x') ?: 'https://x.com' }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="X Twitter">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        </a>
+                        <a href="{{ config('stockedge.site.social_linkedin') ?: 'https://linkedin.com' }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="LinkedIn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+                        </a>
+                        <a href="{{ config('stockedge.site.social_youtube') ?: 'https://youtube.com' }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="YouTube">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        </a>
                     </div>
                 </div>
 
@@ -250,6 +185,15 @@
                         </div>
                     </form>
                 </div>
+
+                <nav class="sr-footer-mobile-links" aria-label="Footer navigation">
+                    <a href="{{ route('home') }}">Home</a>
+                    <a href="{{ route('page', 'pricing') }}">Subscribe</a>
+                    <a href="{{ route('research') }}">Research</a>
+                    <a href="{{ route('editorial') }}">Editorial</a>
+                    <a href="{{ route('page', 'about') }}">About Us</a>
+                    <a href="{{ route('page', 'contact') }}">Contact</a>
+                </nav>
             </div>
 
             <!-- Footer Bottom -->

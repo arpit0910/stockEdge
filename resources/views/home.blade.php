@@ -306,24 +306,26 @@
             <div class="sr-sector-pills-row">
                 @php
                     $sectors = [
-                        ['name' => 'Healthcare', 'code' => 'HC'],
-                        ['name' => 'Mining', 'code' => 'MN'],
-                        ['name' => 'Banks', 'code' => 'BK'],
-                        ['name' => 'Technology', 'code' => 'TC'],
-                        ['name' => 'Energy', 'code' => 'EN'],
-                        ['name' => 'Materials', 'code' => 'MT'],
-                        ['name' => 'Property', 'code' => 'PR'],
-                        ['name' => 'Industrials', 'code' => 'IN'],
-                        ['name' => 'Retail', 'code' => 'RT'],
-                        ['name' => 'Telecom', 'code' => 'TL'],
-                        ['name' => 'Agriculture', 'code' => 'AG'],
+                        ['name' => 'Healthcare', 'bg' => '#f43f5e', 'svg' => '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>'],
+                        ['name' => 'Mining', 'bg' => '#eab308', 'svg' => '<path d="m14 12-8.5 8.5a2.12 2.12 0 1 1-3-3L11 9"/><path d="M15 13 9 7l4-4 6 6-4 4Z"/><path d="m18 6 3-3"/>'],
+                        ['name' => 'Banks', 'bg' => '#3b82f6', 'svg' => '<line x1="3" y1="21" x2="21" y2="21"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="3 10 12 4 21 10"/><line x1="6" y1="10" x2="6" y2="21"/><line x1="10" y1="10" x2="10" y2="21"/><line x1="14" y1="10" x2="14" y2="21"/><line x1="18" y1="10" x2="18" y2="21"/>'],
+                        ['name' => 'Technology', 'bg' => '#8b5cf6', 'svg' => '<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>'],
+                        ['name' => 'Energy', 'bg' => '#f97316', 'svg' => '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>'],
+                        ['name' => 'Materials', 'bg' => '#10b981', 'svg' => '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>'],
+                        ['name' => 'Property', 'bg' => '#06b6d4', 'svg' => '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>'],
+                        ['name' => 'Industrials', 'bg' => '#64748b', 'svg' => '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>'],
+                        ['name' => 'Retail', 'bg' => '#ec4899', 'svg' => '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>'],
+                        ['name' => 'Telecom', 'bg' => '#14b8a6', 'svg' => '<path d="M4.93 19.07A10 10 0 0 1 2 12a10 10 0 0 1 2.93-7.07"/><path d="M19.07 4.93A10 10 0 0 1 22 12a10 10 0 0 1-2.93 7.07"/><path d="M7.76 16.24A6 6 0 0 1 6 12a6 6 0 0 1 1.76-4.24"/><path d="M16.24 7.76A6 6 0 0 1 18 12a6 6 0 0 1-1.76 4.24"/><circle cx="12" cy="12" r="2"/>'],
+                        ['name' => 'Agriculture', 'bg' => '#84cc16', 'svg' => '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>'],
                     ];
                 @endphp
 
                 @foreach($sectors as $sec)
                     <a href="{{ route('research', ['sector' => $sec['name']]) }}" class="sr-sector-bubble" title="{{ $sec['name'] }}">
-                        <div class="sr-sector-icon-circle">
-                            <span>{{ $sec['code'] }}</span>
+                        <div class="sr-sector-icon-circle" style="background: {{ $sec['bg'] }};">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                {!! $sec['svg'] !!}
+                            </svg>
                         </div>
                         <span class="sr-sector-name">{{ $sec['name'] }}</span>
                     </a>
@@ -338,12 +340,10 @@
      ========================================================================= -->
 <section class="sr-section sr-categories-section">
     <div class="container">
-        <div class="sr-section-heading">
-            <div>
-                <h2>SharesRise Reports Categories</h2>
-                <p>Actionable research and recommendations for every kind of investor.</p>
-            </div>
-            <div class="sr-slider-nav">
+        <div class="sr-section-heading-centered">
+            <h2>SharesRise Reports Categories</h2>
+            <p>Actionable research and recommendations for every kind of investor.</p>
+            <div class="sr-slider-nav-centered" style="margin-top: 18px; display: inline-flex; gap: 10px;">
                 <button class="sr-nav-arrow prev" aria-label="Previous category" onclick="document.querySelector('.sr-category-cards-grid').scrollBy({left: -320, behavior: 'smooth'})">←</button>
                 <button class="sr-nav-arrow next" aria-label="Next category" onclick="document.querySelector('.sr-category-cards-grid').scrollBy({left: 320, behavior: 'smooth'})">→</button>
             </div>
@@ -402,12 +402,12 @@
      ========================================================================= -->
 <section class="sr-section sr-news-section">
     <div class="container">
-        <div class="sr-section-heading">
-            <div>
-                <h2>Latest ASX Market News, Stock Insights & Investment Trends</h2>
-                <p>Stay informed with timely analysis and deep dives from our research desk.</p>
+        <div class="sr-section-heading-centered">
+            <h2>Latest ASX Market News, Stock Insights & Investment Trends</h2>
+            <p>Stay informed with timely analysis and deep dives from our research desk.</p>
+            <div style="margin-top: 14px;">
+                <a href="{{ route('editorial') }}" class="sr-link-arrow" style="font-size: 14px;">All Insights &amp; Market Perspectives →</a>
             </div>
-            <a href="{{ route('editorial') }}" class="sr-link-arrow">All Insights →</a>
         </div>
 
         <div class="sr-news-grid">
