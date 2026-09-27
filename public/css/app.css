@@ -3373,6 +3373,7 @@ td small { display: block; color: var(--slate-500); }
   .auth-story h1 { font-size: 38px; }
   .detail-layout { grid-template-columns: 1fr; gap: 36px; }
   .account-layout { grid-template-columns: 1fr; gap: 28px; }
+  .account-main { min-width: 0; }
   .account-nav {
     display: flex;
     gap: 6px;
@@ -3387,7 +3388,7 @@ td small { display: block; color: var(--slate-500); }
   .account-nav > .eyebrow, .account-nav > h3 { display: none; }
   .account-nav > a { flex: 0 0 auto; margin: 0; white-space: nowrap; }
   .account-nav form { flex: 0 0 auto; }
-  .articles-grid, .pricing-grid, .collection-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .reports-grid, .articles-grid, .pricing-grid, .collection-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .about-layout, .contact-layout, .calculator { grid-template-columns: 1fr; gap: 32px; }
   .inline-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero, .market-layout, .tools-section { grid-template-columns: 1fr; gap: 38px; }
@@ -3409,8 +3410,8 @@ td small { display: block; color: var(--slate-500); }
   .sr-topbar-right, .nav-actions .btn-green { display: none; }
   .sr-topbar { font-size: 9px; padding-block: 6px; }
   .sr-topbar-inner, .sr-topbar-left { justify-content: center; }
-  .sr-topbar-title { text-align: center; }
-  .brand-logo { width: 150px; }
+  .sr-topbar-title { max-width: 100%; text-align: center; line-height: 1.4; }
+  .brand-logo { width: 128px; }
   .nav-row nav { left: -16px; right: -16px; padding-inline: 16px; }
   .nav-search-btn { width: 44px; height: 44px; }
   .mega-menu { grid-template-columns: 1fr; gap: 16px; }
@@ -3539,6 +3540,7 @@ td small { display: block; color: var(--slate-500); }
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
     gap: 16px;
   }
   .sr-footer-brand-bio,
@@ -3599,6 +3601,7 @@ td small { display: block; color: var(--slate-500); }
   .sr-results-sort { text-align: right; }
 
   .metric-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .metric-grid.three { grid-template-columns: 1fr; }
   .metric { padding: 16px; }
   .metric strong { font-size: 22px; }
   .panel, .form-panel, .detail-aside, .locked-content { padding: 20px; }
@@ -3618,7 +3621,7 @@ td small { display: block; color: var(--slate-500); }
   .section.compact { padding-block: 30px 48px; }
   .page-heading { padding-block: 36px 20px; }
   .page-heading > p { font-size: 14px; }
-  .articles-grid, .pricing-grid, .collection-grid { grid-template-columns: 1fr; }
+  .reports-grid, .articles-grid, .pricing-grid, .collection-grid { grid-template-columns: 1fr; }
   .article-card, .price-card, .collection-card { padding: 18px; }
   .article-image { margin: -18px -18px 16px; }
   .about-art, .calculator > form, .projection { padding: 22px; }
@@ -3635,12 +3638,15 @@ td small { display: block; color: var(--slate-500); }
   .research-cover { min-height: 340px; padding: 20px; }
   .cover-middle h2 { font-size: 30px; }
   .section-heading { align-items: flex-start; flex-direction: column; }
+  .table-title, .cover-top, .cover-bottom { align-items: flex-start; flex-wrap: wrap; }
+  .tool-cards > a { grid-template-columns: 30px minmax(0, 1fr) auto; gap: 12px; padding: 16px; }
   .market-layout, .tools-section { padding-block: 44px; }
   .cta-section { margin-bottom: 48px; padding: 32px 18px; }
 }
 
 @media (max-width: 480px) {
   .container { width: calc(100% - 24px); }
+  .button { max-width: 100%; white-space: normal; text-align: center; line-height: 1.35; }
   .sr-hero-title { font-size: 28px; line-height: 1.2; }
   .sr-hero-desc { font-size: 14px; }
   .sr-dash-metrics { grid-template-columns: 1fr 1fr; }
@@ -3664,10 +3670,14 @@ td small { display: block; color: var(--slate-500); }
   .sr-aggregate-row { flex-wrap: wrap; justify-content: center; gap: 8px; }
   .sr-agg-badge { font-size: 11px; padding: 4px 8px; }
   .card-top, .company-row, .card-bottom { align-items: flex-start; }
+  .card-top, .card-bottom { flex-wrap: wrap; gap: 10px; }
   .company-row { flex-wrap: wrap; }
   .company-row .rating { margin-left: 0; margin-top: 6px; }
   .account-nav { margin-inline: -12px; padding-inline: 12px; }
   .form-between { flex-direction: column; }
+  .sr-footer-brand { flex-direction: column; align-items: center; text-align: center; }
+  .sr-social-links { justify-content: center; }
+  .projected-value { font-size: 30px; }
   .sr-faq-question { padding: 16px 18px; font-size: 14px; }
   .sr-faq-answer { padding: 0 18px 18px; font-size: 13px; }
   .sr-guarantee-row { align-items: flex-start; text-align: left; }
@@ -3675,6 +3685,7 @@ td small { display: block; color: var(--slate-500); }
 
 @media (max-width: 360px) {
   .container { width: calc(100% - 16px); }
+  .brand-logo { width: 116px; }
   .sr-hero-title { font-size: 25px; }
   .sr-stats-grid { grid-template-columns: 1fr; }
   .metric-grid { grid-template-columns: 1fr; }
