@@ -15,7 +15,7 @@
         $robots = request()->routeIs('login', 'register', 'password.*', 'dashboard', 'account', 'sample') || request()->filled('q') ? 'noindex, follow' : 'index, follow, max-image-preview:large';
         $socialProfiles = array_values(array_filter([config('stockedge.site.social_facebook'), config('stockedge.site.social_x'), config('stockedge.site.social_linkedin'), config('stockedge.site.social_youtube')]));
         $schemaGraph = [
-            ['@type' => 'Organization', '@id' => url('/').'#organization', 'name' => $brandName, 'url' => url('/'), 'logo' => asset('images/sharesrise-logo.svg'), 'sameAs' => $socialProfiles],
+            ['@type' => 'Organization', '@id' => url('/').'#organization', 'name' => $brandName, 'url' => url('/'), 'logo' => asset('images/sharesrise-logo-on-light.png'), 'sameAs' => $socialProfiles],
             ['@type' => 'WebSite', '@id' => url('/').'#website', 'url' => url('/'), 'name' => $brandName, 'publisher' => ['@id' => url('/').'#organization'], 'potentialAction' => ['@type' => 'SearchAction', 'target' => route('research').'?q={search_term_string}', 'query-input' => 'required name=search_term_string']],
         ];
         if (isset($item)) {
@@ -46,7 +46,7 @@
     <meta name="twitter:description" content="{{ $metaDescription }}">
     <meta name="twitter:image" content="{{ $socialImage }}">
     <script type="application/ld+json">{!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
-    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('images/sharesrise-logo-on-light.png') }}" type="image/png">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <script defer src="{{ asset('js/app.js') }}"></script>
 </head>
@@ -64,8 +64,7 @@
     <header class="site-header">
         <div class="container nav-row">
             <a class="brand" href="{{ route('home') }}" aria-label="{{ $brandName }} home">
-                <img class="brand-mark" src="{{ asset('images/sharesrise-mark.svg') }}" alt="" width="36" height="36">
-                <span>{{ $brandName }}</span>
+                <img class="brand-logo" src="{{ asset('images/sharesrise-logo-on-dark.png') }}" alt="" width="610" height="160">
             </a>
 
             <button class="menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navigation">☰</button>
@@ -125,9 +124,8 @@
             <div class="sr-footer-grid">
                 <!-- Brand Column -->
                 <div class="sr-footer-brand">
-                    <a class="brand" href="{{ route('home') }}">
-                        <img class="brand-mark" src="{{ asset('images/sharesrise-mark.svg') }}" alt="" width="36" height="36">
-                        <span>{{ $brandName }}</span>
+                    <a class="brand" href="{{ route('home') }}" aria-label="{{ $brandName }} home">
+                        <img class="brand-logo" src="{{ asset('images/sharesrise-logo-on-dark.png') }}" alt="" width="610" height="160">
                     </a>
                     <p class="sr-footer-brand-bio">
                         {{ config('stockedge.site.footer_description', 'Independent research. Expert insights. Smarter investments.') }}
