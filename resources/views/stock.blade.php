@@ -3,74 +3,82 @@
 @section('title', $stock->name . ' (' . $stock->symbol . ')')
 
 @section('content')
-<section class="sr-page-hero">
+<section class="sr-page-hero internal-company-hero">
     <div class="container">
-        <a class="back-link" href="{{ route('research') }}" style="color: var(--green-400); margin-bottom: 12px;">
-            ← Back to Research Library
-        </a>
-        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-            <span class="sr-hero-pill-badge" style="margin-bottom: 0;">
-                ASX: {{ $stock->symbol }}
-            </span>
-            <span style="font-size: 13px; color: var(--slate-300);">{{ $stock->sector }} · {{ $stock->cap }}</span>
+        <a class="back-link internal-hero-back" href="{{ route('research') }}">&larr; Back to research</a>
+        <div class="internal-company-meta">
+            <span class="sr-hero-pill-badge">ASX: {{ $stock->symbol }}</span>
+            <span>{{ $stock->sector }}</span>
+            <span>{{ $stock->cap }}</span>
         </div>
         <h1 class="sr-page-hero-title">{{ $stock->name }}</h1>
         <p class="sr-page-hero-desc">{{ $stock->description }}</p>
     </div>
 </section>
 
-<section class="container sr-library-section">
-    <!-- Key Metrics Grid -->
-    <div class="metric-grid">
+<section class="container sr-library-section internal-company-page">
+    <div class="internal-section-heading">
+        <div>
+            <span class="eyebrow">COMPANY SNAPSHOT</span>
+            <h2>Key figures</h2>
+        </div>
+        <p>Illustrative market data for orientation only.</p>
+    </div>
+
+    <div class="metric-grid internal-metrics-grid">
         <div class="metric">
-            <small>Current Price · AUD</small>
+            <small>Current price</small>
             <strong>${{ number_format($stock->price, 2) }}</strong>
+            <span>AUD</span>
         </div>
         <div class="metric">
-            <small>24h Movement</small>
+            <small>24-hour movement</small>
             <strong class="{{ $stock->change >= 0 ? 'positive' : 'negative' }}">
                 {{ $stock->change >= 0 ? '+' : '' }}{{ $stock->change }}%
             </strong>
+            <span>Illustrative change</span>
         </div>
         <div class="metric">
-            <small>Dividend Yield</small>
-            <strong style="color: var(--green-600);">{{ $stock->yield }}%</strong>
+            <small>Dividend yield</small>
+            <strong class="positive">{{ $stock->yield }}%</strong>
+            <span>Indicative yield</span>
         </div>
         <div class="metric">
-            <small>Market Capitalisation</small>
+            <small>Capitalisation</small>
             <strong>{{ $stock->cap }}</strong>
+            <span>Market segment</span>
         </div>
     </div>
 
-    <div class="inline-actions" style="margin-bottom: 40px;">
+    <div class="inline-actions internal-company-actions">
         @auth
             <form action="{{ route('watch') }}" method="post">
                 @csrf
                 <input type="hidden" name="stock_id" value="{{ $stock->id }}">
-                <button class="btn-green">☆ Add to My Watchlist</button>
+                <button class="btn-green">Add to watchlist</button>
             </form>
         @else
-            <a class="btn-green" href="{{ route('login') }}">Log in to Watchlist</a>
+            <a class="btn-green" href="{{ route('login') }}">Log in to use watchlist</a>
         @endauth
-        <a class="button outline" href="{{ route('account', 'portfolio') }}">Add to Portfolio ↗</a>
+        <a class="button outline" href="{{ route('account', 'portfolio') }}">Add to portfolio</a>
     </div>
 
-    <div class="sr-results-header">
-        <div class="sr-results-count">
-            <strong>Research & Reports</strong>
-            <span>covering {{ $stock->symbol }}</span>
+    <div class="internal-section-heading internal-research-heading">
+        <div>
+            <span class="eyebrow">RELATED COVERAGE</span>
+            <h2>Research on {{ $stock->symbol }}</h2>
         </div>
+        <a class="text-link" href="{{ route('research') }}">View all research &rarr;</a>
     </div>
 
-    <div class="reports-grid" style="margin-top: 24px;">
+    <div class="reports-grid">
         @forelse($reports as $report)
             <x-report-card :report="$report"/>
         @empty
-            <div class="sr-empty-results" style="grid-column: 1 / -1;">
-                <div class="sr-empty-icon">📊</div>
-                <h3>New research coverage for {{ $stock->symbol }} is being prepared</h3>
-                <p>Our analysts publish weekly deep dives across ASX equities.</p>
-                <a href="{{ route('research') }}" class="btn-green">Browse All Research →</a>
+            <div class="sr-empty-results">
+                <h3>New coverage is being prepared</h3>
+                <p>Browse the research library while our next {{ $stock->symbol }} report is prepared.</p>
+                <a href="{{ route('research') }}" class="btn-green">Browse all research &rarr;</a>
             </div>
         @endforelse
     </div>

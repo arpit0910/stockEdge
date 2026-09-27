@@ -8,12 +8,12 @@
         <span class="sr-hero-pill-badge">
             <span class="dot"></span> MACRO PERSPECTIVES & EDUCATION
         </span>
-        <h1 class="sr-page-hero-title">{{ request('topic', 'Market Insights & Industry Trends') }}</h1>
+        <h1 class="sr-page-hero-title">{{ request('topic', 'Market insights') }}</h1>
         <p class="sr-page-hero-desc">
-            Macro analysis, industry trends, investing frameworks, and expert market commentary from our team.
+            Clear perspectives on markets, industries, and the practical work of investing.
         </p>
 
-        <form class="sr-search-form" action="{{ route('editorial') }}" method="GET" style="max-width: 540px;">
+        <form class="sr-search-form editorial-search-form" action="{{ route('editorial') }}" method="GET">
             @if(request('topic')) <input type="hidden" name="topic" value="{{ request('topic') }}"> @endif
             <div class="sr-search-input-wrap">
                 <svg class="sr-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -46,12 +46,22 @@
 </div>
 
 <section class="container sr-library-section">
+    <div class="internal-section-heading">
+        <div>
+            <span class="eyebrow">INSIGHT LIBRARY</span>
+            <h2>{{ $articles->total() }} {{ Str::plural('article', $articles->total()) }}</h2>
+        </div>
+        @if(request()->hasAny(['q', 'topic']))
+            <a class="text-link" href="{{ route('editorial') }}">Clear filters</a>
+        @else
+            <p>Browse the latest perspectives, published newest first.</p>
+        @endif
+    </div>
     <div class="articles-grid">
         @forelse($articles as $article)
             <x-article-card :article="$article"/>
         @empty
-            <div class="sr-empty-results" style="grid-column: 1 / -1;">
-                <div class="sr-empty-icon">📰</div>
+            <div class="sr-empty-results">
                 <h3>No articles match your search criteria</h3>
                 <p>Try searching for a different topic or view all insights.</p>
                 <a href="{{ route('editorial') }}" class="btn-green">View All Insights →</a>
@@ -59,7 +69,7 @@
         @endforelse
     </div>
 
-    <div class="sr-pagination-wrap" style="margin-top: 40px;">
+    <div class="sr-pagination-wrap">
         {{ $articles->links() }}
     </div>
 </section>

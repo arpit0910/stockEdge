@@ -17,10 +17,6 @@
     <div class="container sr-hero-grid">
         <!-- Left Content -->
         <div class="sr-hero-content">
-            <span class="sr-hero-pill-badge">
-                <span class="dot"></span> {{ $heroSection->eyebrow ?? 'SPECIALIST EQUITY RESEARCH' }}
-            </span>
-
             <h1 class="sr-hero-title">
                 @if($heroSection && $heroSection->title)
                     {{ $heroSection->title }}
@@ -68,8 +64,8 @@
                     <div class="sr-screen-dots">
                         <span></span><span></span><span></span>
                     </div>
-                    <div class="sr-screen-url">sharesrise.com.au/terminal/asx200</div>
-                    <span class="sr-screen-badge">LIVE AEST</span>
+                    <div class="sr-screen-url">SharesRise research workspace</div>
+                    <span class="sr-screen-badge">DEMO DATA</span>
                 </div>
 
                 <div class="sr-screen-body">
@@ -133,49 +129,13 @@
 
             <!-- Overlapping Mobile Phone Mockup -->
             <div class="sr-phone-screen">
-                <div class="sr-phone-notch"></div>
                 <div class="sr-phone-header">
                     <small>Top ASX Pick</small>
                     <strong>CSL Limited (CSL)</strong>
                 </div>
                 <div class="sr-phone-badge-row">
                     <span class="tag-buy">BUY</span>
-                    <span class="gain">+17.2% Return</span>
                 </div>
-                <div class="sr-phone-bar">
-                    <div class="bar-fill" style="width: 78%;"></div>
-                </div>
-                <small class="sr-phone-note">Target: $310.00 • Low Risk</small>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- =========================================================================
-     2. STATS & TRACK RECORD COUNTER STRIP (4 Cards)
-     ========================================================================= -->
-<section class="sr-stats-section">
-    <div class="container">
-        <div class="sr-stats-grid">
-            <div class="sr-stat-card">
-                <div class="sr-stat-number">84%+</div>
-                <div class="sr-stat-label">High Conviction Success Rate</div>
-                <p class="sr-stat-sub">Validated across market cycles</p>
-            </div>
-            <div class="sr-stat-card">
-                <div class="sr-stat-number">1025+</div>
-                <div class="sr-stat-label">ASX Companies Covered</div>
-                <p class="sr-stat-sub">Fundamental valuation coverage</p>
-            </div>
-            <div class="sr-stat-card">
-                <div class="sr-stat-number">15,483</div>
-                <div class="sr-stat-label">Research Reports Read</div>
-                <p class="sr-stat-sub">By Australian investors & SMSFs</p>
-            </div>
-            <div class="sr-stat-card">
-                <div class="sr-stat-number">8+ years</div>
-                <div class="sr-stat-label">Proven Market Track Record</div>
-                <p class="sr-stat-sub">Independent equity analysis</p>
             </div>
         </div>
     </div>
@@ -192,11 +152,8 @@
             <div class="sr-market-dark-panel">
                 <div class="sr-panel-header">
                     <div>
-                        <div class="sr-panel-tag">{{ $marketSection->eyebrow ?? 'LIVE BENCHMARKS' }}</div>
-                        <h3 class="text-white">{{ $marketSection->title ?? 'Live ASX Market Overview' }}</h3>
-                    </div>
-                    <div class="sr-live-badge">
-                        <span class="sr-live-dot"></span> LIVE
+                        <div class="sr-panel-tag">MARKET SNAPSHOT</div>
+                        <h3 class="text-white">ASX market snapshot</h3>
                     </div>
                 </div>
 
@@ -297,10 +254,10 @@
     <div class="container">
         <div class="sr-sector-banner-inner">
             <h2 class="sr-sector-banner-title">
-                ASX Sector Insights Across Mining, Banking, Technology & More
+                Research by ASX sector
             </h2>
             <p class="sr-sector-banner-sub">
-                Explore fundamental research and valuation models across 11 key ASX sectors to find undervalued opportunities before the broader market.
+                Browse company research across mining, banking, technology, healthcare, energy, and other major sectors.
             </p>
 
             <div class="sr-sector-pills-row">
@@ -341,15 +298,15 @@
 <section class="sr-section sr-categories-section">
     <div class="container">
         <div class="sr-section-heading-centered">
-            <h2>SharesRise Reports Categories</h2>
-            <p>Actionable research and recommendations for every kind of investor.</p>
+            <h2>Research collections</h2>
+            <p>Browse reports by research style and investment objective.</p>
             <div class="sr-slider-nav-centered" style="margin-top: 18px; display: inline-flex; gap: 10px;">
                 <button class="sr-nav-arrow prev" aria-label="Previous category" onclick="document.querySelector('.sr-category-cards-grid').scrollBy({left: -320, behavior: 'smooth'})">←</button>
                 <button class="sr-nav-arrow next" aria-label="Next category" onclick="document.querySelector('.sr-category-cards-grid').scrollBy({left: 320, behavior: 'smooth'})">→</button>
             </div>
         </div>
 
-        <div class="sr-category-cards-grid">
+        <div class="sr-category-cards-grid" data-mobile-carousel>
             <!-- 1. Daily Recommendations -->
             <a href="{{ route('research', ['category' => 'Daily Analysis']) }}" class="sr-cat-photo-card">
                 <img src="{{ asset('images/city.jpg') }}" alt="Daily Recommendations" loading="lazy">
@@ -403,10 +360,10 @@
 <section class="sr-section sr-news-section">
     <div class="container">
         <div class="sr-section-heading-centered">
-            <h2>Latest ASX Market News, Stock Insights & Investment Trends</h2>
-            <p>Stay informed with timely analysis and deep dives from our research desk.</p>
-            <div style="margin-top: 14px;">
-                <a href="{{ route('editorial') }}" class="sr-link-arrow" style="font-size: 14px;">All Insights &amp; Market Perspectives →</a>
+            <h2>Market insights</h2>
+            <p>Read the latest perspectives from the research desk.</p>
+            <div class="sr-all-insights-link">
+                <a href="{{ route('editorial') }}" class="sr-link-arrow">All Insights &amp; Market Perspectives →</a>
             </div>
         </div>
 
@@ -436,86 +393,13 @@
 </section>
 
 <!-- =========================================================================
-     7. CLIENT TESTIMONIALS & VIDEO REVIEW SHOWCASE (Dark Navy)
-     ========================================================================= -->
-<section class="sr-testimonials-dark-section">
-    <div class="container">
-        <div class="sr-section-heading-centered" style="margin-bottom: 35px;">
-            <span class="sr-hero-pill-badge" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3);">
-                <span class="dot"></span> CLIENT SUCCESS STORIES
-            </span>
-            <h2 style="color: #ffffff; font-size: 36px; margin-top: 10px;">What our clients say</h2>
-            <p style="color: var(--slate-300); max-width: 680px; margin: 0 auto;">
-                We deliver actionable research and recommendations that help Australian investors manage risk and achieve consistent returns across market cycles.
-            </p>
-        </div>
-
-        <div class="sr-testimonial-video-grid">
-            <!-- Left: Featured Testimonial Quote Card -->
-            <div class="sr-testimonial-featured-card">
-                <div class="sr-stars-row" style="color: #fbbf24; margin-bottom: 18px;">
-                    @for($s = 0; $s < 5; $s++)
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    @endfor
-                </div>
-                <blockquote class="sr-featured-quote">
-                    “SharesRise has transformed how I analyze Australian stocks. The valuation breakdowns and risk catalysts give me the conviction I need to hold winners and avoid high-multiple value traps. It paid for itself within the first month.”
-                </blockquote>
-                <div class="sr-reviewer-info">
-                    <div class="sr-reviewer-avatar-box a1">DK</div>
-                    <div>
-                        <strong style="color: #ffffff; font-size: 15px; display: block;">David K.</strong>
-                        <span style="color: var(--slate-400); font-size: 13px;">Self-Managed Super Fund (SMSF) Trustee • Sydney</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right: Video Review Card -->
-            <div class="sr-video-review-card">
-                <img src="{{ asset('images/city.jpg') }}" alt="Investor Case Study Video" class="sr-video-poster" loading="lazy">
-                <div class="sr-video-overlay">
-                    <div class="sr-play-btn" title="Play Video" aria-label="Play Video">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    </div>
-                    <div class="sr-video-meta">
-                        <h4>Member Case Study: Building a $1.2M ASX Growth Portfolio</h4>
-                        <span>Watch Video (3:45 mins)</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Trust Badges Bar -->
-        <div class="sr-trust-aggregators">
-            <div class="sr-aggregator-item">
-                <strong>Clutch</strong>
-                <span>4.9 / 5 Rating</span>
-            </div>
-            <div class="sr-aggregator-divider">•</div>
-            <div class="sr-aggregator-item">
-                <strong>Google Reviews</strong>
-                <span>4.8 / 5 Rating</span>
-            </div>
-            <div class="sr-aggregator-divider">•</div>
-            <div class="sr-aggregator-item">
-                <strong>Trustpilot</strong>
-                <span>Excellent ★★★★★</span>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- =========================================================================
      8. PRICING SECTION ("Choose the Plan That Boosts Your Portfolio")
      ========================================================================= -->
 <section class="sr-pricing-section">
     <div class="container">
         <div class="sr-section-heading-centered">
-            <span class="sr-hero-pill-badge" style="background: var(--green-50); border-color: var(--green-200); color: var(--green-700);">
-                TRANSPARENT PRICING
-            </span>
-            <h2 style="margin-top: 10px;">Choose the Plan That Boosts Your Portfolio</h2>
-            <p>Flexible plans for every stage of your investing journey.</p>
+            <h2>Membership options</h2>
+            <p>Compare access levels and choose the plan that fits how you use the research library.</p>
         </div>
 
         <div class="sr-pricing-grid">
@@ -556,10 +440,6 @@
             @endforelse
         </div>
 
-        <div class="sr-guarantee-row">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span>7-Day Money-Back Guarantee. Cancel Anytime with One Click.</span>
-        </div>
     </div>
 </section>
 
@@ -569,11 +449,8 @@
 <section class="sr-section sr-faq-section">
     <div class="container" style="max-width: 860px;">
         <div class="sr-section-heading-centered">
-            <span class="sr-hero-pill-badge" style="background: var(--green-50); border-color: var(--green-200); color: var(--green-700);">
-                FAQ
-            </span>
-            <h2 style="margin-top: 10px;">Frequently Asked Questions</h2>
-            <p>Everything you need to know about our research platform and memberships.</p>
+            <h2>Frequently asked questions</h2>
+            <p>Practical information about the research library, accounts, and memberships.</p>
         </div>
 
         <div class="sr-faq-accordion">
@@ -602,24 +479,23 @@
         <div class="sr-lead-gen-grid">
             <!-- Left Info -->
             <div class="sr-lead-left">
-                <span class="sr-gold-badge">★ FREE DOWNLOAD</span>
-                <h2>Get Your <span class="sr-text-yellow">Free ASX Report</span> Instantly</h2>
+                <h2>Start with a free research guide</h2>
                 <p class="sr-lead-desc">
-                    Join thousands of Australian investors receiving our highest-conviction equity ideas and valuation models delivered straight to your inbox.
+                    Use a practical checklist to assess a business, its cash flow, valuation assumptions, and key risks.
                 </p>
 
                 <div class="sr-lead-perks">
                     <div class="sr-lead-perk">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                        <span>Top 3 ASX stock picks with asymmetric upside</span>
+                        <span>A repeatable company research checklist</span>
                     </div>
                     <div class="sr-lead-perk">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                        <span>Comprehensive financial valuation models & risk analysis</span>
+                        <span>Questions for testing valuation assumptions and risk</span>
                     </div>
                     <div class="sr-lead-perk">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                        <span>100% free with no commitment or credit card</span>
+                        <span>Educational material with no payment required</span>
                     </div>
                 </div>
             </div>
@@ -627,7 +503,7 @@
             <!-- Right Form Card -->
             <div class="sr-lead-right-card">
                 <h3>Get your free report</h3>
-                <p>Enter your details below to download the latest PDF report.</p>
+                <p>Enter your details to open the complimentary guide.</p>
 
                 <form method="POST" action="{{ route('lead') }}" class="sr-lead-form">
                     @csrf
@@ -656,7 +532,7 @@
                     </div>
 
                     <button type="submit" class="btn-yellow-action">
-                        Get My Free Report →
+                        Open the free guide
                     </button>
                 </form>
             </div>

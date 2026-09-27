@@ -9,9 +9,9 @@
         <span class="sr-hero-pill-badge">
             <span class="dot"></span> AUSTRALIA EQUITY RESEARCH DESK
         </span>
-        <h1 class="sr-page-hero-title">ASX Company Research & Stock Picks</h1>
+        <h1 class="sr-page-hero-title">ASX company research</h1>
         <p class="sr-page-hero-desc">
-            Independent fundamental research, valuation models, risk assessments, and high-conviction ideas across Australian equities.
+            Find a company, compare the research collections, and open the report that answers your next question.
         </p>
 
         <!-- Search Bar with Quick Tags -->
@@ -29,15 +29,6 @@
                 <button type="submit" class="btn-green sr-search-btn">Search Research</button>
             </div>
 
-            <!-- Quick Suggestions -->
-            <div class="sr-quick-tags">
-                <span class="sr-quick-label">Popular Searches:</span>
-                @foreach(['BHP', 'CBA', 'CSL', 'Woodside', 'Xero', 'Dividends', 'Mining', 'Tech'] as $tag)
-                    <a href="{{ route('research', array_merge(request()->except('page'), ['q' => $tag])) }}" class="sr-quick-tag">
-                        {{ $tag }}
-                    </a>
-                @endforeach
-            </div>
         </form>
     </div>
 </section>
@@ -104,30 +95,13 @@
                         </select>
                     </div>
 
-                    <!-- Category -->
-                    <div class="sr-filter-group">
-                        <label class="sr-filter-label" for="category-select">Research Collection</label>
-                        <select id="category-select" name="category" class="sr-select" onchange="this.form.submit()">
-                            <option value="">All Collections</option>
-                            @foreach(config('stockedge.categories', []) as $c)
-                                <option value="{{ $c }}" @selected(request('category') === $c)>{{ $c }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
                     @if(request('cap')) <input type="hidden" name="cap" value="{{ request('cap') }}"> @endif
+                    @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
 
-                    <button type="submit" class="btn-green" style="width: 100%;">Apply Filters</button>
+                    <button type="submit" class="btn-green sr-filter-submit">Apply filters</button>
                 </form>
             </div>
 
-            <!-- Sidebar Promo Card -->
-            <div class="sr-aside-promo-card">
-                <div class="sr-promo-badge">7-DAY ACCESS</div>
-                <h4>Unlock Unrestricted Research Coverage</h4>
-                <p>Get full access to all stock recommendations, target valuations, and deep financial models.</p>
-                <a href="{{ route('register') }}" class="btn-green sr-promo-btn">Start Free Trial →</a>
-            </div>
         </aside>
 
         <!-- Main Results Grid -->

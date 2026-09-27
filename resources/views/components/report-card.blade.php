@@ -12,8 +12,9 @@
             {{ substr($report->stock->symbol, 0, 1) }}
         </span>
         <div class="company-info">
-            <b>{{ $report->stock->symbol }} <small class="stock-name-label">· {{ $report->stock->name }}</small></b>
-            <small>ASX · {{ $report->stock->sector }} · {{ $report->stock->cap }}</small>
+            <b>{{ $report->stock->symbol }}</b>
+            <small class="stock-name-label">{{ $report->stock->name }}</small>
+            <small>{{ $report->stock->sector }} &middot; {{ $report->stock->cap }}</small>
         </div>
         <span class="rating {{ strtolower($report->rating) }}">
             {{ $report->rating }}
@@ -24,7 +25,7 @@
     <p>{{ $report->summary }}</p>
 
     <div class="card-bottom">
-        <span>{{ $report->created_at->format('d M Y') }} · 5 min read</span>
+        <span>{{ $report->created_at->format('d M Y') }} &middot; 5 min read</span>
         <a href="{{ route('report', $report->slug) }}" class="card-read-link" aria-label="Read {{ $report->title }}">
             Read Report →
         </a>
