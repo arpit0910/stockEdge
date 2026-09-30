@@ -47,8 +47,8 @@
     <meta name="twitter:image" content="{{ $socialImage }}">
     <script type="application/ld+json">{!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
     <link rel="icon" href="{{ asset('images/sharesrise-logo-on-light.png') }}" type="image/png">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <script defer src="{{ asset('js/app.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}">
+    <script defer src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}"></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -80,21 +80,27 @@
         </div>
     </header>
 
-    @unless(request()->routeIs('home'))
-        <!-- Ticker Strip on inner pages -->
-        <div class="market-strip">
-            <div class="container market-inner">
-                <span class="market-label"><span class="dot"></span> ASX COVERAGE SNAPSHOT</span>
-                @foreach(config('stockedge.market_snapshot', []) as $stockSnapshot)
-                    <div class="ticker">
-                        <span>{{ $stockSnapshot->symbol }}</span>
-                        <b>${{ number_format($stockSnapshot->price, 2) }}</b>
-                        <em class="{{ $stockSnapshot->change >= 0 ? 'positive' : 'negative' }}">{{ $stockSnapshot->change >= 0 ? '+' : '' }}{{ number_format($stockSnapshot->change, 2) }}%</em>
-                    </div>
-                @endforeach
+    <!-- Market ticker shown across every public page -->
+    <div class="market-strip">
+        <div class="container market-inner">
+            <span class="market-label"><span class="dot"></span> ASX COVERAGE SNAPSHOT</span>
+            <div class="market-marquee" aria-label="ASX coverage prices">
+                <div class="market-track">
+                    @foreach([false, true] as $isDuplicate)
+                        <div class="market-group" @if($isDuplicate) data-market-clone aria-hidden="true" @endif>
+                            @foreach(config('stockedge.market_snapshot', []) as $stockSnapshot)
+                                <div class="ticker">
+                                    <span>{{ $stockSnapshot->symbol }}</span>
+                                    <b>${{ number_format($stockSnapshot->price, 2) }}</b>
+                                    <em class="{{ $stockSnapshot->change >= 0 ? 'positive' : 'negative' }}">{{ $stockSnapshot->change >= 0 ? '+' : '' }}{{ number_format($stockSnapshot->change, 2) }}%</em>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endforeach
+                </div>
             </div>
         </div>
-    @endunless
+    </div>
 
     <main id="main">
         @if(session('success'))

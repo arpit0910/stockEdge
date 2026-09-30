@@ -400,25 +400,29 @@
         <div class="sr-section-heading-centered">
             <h2>Membership options</h2>
             <p>Compare access levels and choose the plan that fits how you use the research library.</p>
+            <div class="billing-toggle home-billing-toggle">
+                <button class="selected" type="button" data-billing="monthly">Monthly</button>
+                <button type="button" data-billing="yearly">Annual billing</button>
+            </div>
         </div>
 
-        <div class="sr-pricing-grid">
+        <div class="pricing-grid home-pricing-grid">
             @forelse($plans as $plan)
-                <div class="sr-pricing-card {{ $plan->featured ? 'featured' : '' }}">
+                <article class="price-card {{ $plan->featured ? 'featured' : '' }}">
                     @if($plan->featured)
-                        <span class="sr-popular-badge">RECOMMENDED</span>
+                        <span class="popular">FEATURED MEMBERSHIP</span>
                     @endif
 
-                    <div class="sr-plan-name">{{ $plan->name }}</div>
-                    <div class="sr-plan-desc">{{ $plan->headline ?: $plan->description }}</div>
+                    <span class="eyebrow">{{ $plan->name }}</span>
+                    <h2>{{ $plan->headline }}</h2>
 
-                    <div class="sr-plan-price-row">
-                        <span class="sr-plan-price-currency">A$</span>
-                        <span class="sr-plan-price-amount">{{ intval($plan->monthly_price) }}</span>
-                        <span class="sr-plan-price-period">/month</span>
+                    <div class="plan-price">
+                        <span data-monthly="{{ $plan->monthly_price }}" data-yearly="{{ $plan->yearly_price }}" data-trial="{{ $plan->is_trial ? '1' : '0' }}">${{ number_format($plan->monthly_price, 2) }}</span>
+                        <small>{{ $plan->is_trial ? '/ 7-day trial' : '/ month' }}</small>
                     </div>
+                    <p>{{ $plan->description }}</p>
 
-                    <ul class="sr-plan-features-list">
+                    <ul class="feature-list">
                         @foreach(preg_split('/\r?\n/', $plan->features) as $feature)
                             @if(trim($feature))
                                 <li>
@@ -429,12 +433,21 @@
                         @endforeach
                     </ul>
 
-                    @if($plan->featured)
-                        <a href="{{ route('register') }}" class="btn-primary-green" style="width: 100%;">Start Free Trial</a>
+                    @if($plan->is_trial)
+                        <a class="button outline full" href="{{ route('register') }}">Start free trial <span aria-hidden="true">→</span></a>
                     @else
-                        <a href="{{ route('register') }}" class="btn-card-outline">Start Free Trial</a>
+                        @auth
+                            <form action="{{ route('subscribe') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="plan" value="{{ $plan->name }}">
+                                <input class="billing-input" type="hidden" name="billing" value="monthly">
+                                <button class="button full">Request {{ $plan->name }} <span aria-hidden="true">→</span></button>
+                            </form>
+                        @else
+                            <a class="button full" href="{{ route('register') }}">Create an account <span aria-hidden="true">→</span></a>
+                        @endauth
                     @endif
-                </div>
+                </article>
             @empty
                 <p class="centered" style="grid-column: 1 / -1;">No membership plans are currently published.</p>
             @endforelse
