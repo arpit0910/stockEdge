@@ -254,7 +254,7 @@
     <div class="container">
         <div class="sr-sector-banner-inner">
             <h2 class="sr-sector-banner-title">
-                Research by ASX sector
+                Research by ASX Sector
             </h2>
             <p class="sr-sector-banner-sub">
                 Browse company research across mining, banking, technology, healthcare, energy, and other major sectors.
@@ -298,7 +298,7 @@
 <section class="sr-section sr-categories-section">
     <div class="container">
         <div class="sr-section-heading-centered">
-            <h2>Research collections</h2>
+            <h2>Research Collections</h2>
             <p>Browse reports by research style and investment objective.</p>
             <div class="sr-slider-nav-centered" style="margin-top: 18px; display: inline-flex; gap: 10px;">
                 <button class="sr-nav-arrow prev" aria-label="Previous category" onclick="document.querySelector('.sr-category-cards-grid').scrollBy({left: -320, behavior: 'smooth'})">←</button>
@@ -360,7 +360,7 @@
 <section class="sr-section sr-news-section">
     <div class="container">
         <div class="sr-section-heading-centered">
-            <h2>Market insights</h2>
+            <h2>Market Insights</h2>
             <p>Read the latest perspectives from the research desk.</p>
             <div class="sr-all-insights-link">
                 <a href="{{ route('editorial') }}" class="sr-link-arrow">All Insights &amp; Market Perspectives →</a>
@@ -492,7 +492,7 @@
         <div class="sr-lead-gen-grid">
             <!-- Left Info -->
             <div class="sr-lead-left">
-                <h2>Start with a free research guide</h2>
+                <h2>Start with a free report</h2>
                 <p class="sr-lead-desc">
                     Use a practical checklist to assess a business, its cash flow, valuation assumptions, and key risks.
                 </p>
@@ -529,7 +529,7 @@
 
                     <div class="sr-form-group">
                         <label for="lead_phone" class="sr-only">Phone Number</label>
-                        <input id="lead_phone" name="phone" type="tel" placeholder="+61 400 000 000 (optional)">
+                        <input id="lead_phone" name="phone" type="tel" placeholder="+61 400 000 000">
                     </div>
 
                     <div class="sr-form-group">
@@ -540,12 +540,12 @@
                     <div class="sr-form-consent">
                         <label>
                             <input type="checkbox" name="consent" value="1" required checked>
-                            <span>I agree to receive research updates. View our <a href="{{ route('page', 'privacy') }}">Privacy Policy</a>.</span>
+                            <span>By providing your details, you agree to {{ config('stockedge.site.brand_name', 'SharesRise') }}'s <a href="{{ route('page', 'terms') }}">Terms &amp; Conditions</a>, <a href="{{ route('page', 'privacy') }}">Privacy Policy</a> &amp; <a href="{{ route('page', 'financial-services-guide') }}">Financial Services Guide</a> and to receive marketing offers.</span>
                         </label>
                     </div>
 
                     <button type="submit" class="btn-yellow-action">
-                        Open the free guide
+                        Send my free report
                     </button>
                 </form>
             </div>

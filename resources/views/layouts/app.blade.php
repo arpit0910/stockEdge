@@ -76,6 +76,9 @@
                 <a href="{{ route('editorial') }}" @class(['active' => request()->routeIs('editorial', 'article')])>Editorial</a>
                 <a href="{{ route('about') }}" @class(['active' => request()->routeIs('about')])>About Us</a>
                 <a href="{{ route('page', 'contact') }}" @class(['active' => request()->is('contact')])>Contact</a>
+                <a class="nav-login-link" href="{{ auth()->check() ? route('dashboard') : route('login') }}">
+                    {{ auth()->check() ? 'Dashboard' : 'Log in' }}
+                </a>
             </nav>
         </div>
     </header>
@@ -133,71 +136,90 @@
                     <a class="brand" href="{{ route('home') }}" aria-label="{{ $brandName }} home">
                         <img class="brand-logo" src="{{ asset('images/sharesrise-logo-on-dark.png') }}" alt="" width="610" height="160">
                     </a>
+                    <h2 class="sr-footer-heading">About {{ $brandName }}</h2>
                     <p class="sr-footer-brand-bio">
                         {{ config('stockedge.site.footer_description', 'Independent research. Expert insights. Smarter investments.') }}
                     </p>
-                    @if(config('stockedge.site.social_facebook') || config('stockedge.site.social_x') || config('stockedge.site.social_linkedin') || config('stockedge.site.social_youtube'))
-                    <div class="sr-social-links" aria-label="Social media">
-                        @if(config('stockedge.site.social_facebook'))
-                        <a href="{{ config('stockedge.site.social_facebook') }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="Facebook">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                        </a>
-                        @endif
-                        @if(config('stockedge.site.social_x'))
-                        <a href="{{ config('stockedge.site.social_x') }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="X">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                        </a>
-                        @endif
-                        @if(config('stockedge.site.social_linkedin'))
-                        <a href="{{ config('stockedge.site.social_linkedin') }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="LinkedIn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
-                        </a>
-                        @endif
-                        @if(config('stockedge.site.social_youtube'))
-                        <a href="{{ config('stockedge.site.social_youtube') }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="YouTube">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                        </a>
-                        @endif
-                    </div>
-                    @endif
                 </div>
 
                 <!-- Quick Links -->
                 <div class="sr-footer-col">
-                    <h4>Quick Links</h4>
-                    <a href="{{ route('home') }}">Home</a>
-                    <a href="{{ route('research', ['category' => 'Stock of the Week']) }}">Stock Picks</a>
-                    <a href="{{ route('research') }}">Research</a>
-                    <a href="{{ route('page', 'sectors') }}">Markets</a>
-                    <a href="{{ route('editorial') }}">Learn</a>
-                    <a href="{{ route('about') }}">About Us</a>
+                    <h2 class="sr-footer-heading">Explore</h2>
+                    <a href="{{ route('research') }}">Latest Research</a>
+                    <a href="{{ route('research', ['category' => 'Stock of the Week']) }}">ASX Stock Ideas</a>
+                    <a href="{{ route('editorial', ['topic' => 'ETF News']) }}">ETF Research</a>
+                    <a href="{{ route('research', ['category' => 'Penny Stocks']) }}">Penny Stocks</a>
+                    <a href="{{ route('research', ['category' => 'Dividend Investor']) }}">Dividend Stocks</a>
+                    <a href="{{ route('editorial') }}">Market Insights</a>
+                    <a href="{{ route('page', 'free-report') }}">Free Reports</a>
                 </div>
 
                 <!-- Resources -->
                 <div class="sr-footer-col">
-                    <h4>Resources</h4>
+                    <h2 class="sr-footer-heading">Important Links</h2>
                     @forelse(config('stockedge.footer_pages', []) as $footerPage)
                         <a href="{{ route('page', $footerPage->slug) }}">{{ $footerPage->title }}</a>
                     @empty
+                        <a href="{{ route('about') }}">About Us</a>
                         <a href="{{ route('page', 'contact') }}">Contact Us</a>
+                        <a href="{{ route('page', 'privacy') }}">Privacy Policy</a>
+                        <a href="{{ route('page', 'terms') }}">Terms &amp; Conditions</a>
+                        <a href="{{ route('page', 'financial-services-guide') }}">Financial Services Guide</a>
+                        <a href="{{ route('page', 'disclaimer') }}">Disclaimer</a>
                     @endforelse
                 </div>
 
-                <!-- Newsletter -->
-                <div class="sr-footer-col">
-                    <h4>{{ config('stockedge.site.newsletter_title', 'Newsletter') }}</h4>
-                    <p class="sr-newsletter-desc">
-                        {{ config('stockedge.site.newsletter_description', 'Research updates and market perspectives, in your inbox.') }}
-                    </p>
-                    <form method="post" action="{{ route('lead') }}" class="sr-newsletter-form">
-                        @csrf
-                        <input type="hidden" name="type" value="newsletter">
-                        <input type="hidden" name="consent" value="1">
-                        <div class="sr-newsletter-form-row">
-                            <input type="email" name="email" class="sr-newsletter-input" placeholder="Enter your email" required>
-                            <button type="submit" class="sr-newsletter-btn">Subscribe</button>
+                <div class="sr-footer-col sr-footer-contact">
+                    <h2 class="sr-footer-heading">Get in Touch</h2>
+                    @if(config('stockedge.site.contact_address'))
+                        <div class="sr-footer-contact-item">
+                            <span class="sr-footer-contact-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                            </span>
+                            <span>{{ config('stockedge.site.contact_address') }}</span>
                         </div>
-                    </form>
+                    @endif
+                    @if(config('stockedge.site.contact_email'))
+                        <a class="sr-footer-contact-item" href="mailto:{{ config('stockedge.site.contact_email') }}">
+                            <span class="sr-footer-contact-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                            </span>
+                            <span>{{ config('stockedge.site.contact_email') }}</span>
+                        </a>
+                    @endif
+                    @if(config('stockedge.site.contact_phone'))
+                        <a class="sr-footer-contact-item" href="tel:{{ preg_replace('/[^+\d]/', '', config('stockedge.site.contact_phone')) }}">
+                            <span class="sr-footer-contact-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.8a2 2 0 0 1-.4 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+                            </span>
+                            <span>{{ config('stockedge.site.contact_phone') }}</span>
+                        </a>
+                    @endif
+
+                    @if(config('stockedge.site.social_facebook') || config('stockedge.site.social_x') || config('stockedge.site.social_linkedin') || config('stockedge.site.social_youtube'))
+                        <div class="sr-social-links" aria-label="Social media">
+                            @if(config('stockedge.site.social_facebook'))
+                                <a href="{{ config('stockedge.site.social_facebook') }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="Facebook">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                                </a>
+                            @endif
+                            @if(config('stockedge.site.social_x'))
+                                <a href="{{ config('stockedge.site.social_x') }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="X">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                </a>
+                            @endif
+                            @if(config('stockedge.site.social_linkedin'))
+                                <a href="{{ config('stockedge.site.social_linkedin') }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="LinkedIn">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+                                </a>
+                            @endif
+                            @if(config('stockedge.site.social_youtube'))
+                                <a href="{{ config('stockedge.site.social_youtube') }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="YouTube">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                </a>
+                            @endif
+                        </div>
+                    @endif
                 </div>
 
                 <nav class="sr-footer-mobile-links" aria-label="Footer navigation">
@@ -211,7 +233,12 @@
 
             <!-- Footer Bottom -->
             <div class="sr-footer-bottom">
-                <span>© {{ date('Y') }} {{ $brandName }}. All rights reserved.</span>
+                <span>&copy; {{ date('Y') }} {{ $brandName }}. All rights reserved.</span>
+                <nav class="sr-footer-legal" aria-label="Legal navigation">
+                    <a href="{{ route('page', 'privacy') }}">Privacy Policy</a>
+                    <a href="{{ route('page', 'terms') }}">Terms &amp; Conditions</a>
+                    <a href="{{ route('page', 'disclaimer') }}">Disclaimer</a>
+                </nav>
             </div>
         </div>
     </footer>
