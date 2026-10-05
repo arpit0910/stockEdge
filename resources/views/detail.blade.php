@@ -30,15 +30,19 @@
 
         @if($canRead)
             <div class="prose internal-article-body">
-                @foreach(explode("\n\n", $item->body) as $paragraph)
-                    <section>
-                        @php($lines = explode("\n", $paragraph, 2))
-                        <h2>{{ $lines[0] }}</h2>
-                        @if(isset($lines[1]))
-                            <p>{{ $lines[1] }}</p>
-                        @endif
-                    </section>
-                @endforeach
+                @if(str_contains($item->body, '##') || str_contains($item->body, '| ') || str_contains($item->body, "- ") || str_contains($item->body, '<') || str_contains($item->body, '**'))
+                    {!! \Illuminate\Support\Str::markdown($item->body) !!}
+                @else
+                    @foreach(explode("\n\n", $item->body) as $paragraph)
+                        <section>
+                            @php($lines = explode("\n", $paragraph, 2))
+                            <h2>{{ $lines[0] }}</h2>
+                            @if(isset($lines[1]))
+                                <p>{{ $lines[1] }}</p>
+                            @endif
+                        </section>
+                    @endforeach
+                @endif
             </div>
 
             <div class="inline-actions internal-detail-actions no-print">

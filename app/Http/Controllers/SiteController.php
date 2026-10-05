@@ -105,7 +105,7 @@ class SiteController extends Controller
     {
         $pageContent = DB::table('site_pages')->where('slug', $page)->where('published', true)->first();
         abort_unless($pageContent, 404);
-        $template = in_array($page, ['contact', 'free-report', 'performance', 'retirement', 'pricing', 'sectors']) ? 'pages.'.$page : 'pages.cms';
+        $template = in_array($page, ['about', 'contact', 'free-report', 'performance', 'retirement', 'pricing', 'sectors']) ? 'pages.'.$page : 'pages.cms';
 
         return view($template, ['stocks' => Stock::all(), 'pageContent' => $pageContent]);
     }
@@ -136,11 +136,54 @@ class SiteController extends Controller
 
     public function lead(Request $request): RedirectResponse
     {
-        $data = $request->validate(['name' => 'nullable|string|max:120', 'email' => 'required|email|max:200', 'phone' => 'nullable|string|max:30', 'type' => ['required', Rule::in(['newsletter', 'report', 'contact'])], 'message' => 'nullable|string|max:5000', 'consent' => 'accepted']);
+        $data = $request->validate([
+            'name' => 'nullable|string|max:120',
+            'email' => 'required|email|max:200',
+            'phone' => 'nullable|string|max:30',
+            'country_code' => 'nullable|string|max:10',
+            'investor_type' => 'nullable|string|max:60',
+            'market_focus' => 'nullable|string|max:60',
+            'portfolio_size' => 'nullable|string|max:60',
+            'type' => ['required', Rule::in(['newsletter', 'report', 'contact'])],
+            'message' => 'nullable|string|max:5000',
+            'consent' => 'accepted',
+        ]);
         if ($data['type'] === 'contact') {
             $request->validate(['name' => 'required', 'message' => 'required']);
         }
-        DB::table('leads')->insert($data + ['created_at' => now(), 'updated_at' => now()]);
+
+        $phone = $data['phone'] ?? null;
+        if (! empty($phone) && ! empty($data['country_code'])) {
+            $phone = trim($data['country_code'].' '.$phone);
+        }
+
+        $metaLines = [];
+        if (! empty($data['investor_type'])) {
+            $metaLines[] = "Investor Type: {$data['investor_type']}";
+        }
+        if (! empty($data['market_focus'])) {
+            $metaLines[] = "Market Focus: {$data['market_focus']}";
+        }
+        if (! empty($data['portfolio_size'])) {
+            $metaLines[] = "Portfolio Size: {$data['portfolio_size']}";
+        }
+
+        $finalMessage = $data['message'] ?? '';
+        if (! empty($metaLines)) {
+            $metaHeader = '['.implode(' | ', $metaLines).']';
+            $finalMessage = $finalMessage !== '' ? $metaHeader."\n\n".$finalMessage : $metaHeader;
+        }
+
+        DB::table('leads')->insert([
+            'name' => $data['name'] ?? null,
+            'email' => $data['email'],
+            'phone' => $phone,
+            'type' => $data['type'],
+            'message' => $finalMessage,
+            'consent' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
         if ($data['type'] === 'report') {
             return redirect()->route('sample')->with('success', 'Your sample report is ready.');
         }

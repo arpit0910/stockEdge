@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(AdminContentSeeder::class);
+        $this->call(AdminUserSeeder::class);
+        $this->call(PublishedArticlesSeeder::class);
         $rows = [
             ['BHP', 'BHP Group', 'Mining', 42.85, 1.24, 5.2, 'Blue Chip'],
             ['CBA', 'Commonwealth Bank', 'Banks', 132.64, 0.86, 3.4, 'Blue Chip'],
