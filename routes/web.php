@@ -16,6 +16,8 @@ Route::get('/insights', [SiteController::class, 'editorial'])->name('editorial')
 Route::get('/insights/{article:slug}', [SiteController::class, 'article'])->name('article');
 Route::post('/enquiries', [SiteController::class, 'lead'])->middleware('throttle:10,1')->name('lead');
 Route::get('/sample-report', [SiteController::class, 'sample'])->name('sample');
+Route::get('/about-us', [SiteController::class, 'page'])->defaults('page', 'about')->name('about');
+Route::redirect('/about', '/about-us', 301);
 Route::get('/media/{filename}', [AdminWorkspaceController::class, 'mediaFile'])->name('media.file');
 Route::middleware('guest')->group(function () {
     Route::view('/login', 'auth', ['mode' => 'login'])->name('login');

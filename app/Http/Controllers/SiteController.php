@@ -119,7 +119,7 @@ class SiteController extends Controller
         ]);
 
         $urls = $urls
-            ->concat(DB::table('site_pages')->where('published', true)->get()->map(fn (object $page): array => ['location' => route('page', $page->slug), 'modified' => $page->updated_at, 'frequency' => 'monthly', 'priority' => '0.7']))
+            ->concat(DB::table('site_pages')->where('published', true)->get()->map(fn (object $page): array => ['location' => $page->slug === 'about' ? route('about') : route('page', $page->slug), 'modified' => $page->updated_at, 'frequency' => 'monthly', 'priority' => '0.7']))
             ->concat(Article::where('published', true)->get()->map(fn (Article $article): array => ['location' => route('article', $article->slug), 'modified' => $article->updated_at, 'frequency' => 'monthly', 'priority' => '0.8']))
             ->concat(Report::where('published', true)->get()->map(fn (Report $report): array => ['location' => route('report', $report->slug), 'modified' => $report->updated_at, 'frequency' => 'monthly', 'priority' => '0.8']))
             ->concat(Stock::all()->map(fn (Stock $stock): array => ['location' => route('stock', $stock->symbol), 'modified' => $stock->updated_at, 'frequency' => 'weekly', 'priority' => '0.7']));

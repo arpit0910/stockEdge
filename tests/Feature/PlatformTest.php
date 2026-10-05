@@ -20,9 +20,10 @@ class PlatformTest extends TestCase
     public function test_all_public_pages_and_seeded_links_render(): void
     {
         $this->seed();
-        foreach (['/', '/research', '/insights', '/about', '/contact', '/privacy', '/terms', '/disclaimer', '/financial-services-guide', '/free-report', '/performance', '/retirement', '/pricing', '/sectors', '/sample-report', '/login', '/register', '/forgot-password'] as $path) {
+        foreach (['/', '/research', '/insights', '/about-us', '/contact', '/privacy', '/terms', '/disclaimer', '/financial-services-guide', '/free-report', '/performance', '/retirement', '/pricing', '/sectors', '/sample-report', '/login', '/register', '/forgot-password'] as $path) {
             $this->get($path)->assertOk();
         }
+        $this->get('/about')->assertRedirect('/about-us');
         foreach (Report::all() as $report) {
             $this->get('/reports/'.$report->slug)->assertOk();
         }

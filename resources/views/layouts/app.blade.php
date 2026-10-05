@@ -74,7 +74,7 @@
                 <a href="{{ route('page', 'pricing') }}" @class(['active' => request()->is('pricing')])>Subscribe</a>
                 <a href="{{ route('research') }}" @class(['active' => request()->routeIs('research', 'report', 'stock')])>Research &amp; Report</a>
                 <a href="{{ route('editorial') }}" @class(['active' => request()->routeIs('editorial', 'article')])>Editorial</a>
-                <a href="{{ route('page', 'about') }}" @class(['active' => request()->is('about')])>About US</a>
+                <a href="{{ route('about') }}" @class(['active' => request()->routeIs('about')])>About Us</a>
                 <a href="{{ route('page', 'contact') }}" @class(['active' => request()->is('contact')])>Contact</a>
             </nav>
         </div>
@@ -170,7 +170,7 @@
                     <a href="{{ route('research') }}">Research</a>
                     <a href="{{ route('page', 'sectors') }}">Markets</a>
                     <a href="{{ route('editorial') }}">Learn</a>
-                    <a href="{{ route('page', 'about') }}">About Us</a>
+                    <a href="{{ route('about') }}">About Us</a>
                 </div>
 
                 <!-- Resources -->
@@ -204,7 +204,7 @@
                     <span class="sr-footer-mobile-title">Explore SharesRise</span>
                     <a href="{{ route('research') }}">Research</a>
                     <a href="{{ route('editorial') }}">Insights</a>
-                    <a href="{{ route('page', 'about') }}">About Us</a>
+                    <a href="{{ route('about') }}">About Us</a>
                     <a href="{{ route('page', 'contact') }}">Contact</a>
                 </nav>
             </div>
