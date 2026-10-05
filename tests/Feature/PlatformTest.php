@@ -23,6 +23,13 @@ class PlatformTest extends TestCase
         foreach (['/', '/research', '/insights', '/about-us', '/contact', '/privacy', '/terms', '/disclaimer', '/financial-services-guide', '/free-report', '/performance', '/retirement', '/pricing', '/sectors', '/sample-report', '/login', '/register', '/forgot-password'] as $path) {
             $this->get($path)->assertOk();
         }
+        $this->get('/about-us')
+            ->assertSee('sr-about-split-layout', false)
+            ->assertSee('sr-coverage-cards-grid', false);
+        $this->get('/contact')
+            ->assertSee('sr-contact-hero-points', false)
+            ->assertSee('sr-enquiry-heading', false)
+            ->assertDontSee('I\'m not a robot');
         $this->get('/about')->assertRedirect('/about-us');
         foreach (Report::all() as $report) {
             $this->get('/reports/'.$report->slug)->assertOk();

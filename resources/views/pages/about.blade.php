@@ -266,23 +266,23 @@
 <!-- =========================================================================
      5. BOTTOM CALL TO ACTION
      ========================================================================= -->
-<section class="container sr-lead-gen-section" style="margin-bottom: 70px;">
-    <div class="sr-lead-gen-banner" style="background: radial-gradient(circle at 90% 10%, rgba(16, 185, 129, 0.25) 0%, transparent 50%), var(--navy-900);">
-        <div style="text-align: center; max-width: 720px; margin: 0 auto; color: #ffffff;">
-            <span class="sr-hero-pill-badge" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3);">
+<section class="container sr-lead-gen-section sr-about-cta-section">
+    <div class="sr-lead-gen-banner sr-about-cta-banner">
+        <div class="sr-about-cta-content">
+            <span class="sr-hero-pill-badge sr-about-cta-badge">
                 START YOUR RESEARCH JOURNEY
             </span>
-            <h2 style="color: #ffffff; font-size: clamp(28px, 3.5vw, 40px); margin-top: 10px; margin-bottom: 14px;">
+            <h2>
                 Ready to make smarter, data-backed ASX investments?
             </h2>
-            <p style="color: var(--slate-300); font-size: 16px; margin-bottom: 28px; line-height: 1.6;">
+            <p>
                 Explore our full research library or begin your 7-day free trial with unrestricted access to our valuation models and stock reports.
             </p>
-            <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
-                <a href="{{ route('register') }}" class="btn-green" style="padding: 14px 28px; font-size: 15px;">
+            <div class="sr-about-cta-actions">
+                <a href="{{ route('register') }}" class="btn-green">
                     Start 7-Day Free Trial →
                 </a>
-                <a href="{{ route('research') }}" class="btn-outline-white" style="padding: 14px 28px; font-size: 15px;">
+                <a href="{{ route('research') }}" class="btn-outline-white">
                     Browse Research Library ↗
                 </a>
             </div>

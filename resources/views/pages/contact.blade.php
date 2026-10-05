@@ -4,83 +4,32 @@
 
 @section('content')
 <div class="sr-contact-page-wrap">
-    <!-- =========================================================================
-         1. HERO SECTION WITH FLOATING TICKERS & SOCIAL PROOF
-         ========================================================================= -->
-    <section class="sr-contact-hero">
+    <section class="sr-page-hero sr-contact-hero">
         <div class="container sr-contact-hero-container">
-            <!-- Background Stock Candlestick Chart Glow -->
-            <div class="sr-contact-chart-glow" aria-hidden="true">
-                <svg viewBox="0 0 1200 240" fill="none" preserveAspectRatio="none">
-                    <path d="M0,180 Q150,140 300,160 T600,100 T900,130 T1200,60 L1200,240 L0,240 Z" fill="url(#hero-chart-grad)" opacity="0.45"/>
-                    <path d="M0,180 Q150,140 300,160 T600,100 T900,130 T1200,60" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.65"/>
-                    <defs>
-                        <linearGradient id="hero-chart-grad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
-                            <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
-            </div>
-
-            <!-- Floating Ticker: Left (ASX 200) -->
-            <div class="sr-contact-ticker-badge left" aria-hidden="true">
-                <span class="sr-ticker-code">ASX 200</span>
-                <span class="sr-ticker-delta up">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-8 8h16z"/></svg>
-                    <strong>7,748.20</strong>
-                    <small>+1.32%</small>
-                </span>
-            </div>
-
-            <!-- Floating Tickers: Right (BHP & CSL) -->
-            <div class="sr-contact-ticker-badge right-top" aria-hidden="true">
-                <span class="sr-ticker-code">BHP</span>
-                <span class="sr-ticker-delta up">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-8 8h16z"/></svg>
-                    <strong>$42.15</strong>
-                    <small>+2.08%</small>
-                </span>
-            </div>
-            <div class="sr-contact-ticker-badge right-btm" aria-hidden="true">
-                <span class="sr-ticker-code">CSL</span>
-                <span class="sr-ticker-delta up">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-8 8h16z"/></svg>
-                    <strong>$279.30</strong>
-                    <small>+1.21%</small>
-                </span>
-            </div>
-
-            <!-- Main Hero Content -->
             <div class="sr-contact-hero-content">
-                <div class="sr-contact-pill-tag">
+                <div class="sr-hero-pill-badge">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     <span>CONTACT SHARESRISE</span>
                 </div>
 
-                <h1 class="sr-contact-title">
-                    Let's Talk About Smarter Investing
-                    <span class="sr-title-arrow" aria-hidden="true">
-                        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                    </span>
-                </h1>
+                <h1 class="sr-page-hero-title sr-contact-title">Let's Talk About Smarter Investing</h1>
 
-                <p class="sr-contact-subtitle">
+                <p class="sr-page-hero-desc sr-contact-subtitle">
                     Connect with our research team for plan guidance, stock research access and subscription support.
                 </p>
 
-                <!-- Social Proof Rating & Avatars -->
-                <div class="sr-contact-social-proof">
-                    <div class="sr-avatar-stack" aria-hidden="true">
-                        <img class="sr-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80" alt="Investor" />
-                        <img class="sr-avatar-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" alt="Investor" />
-                        <img class="sr-avatar-img" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=80" alt="Investor" />
-                        <span class="sr-avatar-more">+2k</span>
+                <div class="sr-contact-hero-points" aria-label="Support highlights">
+                    <div>
+                        <strong>Within 24 hours</strong>
+                        <span>Typical response time</span>
                     </div>
-
-                    <div class="sr-proof-stars">
-                        <span class="sr-stars" aria-label="5 stars out of 5">★★★★★</span>
-                        <span class="sr-proof-text">Trusted by <strong>2,000+</strong> investors</span>
+                    <div>
+                        <strong>ASX focused</strong>
+                        <span>Research and plan support</span>
+                    </div>
+                    <div>
+                        <strong>Clear guidance</strong>
+                        <span>No unnecessary jargon</span>
                     </div>
                 </div>
             </div>
@@ -192,6 +141,12 @@
             <!-- ================= RIGHT COLUMN: INTERACTIVE FORM CARD ================= -->
             <div class="sr-contact-right-col">
                 <div class="sr-enquiry-card">
+                    <div class="sr-enquiry-heading">
+                        <span class="eyebrow">SEND AN ENQUIRY</span>
+                        <h2>How can we help?</h2>
+                        <p>Tell us what you need and our team will direct your enquiry to the right person.</p>
+                    </div>
+
                     @if (session('success'))
                         <div class="sr-contact-success-alert" role="alert">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -408,27 +363,7 @@
                             @error('consent')<span class="sr-field-err">{{ $message }}</span>@enderror
                         </div>
 
-                        <!-- Row 7: Security ReCAPTCHA Box -->
-                        <div class="sr-recaptcha-widget" aria-label="Security check">
-                            <div class="sr-recaptcha-left">
-                                <label class="sr-rc-check">
-                                    <input type="checkbox" checked required disabled />
-                                    <span class="sr-rc-checkmark"></span>
-                                    <span class="sr-rc-text">I'm not a robot</span>
-                                </label>
-                            </div>
-                            <div class="sr-recaptcha-right">
-                                <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
-                                    <path d="M24 4C12.95 4 4 12.95 4 24C4 35.05 12.95 44 24 44C35.05 44 44 35.05 44 24C44 12.95 35.05 4 24 4ZM24 40C15.16 40 8 32.84 8 24C8 15.16 15.16 8 24 8C32.84 8 40 15.16 40 24C40 32.84 32.84 40 24 40Z" fill="#1A73E8"/>
-                                    <path d="M24 14V19L19 14H24Z" fill="#34A853"/>
-                                    <path d="M34 24H29L34 29V24Z" fill="#4285F4"/>
-                                    <path d="M24 34V29L29 34H24Z" fill="#EA4335"/>
-                                </svg>
-                                <span class="sr-rc-brand">reCAPTCHA</span>
-                            </div>
-                        </div>
-
-                        <!-- Row 8: Submit Button -->
+                        <!-- Row 7: Submit Button -->
                         <button type="submit" class="sr-contact-submit-btn">
                             <span>Send Enquiry</span>
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
