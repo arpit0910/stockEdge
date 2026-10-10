@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(AdminContentSeeder::class);
         $this->call(AdminUserSeeder::class);
+        $this->call(SalesUserSeeder::class);
         $this->call(PublishedArticlesSeeder::class);
         $rows = [
             ['BHP', 'BHP Group', 'Mining', 42.85, 1.24, 5.2, 'Blue Chip'],

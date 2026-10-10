@@ -33,6 +33,14 @@ if(marketMarquee){
         marketResizeTimer=window.setTimeout(buildMarketLoop,150);
     });
 }
+
+const formFieldPlaceholders={name:'e.g. Priya Sharma',email:'name@example.com',phone:'e.g. +61 400 000 000',password:'Enter your password',password_confirmation:'Re-enter your password',quantity:'e.g. 100',buy_price:'e.g. 24.50',alert_price:'e.g. 30.00',duration_seconds:'e.g. 120',company:'e.g. Acme Investments',details:'Add relevant details or notes…',message:'Tell us how we can help…',alt_text:'Describe what the image shows…'};
+document.querySelectorAll('form input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="submit"]),form textarea').forEach(field=>{
+    if(field.hasAttribute('placeholder'))return;
+    const label=field.id?document.querySelector(`label[for="${field.id}"]`):field.closest('label');
+    const labelText=label?.textContent.replace(/\*/g,'').replace(/\s+/g,' ').trim();
+    field.placeholder=formFieldPlaceholders[field.name]||formFieldPlaceholders[field.type]||(labelText?`${labelText}…`:'Enter details…');
+});
 const retirementForm=document.getElementById('retirement-form');
 if(retirementForm){const calculate=()=>{const current=Number(document.getElementById('current-age').value);const retire=Number(document.getElementById('retirement-age').value);const ageInput=document.getElementById('retirement-age');ageInput.setCustomValidity(retire<=current?'Retirement age must be greater than current age.':'');if(!retirementForm.reportValidity()){return;}const initial=Number(document.getElementById('savings').value);const monthly=Number(document.getElementById('contribution').value);const rate=Math.pow(1+Number(document.getElementById('return-rate').value)/100,1/12)-1;const months=(retire-current)*12;const factor=Math.pow(1+rate,months);const total=initial*factor+(Math.abs(rate)<1e-10?monthly*months:monthly*(factor-1)/rate);const paid=initial+monthly*months;document.getElementById('projection-value').textContent=new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD',maximumFractionDigits:0}).format(total);document.getElementById('projection-summary').textContent='Illustrative savings at age '+retire+' after '+(retire-current)+' years. Total starting savings and contributions: '+new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD',maximumFractionDigits:0}).format(paid)+'.';document.getElementById('contribution-bar').style.width=(total>0?Math.min(100,paid/total*100):0)+'%';};retirementForm.addEventListener('submit',event=>{event.preventDefault();calculate();});retirementForm.addEventListener('input',()=>document.getElementById('retirement-age').setCustomValidity(''));calculate();}
 

@@ -38,7 +38,25 @@ class AccountController extends Controller
         }
         $request->session()->regenerate();
 
-        return redirect()->intended($request->user()->is_admin ? route('admin') : route('dashboard'));
+        $destination = $request->user()->is_admin ? route('admin') : ($request->user()->is_sales ? route('sales.dashboard') : route('dashboard'));
+
+        return redirect()->intended($destination);
+    }
+
+    public function salesLogin(Request $request): RedirectResponse
+    {
+        $data = $request->validate(['email' => 'required|email', 'password' => 'required|string']);
+        if (! Auth::attempt($data + ['is_active' => true], $request->boolean('remember'))) {
+            return back()->withErrors(['email' => 'These credentials do not match our records.'])->onlyInput('email');
+        }
+        if (! $request->user()->is_sales && ! $request->user()->is_admin) {
+            Auth::logout();
+
+            return back()->withErrors(['email' => 'This account does not have sales workspace access.'])->onlyInput('email');
+        }
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('sales.dashboard'));
     }
 
     public function logout(Request $request): RedirectResponse

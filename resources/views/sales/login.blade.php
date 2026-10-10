@@ -1,0 +1,5 @@
+@extends('layouts.app')
+@section('title','Sales login')
+@section('content')
+<section class="auth-layout container"><div class="auth-story"><span class="eyebrow">SHARESRISE SALES CRM</span><h1>Every lead.<br>Every response.<br><em>One journey.</em></h1><p>Manage conversations, customers and follow-ups from one focused workspace.</p><div class="auth-symbol">↗</div></div><div class="form-panel"><span class="eyebrow">SALES ACCESS</span><h2>Welcome back.</h2><p>Sign in with your sales administrator account.</p><form method="post" action="{{ route('sales.login.attempt') }}">@csrf<label>Email address<input name="email" type="email" value="{{ old('email') }}" autocomplete="email" required autofocus></label><label>Password<input type="password" name="password" autocomplete="current-password" required></label><div class="form-between"><label class="consent"><input type="checkbox" name="remember"> Remember me</label><a href="{{ route('password.request') }}">Forgot password?</a></div><button class="button full">Open sales CRM ↗</button></form><p class="auth-switch">Investor account? <a href="{{ route('login') }}">Use member login</a></p></div></section>
+@endsection

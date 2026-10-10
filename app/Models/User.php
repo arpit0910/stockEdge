@@ -17,7 +17,7 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    protected $attributes = ['is_admin' => false, 'is_active' => true];
+    protected $attributes = ['is_admin' => false, 'is_sales' => false, 'is_active' => true];
 
     /**
      * Get the attributes that should be cast.
@@ -31,6 +31,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'trial_ends_at' => 'datetime',
             'is_admin' => 'boolean',
+            'is_sales' => 'boolean',
             'is_active' => 'boolean',
         ];
     }

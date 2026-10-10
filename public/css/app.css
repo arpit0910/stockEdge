@@ -5297,3 +5297,34 @@ td small { display: block; color: var(--slate-500); }
     font-size: 25px;
   }
 }
+
+/* Shared mobile hardening for public pages and the member dashboard. */
+img, video, iframe { max-width: 100%; }
+.container, main, section, form, .panel, .form-panel, .account-main { min-width: 0; }
+input, select, textarea, button { max-width: 100%; }
+.table-scroll, .sr-table-responsive { overscroll-behavior-inline: contain; scrollbar-gutter: stable; }
+
+@media (max-width: 960px) {
+  body:has(.nav-row nav.open) { overflow: hidden; }
+  .nav-row nav { max-height: calc(100dvh - 64px); overscroll-behavior: contain; }
+}
+
+@media (max-width: 640px) {
+  .container { max-width: 100%; }
+  .auth-layout > *, .account-layout > *, .detail-layout > *, .about-layout > *, .contact-layout > *, .calculator > *, .market-layout > *, .tools-section > * { min-width: 0; }
+  .form-panel, .panel, .workspace-task-panel, .sr-enquiry-card { width: 100%; }
+  .workspace-section-heading > a, .workspace-section-heading > .button, .welcome-panel > .button { width: 100%; justify-content: center; }
+  .sr-phone-input-group { min-width: 0; }
+  .sr-phone-input-group .sr-form-input { min-width: 0; }
+  .sr-country-prefix { flex: 0 0 auto; }
+  .table-scroll, .sr-table-responsive { margin-inline: 0; padding-bottom: 4px; }
+  .table-scroll::after, .sr-table-responsive::after { content: ''; display: block; width: 1px; height: 1px; }
+  .pagination { max-width: 100%; }
+  .pagination a, .pagination span { min-height: 40px; display: inline-flex; align-items: center; }
+}
+
+@media (max-width: 380px) {
+  .sr-chip-selector-grid.cols-4, .sr-stats-grid, .metric-grid { grid-template-columns: 1fr; }
+  .sr-footer-mobile-links { grid-template-columns: 1fr; }
+  .sr-footer-mobile-title { grid-column: auto; }
+}

@@ -95,7 +95,7 @@ class AdminWorkspaceController extends Controller
             }
         }
         foreach (['slug', 'symbol', 'email'] as $unique) {
-            if (isset($rules[$unique])) {
+            if (isset($rules[$unique]) && ($unique !== 'email' || $resource === 'members')) {
                 $rules[$unique] = is_array($rules[$unique]) ? $rules[$unique] : explode('|', $rules[$unique]);
                 $rules[$unique][] = Rule::unique($definition['table'], $unique)->ignore($id);
             }
@@ -119,7 +119,7 @@ class AdminWorkspaceController extends Controller
             if ($record?->system && $record->slug !== $data['slug']) {
                 throw ValidationException::withMessages(['slug' => 'The address of a system page cannot be changed.']);
             }
-            $reserved = ['admin', 'dashboard', 'account', 'research', 'reports', 'stocks', 'insights', 'login', 'register', 'logout', 'forgot-password', 'reset-password', 'enquiries', 'sample-report', 'holdings', 'watchlist', 'subscribe', 'up', 'storage', 'css', 'js', 'images', 'public', 'api'];
+            $reserved = ['admin', 'sales', 'dashboard', 'account', 'research', 'reports', 'stocks', 'insights', 'login', 'register', 'logout', 'forgot-password', 'reset-password', 'enquiries', 'sample-report', 'holdings', 'watchlist', 'subscribe', 'up', 'storage', 'css', 'js', 'images', 'public', 'api'];
             if (in_array(strtolower($data['slug']), $reserved)) {
                 throw ValidationException::withMessages(['slug' => 'This address is reserved for an application route.']);
             }

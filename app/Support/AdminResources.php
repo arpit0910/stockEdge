@@ -114,17 +114,24 @@ class AdminResources
                 'position' => self::field('Display order', 'integer', 'required|integer|min:0|max:9999', 'Display'),
                 'published' => self::field('Visible on pricing page', 'checkbox', 'boolean', 'Publication'),
             ]],
-            'members' => ['table' => 'users', 'singular' => 'Member', 'title' => 'Members & access', 'description' => 'Manage accounts, trial dates and administrator access. Passwords are never displayed.', 'columns' => ['name' => 'Member', 'email' => 'Email', 'is_admin' => 'Role', 'is_active' => 'Account', 'trial_ends_at' => 'Trial ends'], 'search' => ['name', 'email'], 'status' => 'is_active', 'delete' => false, 'fields' => [
+            'members' => ['table' => 'users', 'singular' => 'Member', 'title' => 'Members & access', 'description' => 'Manage accounts, trial dates and workspace access. Passwords are never displayed.', 'columns' => ['name' => 'Member', 'email' => 'Email', 'is_admin' => 'Admin', 'is_sales' => 'Sales', 'is_active' => 'Account', 'trial_ends_at' => 'Trial ends'], 'search' => ['name', 'email'], 'status' => 'is_active', 'delete' => false, 'fields' => [
                 'name' => self::field('Full name', 'text', 'required|string|max:120', 'Account'),
                 'email' => self::field('Email address', 'email', 'required|email|max:200', 'Account'),
                 'password' => self::field('New password', 'password', 'nullable|string|min:12|max:200', 'Account', [], 'Required for a new member. Leave blank to keep the current password. Minimum 12 characters.'),
                 'trial_ends_at' => self::field('Research trial ends', 'datetime-local', 'nullable|date', 'Access'),
                 'is_admin' => self::field('Administrator access', 'checkbox', 'boolean', 'Access', [], 'Grants full access to this management workspace.'),
+                'is_sales' => self::field('Sales CRM access', 'checkbox', 'boolean', 'Access', [], 'Grants access to leads, contacts, calls and lead journeys.'),
                 'is_active' => self::field('Account is active', 'checkbox', 'boolean', 'Access', [], 'Suspended members cannot log in; existing sessions are ended on their next request.'),
             ]],
-            'leads' => ['table' => 'leads', 'singular' => 'Enquiry', 'title' => 'Enquiries & signups', 'description' => 'Review submissions, record internal notes and move enquiries through follow-up.', 'columns' => ['email' => 'Contact', 'type' => 'Source', 'name' => 'Name', 'status' => 'Follow-up', 'consent' => 'Consent'], 'search' => ['name', 'email', 'type'], 'status' => 'status', 'create' => false, 'delete' => false, 'fields' => [
-                'status' => self::field('Follow-up status', 'select', ['required', Rule::in(['new', 'in_progress', 'resolved', 'unsubscribed'])], 'Follow-up', ['new' => 'New', 'in_progress' => 'In progress', 'resolved' => 'Resolved', 'unsubscribed' => 'Unsubscribed']),
-                'admin_notes' => self::field('Internal notes', 'editor', 'nullable|string|max:10000', 'Follow-up', [], 'Only visible in the admin workspace. Original submission and consent remain unchanged.'),
+            'leads' => ['table' => 'leads', 'singular' => 'Lead', 'title' => 'Leads & enquiries', 'description' => 'Create leads manually or review enquiries captured from the website. Every record appears in the sales CRM.', 'columns' => ['email' => 'Contact', 'type' => 'Source', 'name' => 'Name', 'status' => 'Follow-up', 'consent' => 'Consent'], 'search' => ['name', 'email', 'phone', 'type'], 'status' => 'status', 'delete' => false, 'fields' => [
+                'name' => self::field('Full name', 'text', 'nullable|string|max:120', 'Contact'),
+                'email' => self::field('Email address', 'email', 'required|email|max:200', 'Contact'),
+                'phone' => self::field('Phone number', 'text', 'nullable|string|max:30', 'Contact'),
+                'type' => self::field('Lead source', 'select', ['required', Rule::in(['manual', 'contact', 'report', 'newsletter'])], 'Source', ['manual' => 'Created by admin', 'contact' => 'Website contact form', 'report' => 'Website report request', 'newsletter' => 'Website newsletter signup']),
+                'message' => self::field('Initial enquiry or context', 'editor', 'nullable|string|max:5000', 'Source', [], 'This becomes the opening context in the sales lead journey.'),
+                'consent' => self::field('Marketing consent recorded', 'checkbox', 'boolean', 'Source', [], 'Enable only when the contact has explicitly consented.'),
+                'status' => self::field('Pipeline status', 'select', ['required', Rule::in(['new', 'contacted', 'qualified', 'proposal', 'converted', 'lost'])], 'Follow-up', ['new' => 'New', 'contacted' => 'Contacted', 'qualified' => 'Qualified', 'proposal' => 'Proposal', 'converted' => 'Converted', 'lost' => 'Lost']),
+                'admin_notes' => self::field('Internal notes', 'editor', 'nullable|string|max:10000', 'Follow-up', [], 'Only visible to administrators.'),
             ]],
             'requests' => ['table' => 'subscription_requests', 'singular' => 'Plan request', 'title' => 'Plan requests', 'description' => 'Follow up on membership interest without changing payment or access entitlements.', 'columns' => ['plan' => 'Requested plan', 'billing' => 'Billing', 'status' => 'Status', 'user_id' => 'Member ID'], 'search' => ['plan', 'status'], 'status' => 'status', 'create' => false, 'delete' => false, 'fields' => [
                 'status' => self::field('Request status', 'select', ['required', Rule::in(['pending', 'contacted', 'closed'])], 'Follow-up', ['pending' => 'Pending', 'contacted' => 'Contacted', 'closed' => 'Closed']),

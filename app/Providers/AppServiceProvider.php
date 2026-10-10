@@ -23,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::define('admin', fn (User $user): bool => (bool) ($user->is_admin ?? false));
+        Gate::define('sales', fn (User $user): bool => (bool) (($user->is_sales ?? false) || ($user->is_admin ?? false)));
         Paginator::defaultView('pagination');
     }
 }

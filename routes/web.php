@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminWorkspaceController;
+use App\Http\Controllers\SalesCrmController;
 use App\Http\Controllers\SiteController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,8 @@ Route::middleware('guest')->group(function () {
     Route::view('/forgot-password', 'auth', ['mode' => 'forgot'])->name('password.request');
     Route::get('/reset-password/{token}', fn (string $token) => view('auth', ['mode' => 'reset', 'token' => $token]))->name('password.reset');
     Route::post('/login', [AccountController::class, 'login'])->middleware('throttle:5,1');
+    Route::view('/sales/login', 'sales.login')->name('sales.login');
+    Route::post('/sales/login', [AccountController::class, 'salesLogin'])->middleware('throttle:5,1')->name('sales.login.attempt');
     Route::post('/register', [AccountController::class, 'register'])->middleware('throttle:5,1');
     Route::post('/forgot-password', [AccountController::class, 'forgot'])->middleware('throttle:3,1')->name('password.email');
     Route::post('/reset-password', [AccountController::class, 'reset'])->middleware('throttle:5,1')->name('password.update');
@@ -37,6 +40,20 @@ Route::middleware('auth')->group(function () {
     Route::post('/watchlist', [AccountController::class, 'watch'])->name('watch');
     Route::delete('/account/{type}/{id}', [AccountController::class, 'remove'])->name('remove');
     Route::post('/subscribe', [AccountController::class, 'subscribe'])->name('subscribe');
+    Route::middleware('can:sales')->prefix('sales')->name('sales.')->group(function () {
+        Route::get('/', [SalesCrmController::class, 'dashboard'])->name('dashboard');
+        Route::get('/leads/{lead}', [SalesCrmController::class, 'showLead'])->name('leads.show');
+        Route::put('/leads/{lead}', [SalesCrmController::class, 'updateLead'])->name('leads.update');
+        Route::post('/leads/{lead}/journey', [SalesCrmController::class, 'storeActivity'])->name('leads.journey');
+        Route::post('/leads/{lead}/calls', [SalesCrmController::class, 'logCall'])->name('leads.calls');
+        Route::post('/leads/{lead}/convert', [SalesCrmController::class, 'convert'])->name('leads.convert');
+        Route::get('/contacts', [SalesCrmController::class, 'contacts'])->name('contacts');
+        Route::get('/contacts/create', [SalesCrmController::class, 'createContact'])->name('contacts.create');
+        Route::post('/contacts', [SalesCrmController::class, 'storeContact'])->name('contacts.store');
+        Route::get('/contacts/{contact}/edit', [SalesCrmController::class, 'editContact'])->name('contacts.edit');
+        Route::put('/contacts/{contact}', [SalesCrmController::class, 'updateContact'])->name('contacts.update');
+        Route::delete('/contacts/{contact}', [SalesCrmController::class, 'destroyContact'])->name('contacts.destroy');
+    });
     Route::middleware('can:admin')->group(function () {
         Route::get('/admin', [AdminWorkspaceController::class, 'overview'])->name('admin');
         Route::get('/admin/settings', [AdminWorkspaceController::class, 'settings'])->name('admin.settings');
