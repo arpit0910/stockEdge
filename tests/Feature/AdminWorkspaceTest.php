@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\Stock;
 use App\Models\User;
 use Database\Seeders\AdminContentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -34,6 +36,127 @@ class AdminWorkspaceTest extends TestCase
         $this->actingAs($admin)->get('/admin/manage/sections')->assertOk()->assertSee('Homepage builder');
         $this->actingAs($admin)->get('/admin/activity')->assertOk()->assertSee('Audit trail');
         $this->actingAs($admin)->get('/admin/media')->assertOk()->assertSee('Media library');
+    }
+
+    public function test_admin_can_create_a_report_category_and_import_an_html_report(): void
+    {
+        $this->seed(AdminContentSeeder::class);
+        $admin = User::factory()->admin()->create();
+        $stock = Stock::factory()->create(['symbol' => 'ANO', 'name' => 'Advance ZincTek Limited']);
+        $secondStock = Stock::factory()->create(['symbol' => 'BNO', 'name' => 'Beta Nickel Limited']);
+
+        $this->actingAs($admin)->post('/admin/manage/report-categories', [
+            'name' => 'Special Situations',
+            'description' => 'Event-driven company research.',
+            'position' => 5,
+        ])->assertSessionHas('success');
+
+        $this->assertDatabaseHas('taxonomies', [
+            'kind' => 'category',
+            'name' => 'Special Situations',
+        ]);
+        $this->get('/admin/manage/reports')
+            ->assertOk()
+            ->assertSee('Import HTML files')
+            ->assertSee('name="report_html[]"', false)
+            ->assertSee('Special Situations');
+        $this->get('/admin/manage/reports/create')
+            ->assertOk()
+            ->assertSee('Special Situations')
+            ->assertDontSee('name="report_html"', false);
+
+        $html = '<!doctype html><html><head><title>Advance ZincTek Limited (ANO) | Historical ASX Research</title><meta name="description" content="Historical analysis of Advance ZincTek Limited."><style>body { color: red; }</style></head><body><header>Imported branding</header><main><section><h1>Advance ZincTek Limited</h1><p>ASX:ANO</p><p>Report date: 29-Jan-2026</p><p>Original stance: Buy</p></section><article class="body"><p>Opening analysis.</p><h2>Financial Summary</h2><p class="data">Revenue increased.</p><a href="javascript:alert(1)" onclick="alert(2)">Unsafe link</a><script>alert("blocked")</script></article></main><footer>Imported footer</footer></body></html>';
+        $secondHtml = str_replace(
+            ['Advance ZincTek Limited', '(ANO)', 'ASX:ANO', 'Original stance: Buy'],
+            ['Beta Nickel Limited', '(BNO)', 'ASX:BNO', 'Original stance: Hold'],
+            $html,
+        );
+        $response = $this->post('/admin/manage/reports/import', [
+            'category' => 'Special Situations',
+            'report_html' => [
+                UploadedFile::fake()->createWithContent('advance-zinctek-limited-asx-ano.html', $html),
+                UploadedFile::fake()->createWithContent('beta-nickel-limited-asx-bno.html', $secondHtml),
+            ],
+        ]);
+
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('reports', [
+            'stock_id' => $stock->id,
+            'title' => 'Advance ZincTek Limited',
+            'slug' => 'advance-zinctek-limited-asx-ano',
+            'category' => 'Special Situations',
+            'rating' => 'Buy',
+            'summary' => 'Historical analysis of Advance ZincTek Limited.',
+            'body_format' => 'html',
+            'published' => false,
+        ]);
+        $this->assertDatabaseHas('reports', [
+            'stock_id' => $secondStock->id,
+            'title' => 'Beta Nickel Limited',
+            'slug' => 'beta-nickel-limited-asx-bno',
+            'category' => 'Special Situations',
+            'rating' => 'Hold',
+            'published' => false,
+        ]);
+        $report = DB::table('reports')->where('slug', 'advance-zinctek-limited-asx-ano')->first();
+        $this->assertStringStartsWith('2026-01-29', $report->created_at);
+        $reportBody = $report->body;
+        $this->assertStringContainsString('<h2>Financial Summary</h2>', $reportBody);
+        $this->assertStringContainsString('<p class="data">Revenue increased.</p>', $reportBody);
+        $this->assertStringNotContainsString('Imported branding', $reportBody);
+        $this->assertStringNotContainsString('Imported footer', $reportBody);
+        $this->assertStringNotContainsString('<script', $reportBody);
+        $this->assertStringNotContainsString('javascript:', $reportBody);
+        $this->assertStringNotContainsString('onclick=', $reportBody);
+        $this->get('/research')->assertOk()->assertSee('Special Situations');
+        $this->get('/reports/advance-zinctek-limited-asx-ano')->assertNotFound();
+        DB::table('reports')->where('id', $report->id)->update(['published' => true]);
+        $this->get('/reports/advance-zinctek-limited-asx-ano')
+            ->assertOk()
+            ->assertSee('<h2>Financial Summary</h2>', false)
+            ->assertSee('<p class="data">Revenue increased.</p>', false)
+            ->assertDontSee('Imported branding')
+            ->assertDontSee('alert("blocked")');
+    }
+
+    public function test_html_report_with_a_missing_company_is_kept_for_review(): void
+    {
+        $this->seed(AdminContentSeeder::class);
+        $admin = User::factory()->admin()->create();
+        $html = '<!doctype html><html><head><meta name="description" content="Historical analysis ready for review."></head><body><main><section><h1>Advance ZincTek Limited</h1><p>ASX:ANO</p><p>Report date: 29-Jan-2026</p><p>Original stance: Buy</p></section><article class="body"><p>Complete imported analysis.</p></article></main></body></html>';
+
+        $this->actingAs($admin)->post('/admin/manage/reports/import', [
+            'category' => 'Penny Stocks',
+            'report_html' => [UploadedFile::fake()->createWithContent('advance-zinctek-limited-asx-ano.html', $html)],
+        ])->assertSessionHas('success');
+
+        $report = DB::table('reports')->where('slug', 'advance-zinctek-limited-asx-ano')->first();
+        $this->assertNotNull($report);
+        $this->assertNull($report->stock_id);
+        $this->assertStringContainsString('Missing company record for ASX:ANO', $report->import_warnings);
+        $this->get('/admin/manage/reports')->assertOk()->assertSee('Missing details');
+        $this->get('/admin/manage/reports/'.$report->id.'/edit')
+            ->assertOk()
+            ->assertSee('This imported report needs details before approval.')
+            ->assertSee('Missing company record for ASX:ANO');
+
+        $stock = Stock::factory()->create(['symbol' => 'ANO']);
+        $this->put('/admin/manage/reports/'.$report->id, [
+            '_version' => $report->updated_at,
+            'title' => $report->title,
+            'slug' => $report->slug,
+            'stock_id' => $stock->id,
+            'category' => $report->category,
+            'rating' => $report->rating,
+            'summary' => $report->summary,
+            'body' => $report->body,
+        ])->assertSessionHas('success');
+
+        $this->assertDatabaseHas('reports', [
+            'id' => $report->id,
+            'stock_id' => $stock->id,
+            'import_warnings' => null,
+        ]);
     }
 
     public function test_admin_can_save_settings(): void

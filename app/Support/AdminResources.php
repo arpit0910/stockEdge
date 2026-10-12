@@ -10,7 +10,7 @@ class AdminResources
     public static function navigation(): array
     {
         return [
-            'Publishing' => ['reports' => 'Research reports', 'articles' => 'Editorial library', 'testimonials' => 'Client testimonials', 'faqs' => 'Frequently asked questions', 'pages' => 'Website pages', 'sections' => 'Homepage builder', 'media' => 'Media library'],
+            'Publishing' => ['reports' => 'Research reports', 'report-categories' => 'Report categories', 'articles' => 'Editorial library', 'testimonials' => 'Client testimonials', 'faqs' => 'Frequently asked questions', 'pages' => 'Website pages', 'sections' => 'Homepage builder', 'media' => 'Media library'],
             'Market & products' => ['stocks' => 'Company coverage', 'taxonomies' => 'Collections & sectors', 'plans' => 'Membership plans'],
             'Relationships' => ['members' => 'Members & access', 'leads' => 'Enquiries & signups', 'requests' => 'Plan requests'],
         ];
@@ -34,18 +34,23 @@ class AdminResources
                 'position' => self::field('Display order', 'integer', 'required|integer|min:0|max:9999', 'Display', [], 'Lower numbers appear first.'),
                 'published' => self::field('Published on homepage', 'checkbox', 'boolean', 'Publication'),
             ]],
-            'reports' => ['table' => 'reports', 'singular' => 'Research report', 'title' => 'Research reports', 'description' => 'Manage the investment case, company association and access level for every report.', 'columns' => ['title' => 'Report', 'category' => 'Collection', 'rating' => 'Rating', 'premium' => 'Access', 'published' => 'Status'], 'search' => ['title', 'slug', 'category'], 'status' => 'published', 'fields' => [
+            'reports' => ['table' => 'reports', 'singular' => 'Research report', 'title' => 'Research reports', 'description' => 'Manage the investment case, company association and access level for every report.', 'columns' => ['title' => 'Report', 'category' => 'Collection', 'rating' => 'Rating', 'import_warnings' => 'Review', 'premium' => 'Access', 'published' => 'Status'], 'search' => ['title', 'slug', 'category'], 'status' => 'published', 'fields' => [
                 'title' => self::field('Report title', 'text', 'required|string|max:200', 'Content'),
                 'slug' => self::field('URL slug', 'slug', 'required|alpha_dash|max:200', 'Content'),
                 'stock_id' => self::field('Company', 'select', 'required|exists:stocks,id', 'Classification', self::stocks()),
-                'category' => self::field('Research collection', 'select', ['required', Rule::in(config('stockedge.categories'))], 'Classification', self::options(config('stockedge.categories'))),
+                'category' => self::field('Report category', 'select', ['required', Rule::in(self::reportCategories())], 'Classification', self::options(self::reportCategories()), 'Create and order categories from Report categories in the admin menu.'),
                 'rating' => self::field('Research rating', 'select', ['required', Rule::in(['Buy', 'Hold', 'Sell'])], 'Classification', self::options(['Buy', 'Hold', 'Sell'])),
                 'summary' => self::field('Executive summary', 'textarea', 'required|string|max:2000', 'Content'),
-                'body' => self::field('Report body', 'editor', 'required|string|max:50000', 'Content', [], 'Write a heading, then a paragraph on the next line. Separate sections with a blank line. Plain text is safely rendered; HTML is not executed.'),
+                'body' => self::field('Report body', 'editor', 'required|string|max:2000000', 'Content', [], 'HTML reports are imported from the reports list. You can edit the converted content here after importing.'),
                 'seo_title' => self::field('SEO title', 'text', 'nullable|string|max:70', 'Search visibility', [], 'Optional. The report title is used when this is empty.'),
                 'meta_description' => self::field('Meta description', 'textarea', 'nullable|string|max:170', 'Search visibility', [], 'Optional. The executive summary is used when this is empty.'),
                 'premium' => self::field('Member-only report', 'checkbox', 'boolean', 'Publication'),
                 'published' => self::field('Published on website', 'checkbox', 'boolean', 'Publication'),
+            ]],
+            'report-categories' => ['table' => 'taxonomies', 'singular' => 'Report category', 'title' => 'Report categories', 'description' => 'Create and order the categories displayed in the research library and available when uploading reports.', 'columns' => ['name' => 'Category', 'position' => 'Order'], 'search' => ['name', 'description'], 'fields' => [
+                'name' => self::field('Category name', 'text', 'required|string|max:100', 'Category'),
+                'description' => self::field('Description', 'textarea', 'nullable|string|max:1000', 'Category'),
+                'position' => self::field('Display order', 'integer', 'required|integer|min:0|max:9999', 'Display', [], 'Lower numbers appear first on the website.'),
             ]],
             'articles' => ['table' => 'articles', 'singular' => 'Article', 'title' => 'Editorial library', 'description' => 'Create considered market stories and manage their imagery and publication.', 'columns' => ['title' => 'Story', 'topic' => 'Topic', 'published' => 'Status'], 'search' => ['title', 'slug', 'topic'], 'status' => 'published', 'fields' => [
                 'title' => self::field('Article title', 'text', 'required|string|max:200', 'Content'),
@@ -156,6 +161,13 @@ class AdminResources
     private static function stocks(): array
     {
         return DB::table('stocks')->orderBy('symbol')->get()->mapWithKeys(fn ($s) => [$s->id => $s->symbol.' · '.$s->name])->all();
+    }
+
+    public static function reportCategories(): array
+    {
+        $categories = DB::table('taxonomies')->where('kind', 'category')->orderBy('position')->orderBy('id')->pluck('name')->all();
+
+        return $categories ?: config('stockedge.categories', []);
     }
 
     private static function mediaPaths(): array

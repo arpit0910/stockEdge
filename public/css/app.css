@@ -5328,3 +5328,18 @@ input, select, textarea, button { max-width: 100%; }
   .sr-footer-mobile-links { grid-template-columns: 1fr; }
   .sr-footer-mobile-title { grid-column: auto; }
 }
+.internal-article-body .source {
+  color: var(--slate-500);
+  font-size: 13px;
+}
+.internal-article-body .data,
+.internal-article-body .legal {
+  padding: 16px 18px;
+  border-left: 3px solid var(--green-500);
+  border-radius: 8px;
+  background: var(--green-50);
+}
+.internal-article-body .legal {
+  margin-top: 36px;
+  color: var(--slate-600);
+}

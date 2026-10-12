@@ -30,7 +30,9 @@
 
         @if($canRead)
             <div class="prose internal-article-body">
-                @if(str_contains($item->body, '##') || str_contains($item->body, '| ') || str_contains($item->body, "- ") || str_contains($item->body, '<') || str_contains($item->body, '**'))
+                @if($kind === 'report' && $item->body_format === 'html')
+                    {!! $item->body !!}
+                @elseif(str_contains($item->body, '##') || str_contains($item->body, '| ') || str_contains($item->body, "- ") || str_contains($item->body, '<') || str_contains($item->body, '**'))
                     {!! \Illuminate\Support\Str::markdown($item->body) !!}
                 @else
                     @foreach(explode("\n\n", $item->body) as $paragraph)

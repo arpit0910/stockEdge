@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Support\AdminResources;
+use App\Support\ReportHtmlImporter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -17,6 +18,8 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AdminWorkspaceController extends Controller
 {
+    public function __construct(private ReportHtmlImporter $reportHtmlImporter) {}
+
     public function overview(): View
     {
         $metrics = [
@@ -41,6 +44,9 @@ class AdminWorkspaceController extends Controller
         $definition = AdminResources::definition($resource);
         $request->validate(['q' => 'nullable|string|max:100', 'status' => 'nullable|string|max:40', 'sort' => ['nullable', Rule::in(['updated', 'oldest', 'name'])]]);
         $query = DB::table($definition['table']);
+        if ($resource === 'report-categories') {
+            $query->where('kind', 'category');
+        }
         if ($request->filled('q')) {
             $term = $request->string('q')->toString();
             $query->where(function ($q) use ($definition, $term): void {
@@ -52,12 +58,14 @@ class AdminWorkspaceController extends Controller
         if ($request->filled('status') && $definition['status']) {
             $query->where($definition['status'], $request->input('status'));
         }
-        $counts = ['total' => DB::table($definition['table'])->count()];
+        $counts = ['total' => $resource === 'report-categories'
+            ? DB::table($definition['table'])->where('kind', 'category')->count()
+            : DB::table($definition['table'])->count()];
         if ($definition['status'] === 'published') {
             $counts['published'] = DB::table($definition['table'])->where('published', true)->count();
             $counts['drafts'] = $counts['total'] - $counts['published'];
         }
-        if ($resource === 'sections' || $resource === 'taxonomies' || $resource === 'plans') {
+        if (in_array($resource, ['sections', 'taxonomies', 'report-categories', 'plans'])) {
             $query->orderBy('position')->orderBy('id');
         } else {
             match ($request->input('sort', 'updated')) {
@@ -73,7 +81,9 @@ class AdminWorkspaceController extends Controller
     {
         $definition = AdminResources::definition($resource);
         abort_if(! $id && ! $definition['create'], 404);
-        $record = $id ? DB::table($definition['table'])->find($id) : null;
+        $record = $id ? DB::table($definition['table'])
+            ->when($resource === 'report-categories', fn ($query) => $query->where('kind', 'category'))
+            ->find($id) : null;
         abort_if($id && ! $record, 404);
         $history = $id ? DB::table('admin_activities')->where('resource', $resource)->where('record_id', $id)->latest('id')->limit(10)->get() : collect();
         $member = ($record && $resource === 'requests') ? DB::table('users')->find($record->user_id) : null;
@@ -85,7 +95,9 @@ class AdminWorkspaceController extends Controller
     {
         $definition = AdminResources::definition($resource);
         abort_if(! $id && ! $definition['create'], 403);
-        $record = $id ? DB::table($definition['table'])->find($id) : null;
+        $record = $id ? DB::table($definition['table'])
+            ->when($resource === 'report-categories', fn ($query) => $query->where('kind', 'category'))
+            ->find($id) : null;
         abort_if($id && ! $record, 404);
         $rules = [];
         foreach ($definition['fields'] as $field => $spec) {
@@ -106,6 +118,9 @@ class AdminWorkspaceController extends Controller
         if ($resource === 'taxonomies') {
             $rules['name'] = [...explode('|', $rules['name']), Rule::unique('taxonomies', 'name')->where('kind', $request->input('kind'))->ignore($id)];
         }
+        if ($resource === 'report-categories') {
+            $rules['name'] = [...explode('|', $rules['name']), Rule::unique('taxonomies', 'name')->where('kind', 'category')->ignore($id)];
+        }
         if ($resource === 'members' && ! $id) {
             $rules['password'] = 'required|string|min:12|max:200';
         }
@@ -113,6 +128,13 @@ class AdminWorkspaceController extends Controller
             $rules['_version'] = 'required|string';
         }
         $data = $request->validate($rules);
+        if ($resource === 'reports') {
+            $data['body_format'] = ($record->body_format ?? 'text') === 'html' ? 'html' : 'text';
+            $data['import_warnings'] = null;
+        }
+        if ($resource === 'report-categories') {
+            $data['kind'] = 'category';
+        }
         $version = $data['_version'] ?? null;
         unset($data['_version']);
         if ($resource === 'pages') {
@@ -153,7 +175,9 @@ class AdminWorkspaceController extends Controller
             $data['symbol'] = strtoupper($data['symbol']);
         }
         DB::transaction(function () use ($request, $resource, $definition, $id, $data, $version): void {
-            $current = $id ? DB::table($definition['table'])->where('id', $id)->lockForUpdate()->first() : null;
+            $current = $id ? DB::table($definition['table'])->where('id', $id)
+                ->when($resource === 'report-categories', fn ($query) => $query->where('kind', 'category'))
+                ->lockForUpdate()->first() : null;
             if ($id) {
                 abort_unless($current, 404);
                 $this->assertVersion($current, $version);
@@ -166,7 +190,7 @@ class AdminWorkspaceController extends Controller
                     throw ValidationException::withMessages(['is_admin' => 'Keep at least one active administrator.']);
                 }
             }
-            if ($resource === 'taxonomies' && $current && $current->name !== $data['name']) {
+            if (in_array($resource, ['taxonomies', 'report-categories']) && $current && $current->name !== $data['name']) {
                 [$table,$field] = match ($current->kind) {
                     'category' => ['reports', 'category'],'sector' => ['stocks', 'sector'],'topic' => ['articles', 'topic']
                 };
@@ -192,13 +216,113 @@ class AdminWorkspaceController extends Controller
         return redirect()->route('admin.records', $resource)->with('success', $definition['singular'].' saved. Changes are available immediately.');
     }
 
+    public function importReports(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'category' => ['required', Rule::exists('taxonomies', 'name')->where('kind', 'category')],
+            'report_html' => 'required|array|min:1|max:50',
+            'report_html.*' => 'required|file|extensions:html,htm|mimetypes:text/html,application/xhtml+xml|max:2048',
+        ]);
+        $reports = [];
+        $errors = [];
+        $slugs = [];
+
+        foreach ($request->file('report_html') as $index => $file) {
+            try {
+                $report = $this->reportHtmlImporter->parse($file->getContent());
+            } catch (\InvalidArgumentException $exception) {
+                $errors['report_html.'.$index] = $file->getClientOriginalName().': '.$exception->getMessage();
+
+                continue;
+            }
+
+            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $warnings = [];
+            if ($report['title'] === '') {
+                $report['title'] = Str::limit(Str::headline($filename), 200, '');
+                $warnings[] = 'Missing report title; a title was generated from the filename.';
+            }
+            if ($report['summary'] === '') {
+                $report['summary'] = 'Summary requires review.';
+                $warnings[] = 'Missing report summary.';
+            }
+            if (! $report['rating']) {
+                $report['rating'] = 'Hold';
+                $warnings[] = 'Missing Buy, Hold or Sell stance; temporarily set to Hold.';
+            }
+            if (! $report['report_date']) {
+                $warnings[] = 'Missing report date; import date was used.';
+            }
+
+            $baseSlug = Str::limit(Str::slug($filename) ?: Str::slug($report['title']), 190, '');
+            $slug = $baseSlug ?: 'imported-report';
+            $suffix = 2;
+            while (isset($slugs[$slug]) || DB::table('reports')->where('slug', $slug)->exists()) {
+                $slug = $baseSlug.'-'.$suffix;
+                $suffix++;
+            }
+            if ($slug !== $baseSlug) {
+                $warnings[] = 'The original filename produced a duplicate address; '.$slug.' was used.';
+            }
+            $stock = $report['symbol'] ? DB::table('stocks')->where('symbol', $report['symbol'])->first() : null;
+            if (! $report['symbol']) {
+                $warnings[] = 'Missing ASX symbol; select a company before approval.';
+            } elseif (! $stock) {
+                $warnings[] = 'Missing company record for ASX:'.$report['symbol'].'; select or create the company before approval.';
+            }
+
+            $slugs[$slug] = true;
+            $reports[] = $report + ['slug' => $slug, 'stock_id' => $stock?->id, 'warnings' => $warnings];
+        }
+
+        if ($errors !== []) {
+            throw ValidationException::withMessages($errors);
+        }
+
+        DB::transaction(function () use ($request, $data, $reports): void {
+            foreach ($reports as $report) {
+                $createdAt = $report['report_date']
+                    ? Carbon::createFromFormat('d-M-Y', $report['report_date'])->startOfDay()->format('Y-m-d H:i:s')
+                    : $this->timestamp();
+                $id = DB::table('reports')->insertGetId([
+                    'stock_id' => $report['stock_id'],
+                    'title' => $report['title'],
+                    'slug' => $report['slug'],
+                    'category' => $data['category'],
+                    'rating' => $report['rating'],
+                    'summary' => $report['summary'],
+                    'body' => $report['body'],
+                    'body_format' => 'html',
+                    'import_warnings' => $report['warnings'] === [] ? null : json_encode($report['warnings']),
+                    'seo_title' => null,
+                    'meta_description' => Str::limit($report['summary'], 170, ''),
+                    'premium' => false,
+                    'published' => false,
+                    'created_at' => $createdAt,
+                    'updated_at' => $this->timestamp(),
+                ]);
+                $this->audit($request, 'imported', 'reports', $id, $report['title'], ['title', 'slug', 'stock_id', 'category', 'rating', 'summary', 'body']);
+            }
+        });
+
+        $reviewCount = collect($reports)->filter(fn (array $report): bool => $report['warnings'] !== [])->count();
+        $message = count($reports).' '.Str::plural('report', count($reports)).' imported as drafts.';
+        if ($reviewCount > 0) {
+            $message .= ' '.$reviewCount.' '.Str::plural('report', $reviewCount).' need missing details before approval.';
+        }
+
+        return redirect()->route('admin.records', 'reports')->with('success', $message);
+    }
+
     public function delete(Request $request, string $resource, int $id): RedirectResponse
     {
         $definition = AdminResources::definition($resource);
         abort_unless($definition['delete'], 403);
         $request->validate(['_version' => 'required|string']);
         DB::transaction(function () use ($request, $resource, $id, $definition): void {
-            $row = DB::table($definition['table'])->where('id', $id)->lockForUpdate()->first();
+            $row = DB::table($definition['table'])->where('id', $id)
+                ->when($resource === 'report-categories', fn ($query) => $query->where('kind', 'category'))
+                ->lockForUpdate()->first();
             abort_unless($row, 404);
             $this->assertVersion($row, $request->input('_version'));
             if ($resource === 'stocks' && (DB::table('reports')->where('stock_id', $id)->exists() || DB::table('holdings')->where('stock_id', $id)->exists() || DB::table('watchlists')->where('stock_id', $id)->exists())) {
@@ -207,7 +331,7 @@ class AdminWorkspaceController extends Controller
             if ($resource === 'pages' && $row->system) {
                 throw ValidationException::withMessages(['delete' => 'System pages cannot be deleted. Edit their content or publication status instead.']);
             }
-            if ($resource === 'taxonomies') {
+            if (in_array($resource, ['taxonomies', 'report-categories'])) {
                 [$table,$field] = match ($row->kind) {
                     'category' => ['reports', 'category'],'sector' => ['stocks', 'sector'],'topic' => ['articles', 'topic']
                 };

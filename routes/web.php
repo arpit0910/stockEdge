@@ -65,6 +65,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/sections/{id}/reorder', [AdminWorkspaceController::class, 'reorder'])->name('admin.reorder');
         Route::get('/admin/manage/{resource}', [AdminWorkspaceController::class, 'index'])->name('admin.records');
         Route::get('/admin/manage/{resource}/create', [AdminWorkspaceController::class, 'edit'])->name('admin.create');
+        Route::post('/admin/manage/reports/import', [AdminWorkspaceController::class, 'importReports'])->name('admin.reports.import');
         Route::get('/admin/manage/{resource}/{id}/edit', [AdminWorkspaceController::class, 'edit'])->whereNumber('id')->name('admin.edit');
         Route::post('/admin/manage/{resource}', [AdminWorkspaceController::class, 'save'])->name('admin.store');
         Route::put('/admin/manage/{resource}/{id}', [AdminWorkspaceController::class, 'save'])->whereNumber('id')->name('admin.update');
