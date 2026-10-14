@@ -4,21 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Support\AdminResources;
 use App\Support\ReportHtmlImporter;
+use App\Support\StockCsvImporter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminWorkspaceController extends Controller
 {
-    public function __construct(private ReportHtmlImporter $reportHtmlImporter) {}
+    public function __construct(private ReportHtmlImporter $reportHtmlImporter, private StockCsvImporter $stockCsvImporter) {}
 
     public function overview(): View
     {
@@ -312,6 +315,117 @@ class AdminWorkspaceController extends Controller
         }
 
         return redirect()->route('admin.records', 'reports')->with('success', $message);
+    }
+
+    public function exportStocks(): StreamedResponse
+    {
+        $filename = 'company-coverage-'.now()->format('Y-m-d').'.csv';
+
+        return response()->streamDownload(function (): void {
+            $stream = fopen('php://output', 'wb');
+            fputcsv($stream, StockCsvImporter::COLUMNS, ',', '"', '');
+            DB::table('stocks')->orderBy('symbol')->get(StockCsvImporter::COLUMNS)->each(function (object $stock) use ($stream): void {
+                fputcsv($stream, array_map(fn (string $column): mixed => $stock->$column, StockCsvImporter::COLUMNS), ',', '"', '');
+            });
+            fclose($stream);
+        }, $filename, ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    public function importStocks(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'stock_csv' => 'required|file|extensions:csv|max:5120',
+        ]);
+
+        try {
+            $csv = $this->stockCsvImporter->parse($request->file('stock_csv')->getRealPath());
+        } catch (\InvalidArgumentException $exception) {
+            throw ValidationException::withMessages(['stock_csv' => $exception->getMessage()]);
+        }
+
+        $existingStocks = DB::table('stocks')->get()->keyBy(fn (object $stock): string => strtoupper($stock->symbol));
+        $seenSymbols = [];
+        $preparedRows = [];
+        $errors = [];
+        $fieldRules = [
+            'name' => 'string|max:200',
+            'sector' => ['string', Rule::in(config('stockedge.sectors'))],
+            'cap' => ['string', Rule::in(['Blue Chip', 'Mid Cap', 'Small Cap'])],
+            'description' => 'string|max:10000',
+            'seo_title' => 'string|max:70',
+            'meta_description' => 'string|max:170',
+            'price' => 'numeric|min:0|max:99999999',
+            'change' => 'numeric|min:-100|max:99999',
+            'yield' => 'numeric|min:0|max:100',
+        ];
+        $requiredForNew = ['name', 'sector', 'cap', 'description', 'price', 'change', 'yield'];
+
+        foreach ($csv['rows'] as $row) {
+            $values = $row['values'];
+            $values['symbol'] = strtoupper($values['symbol'] ?? '');
+            $symbol = $values['symbol'];
+            $current = $existingStocks->get($symbol);
+
+            if ($symbol !== '' && isset($seenSymbols[$symbol])) {
+                $errors[] = "Row {$row['line']}: duplicate symbol {$symbol}.";
+
+                continue;
+            }
+            $seenSymbols[$symbol] = true;
+
+            $data = ['symbol' => $symbol];
+            $rules = ['symbol' => 'required|alpha_dash|max:12'];
+            foreach ($fieldRules as $field => $rulesForField) {
+                if (($values[$field] ?? '') !== '') {
+                    $data[$field] = $values[$field];
+                    $rules[$field] = $rulesForField;
+                }
+            }
+            if (! $current) {
+                foreach ($requiredForNew as $field) {
+                    $rules[$field] = is_array($fieldRules[$field])
+                        ? ['required', ...$fieldRules[$field]]
+                        : 'required|'.$fieldRules[$field];
+                }
+            } elseif (count($data) === 1) {
+                $errors[] = "Row {$row['line']}: provide at least one value to update {$symbol}.";
+
+                continue;
+            }
+
+            $validator = Validator::make($data, $rules);
+            if ($validator->fails()) {
+                foreach ($validator->errors()->all() as $error) {
+                    $errors[] = "Row {$row['line']}: {$error}";
+                }
+
+                continue;
+            }
+
+            $preparedRows[] = ['current' => $current, 'data' => $validator->validated()];
+        }
+
+        if ($errors !== []) {
+            throw ValidationException::withMessages(['stock_csv' => $errors]);
+        }
+
+        $created = 0;
+        $updated = 0;
+        DB::transaction(function () use ($request, $preparedRows, $csv, &$created, &$updated): void {
+            foreach ($preparedRows as $row) {
+                $values = $row['data'] + ['updated_at' => $this->timestamp()];
+                if ($row['current']) {
+                    DB::table('stocks')->where('id', $row['current']->id)->update($values);
+                    $updated++;
+                } else {
+                    DB::table('stocks')->insert($values + ['created_at' => $this->timestamp()]);
+                    $created++;
+                }
+            }
+            $this->audit($request, 'imported', 'stocks', null, "Stock CSV: {$created} created, {$updated} updated", $csv['headers']);
+        });
+
+        return redirect()->route('admin.records', 'stocks')->with('success', "Company CSV imported: {$created} created, {$updated} updated.");
     }
 
     public function delete(Request $request, string $resource, int $id): RedirectResponse

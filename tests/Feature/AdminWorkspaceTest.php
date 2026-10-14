@@ -31,8 +31,8 @@ class AdminWorkspaceTest extends TestCase
         $this->seed(AdminContentSeeder::class);
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)->get('/admin')->assertOk()->assertSee('The research desk.');
-        $this->actingAs($admin)->get('/admin/manage/pages')->assertOk()->assertSee('Website pages');
+        $this->actingAs($admin)->get('/admin')->assertOk()->assertSee('The research desk.')->assertSee('data-theme-toggle', false);
+        $this->actingAs($admin)->get('/admin/manage/pages')->assertOk()->assertSee('Website pages')->assertSee('aria-label="Edit ', false)->assertDontSee('a-edit-link', false);
         $this->actingAs($admin)->get('/admin/manage/sections')->assertOk()->assertSee('Homepage builder');
         $this->actingAs($admin)->get('/admin/activity')->assertOk()->assertSee('Audit trail');
         $this->actingAs($admin)->get('/admin/media')->assertOk()->assertSee('Media library');
@@ -157,6 +157,85 @@ class AdminWorkspaceTest extends TestCase
             'stock_id' => $stock->id,
             'import_warnings' => null,
         ]);
+    }
+
+    public function test_admin_can_export_and_upsert_companies_from_csv(): void
+    {
+        $admin = User::factory()->admin()->create();
+        Stock::factory()->create([
+            'symbol' => 'AAA',
+            'name' => 'Original Company',
+            'description' => 'Original overview.',
+            'price' => 10,
+            'change' => 0,
+            'yield' => 2,
+        ]);
+
+        $this->actingAs($admin)->get('/admin/manage/stocks')
+            ->assertOk()
+            ->assertSee('Export CSV')
+            ->assertSee('Import CSV');
+
+        $csv = <<<'CSV'
+symbol,name,sector,cap,description,seo_title,meta_description,price,change,yield
+AAA,Updated Company,Mining,Blue Chip,Updated overview,,,25.5,-2.5,4.1
+NEW,New Technology Company,Technology,Small Cap,New company overview,,,3.2,1.1,0
+CSV;
+
+        $this->post('/admin/manage/stocks/import', [
+            'stock_csv' => UploadedFile::fake()->createWithContent('companies.csv', $csv),
+        ])->assertRedirect('/admin/manage/stocks')->assertSessionHas('success', 'Company CSV imported: 1 created, 1 updated.');
+
+        $this->assertDatabaseHas('stocks', [
+            'symbol' => 'AAA',
+            'name' => 'Updated Company',
+            'price' => 25.5,
+            'change' => -2.5,
+            'yield' => 4.1,
+        ]);
+        $this->assertDatabaseHas('stocks', [
+            'symbol' => 'NEW',
+            'name' => 'New Technology Company',
+            'sector' => 'Technology',
+            'cap' => 'Small Cap',
+        ]);
+
+        $dailyCsv = <<<'CSV'
+symbol,price,change,yield
+AAA,30.25,2.2,4.5
+CSV;
+
+        $this->post('/admin/manage/stocks/import', [
+            'stock_csv' => UploadedFile::fake()->createWithContent('daily-prices.csv', $dailyCsv),
+        ])->assertSessionHas('success', 'Company CSV imported: 0 created, 1 updated.');
+
+        $this->assertDatabaseHas('stocks', [
+            'symbol' => 'AAA',
+            'name' => 'Updated Company',
+            'description' => 'Updated overview',
+            'price' => 30.25,
+            'change' => 2.2,
+            'yield' => 4.5,
+        ]);
+
+        $export = $this->get('/admin/manage/stocks/export')->assertOk();
+        $exportedCsv = $export->streamedContent();
+        $this->assertStringContainsString('symbol,name,sector,cap,description,seo_title,meta_description,price,change,yield', $exportedCsv);
+        $this->assertStringContainsString('AAA,"Updated Company"', $exportedCsv);
+        $this->assertStringContainsString('NEW,"New Technology Company"', $exportedCsv);
+
+        $invalidCsv = <<<'CSV'
+symbol,price,change,yield
+AAA,99,9,9
+MISSING,1,1,1
+CSV;
+
+        $this->post('/admin/manage/stocks/import', [
+            'stock_csv' => UploadedFile::fake()->createWithContent('invalid-new-company.csv', $invalidCsv),
+        ])->assertSessionHasErrors('stock_csv');
+
+        $this->assertDatabaseHas('stocks', ['symbol' => 'AAA', 'price' => 30.25]);
+        $this->assertDatabaseMissing('stocks', ['symbol' => 'MISSING']);
     }
 
     public function test_admin_can_save_settings(): void
