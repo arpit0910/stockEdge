@@ -90,6 +90,18 @@ class PlatformTest extends TestCase
             ->assertDontSee('Hidden Investor');
     }
 
+    public function test_footer_displays_configured_social_profiles(): void
+    {
+        DB::table('site_settings')->where('key', 'social_facebook')->update(['value' => 'https://facebook.example/sharesrise']);
+        DB::table('site_settings')->where('key', 'social_linkedin')->update(['value' => 'https://linkedin.example/sharesrise']);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Follow Us')
+            ->assertSee('href="https://facebook.example/sharesrise"', false)
+            ->assertSee('href="https://linkedin.example/sharesrise"', false);
+    }
+
     public function test_home_research_collections_come_from_published_backend_categories(): void
     {
         Taxonomy::factory()->create([

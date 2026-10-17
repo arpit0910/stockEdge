@@ -131,8 +131,23 @@
     </main>
 
     <!-- Global Footer -->
-    <footer class="sr-footer">
+    <footer id="site-footer" class="sr-footer">
         <div class="container">
+            <section class="sr-footer-newsletter" aria-labelledby="footer-newsletter-title">
+                <div>
+                    <h2 id="footer-newsletter-title">{{ config('stockedge.site.newsletter_title', 'Stay updated with our latest research and market insights.') }}</h2>
+                    <p>{{ config('stockedge.site.newsletter_description', 'Research updates and market perspectives, in your inbox.') }}</p>
+                </div>
+                <form method="post" action="{{ route('lead') }}" class="sr-newsletter-form">
+                    @csrf
+                    <input type="hidden" name="type" value="newsletter">
+                    <input type="hidden" name="consent" value="1">
+                    <label class="sr-only" for="footer-newsletter-email">Email address</label>
+                    <input id="footer-newsletter-email" type="email" name="email" placeholder="Enter your email address" autocomplete="email" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </section>
+
             <div class="sr-footer-grid">
                 <!-- Brand Column -->
                 <div class="sr-footer-brand">
@@ -200,6 +215,7 @@
                     @endif
 
                     @if(config('stockedge.site.social_facebook') || config('stockedge.site.social_x') || config('stockedge.site.social_linkedin') || config('stockedge.site.social_youtube'))
+                        <h2 class="sr-footer-heading sr-footer-social-heading">Follow Us</h2>
                         <div class="sr-social-links" aria-label="Social media">
                             @if(config('stockedge.site.social_facebook'))
                                 <a href="{{ config('stockedge.site.social_facebook') }}" target="_blank" rel="noopener" class="sr-social-icon" aria-label="Facebook">
@@ -225,13 +241,6 @@
                     @endif
                 </div>
 
-                <nav class="sr-footer-mobile-links" aria-label="Footer navigation">
-                    <span class="sr-footer-mobile-title">Explore SharesRise</span>
-                    <a href="{{ route('research') }}">Research</a>
-                    <a href="{{ route('editorial') }}">Insights</a>
-                    <a href="{{ route('about') }}">About Us</a>
-                    <a href="{{ route('page', 'contact') }}">Contact</a>
-                </nav>
             </div>
 
             <!-- Footer Bottom -->

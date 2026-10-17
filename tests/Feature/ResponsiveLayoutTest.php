@@ -16,7 +16,11 @@ class ResponsiveLayoutTest extends TestCase
             ->assertOk()
             ->assertSee('width=device-width, initial-scale=1', false)
             ->assertSee('class="menu-toggle"', false)
-            ->assertSee('aria-controls="navigation"', false);
+            ->assertSee('aria-controls="navigation"', false)
+            ->assertSee('id="site-footer"', false)
+            ->assertSee('id="footer-newsletter-email"', false)
+            ->assertSee('name="type" value="newsletter"', false)
+            ->assertSeeInOrder(['Explore', 'Latest Research', 'Important Links', 'Privacy Policy', 'Get in Touch']);
 
         $member = User::factory()->create();
         $this->actingAs($member)->get('/dashboard')
@@ -49,6 +53,11 @@ class ResponsiveLayoutTest extends TestCase
 
         $this->assertStringContainsString('@media (max-width: 380px)', $publicCss);
         $this->assertStringContainsString('.table-scroll, .sr-table-responsive', $publicCss);
+        $this->assertStringContainsString('.sr-testimonials-grid { grid-template-columns: 1fr;', $publicCss);
+        $this->assertStringContainsString('content: attr(data-label)', $publicCss);
+        $this->assertStringContainsString('.sr-footer-grid {', $publicCss);
+        $this->assertStringContainsString('grid-template-columns: 1fr;', $publicCss);
+        $this->assertStringContainsString('.sr-pricing-section .price-card { color: var(--slate-900); }', $publicCss);
         $this->assertStringContainsString('@media(max-width:420px)', $workspaceCss);
         $this->assertStringContainsString('.a-table-scroll{overscroll-behavior-inline:contain', $workspaceCss);
     }

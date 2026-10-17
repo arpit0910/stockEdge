@@ -176,12 +176,12 @@
                         <tbody>
                             @forelse($homepageStocks->take($marketSection->item_limit) as $company)
                                 <tr>
-                                    <td><strong>{{ $company->name }}</strong><small>{{ $company->sector }}</small></td>
-                                    <td><span class="sr-code-badge">{{ $company->symbol }}</span></td>
-                                    <td class="font-mono">${{ number_format($company->price, 2) }}</td>
-                                    <td class="font-mono text-muted">${{ number_format($company->day_high ?? $company->price, 2) }}</td>
-                                    <td class="font-mono text-muted">${{ number_format($company->day_low ?? $company->price, 2) }}</td>
-                                    <td class="text-right">
+                                    <td data-label="Company"><strong>{{ $company->name }}</strong><small>{{ $company->sector }}</small></td>
+                                    <td data-label="Code"><span class="sr-code-badge">{{ $company->symbol }}</span></td>
+                                    <td data-label="Price" class="font-mono">${{ number_format($company->price, 2) }}</td>
+                                    <td data-label="Day high" class="font-mono text-muted">${{ number_format($company->day_high ?? $company->price, 2) }}</td>
+                                    <td data-label="Day low" class="font-mono text-muted">${{ number_format($company->day_low ?? $company->price, 2) }}</td>
+                                    <td data-label="Change" class="text-right">
                                         <span class="{{ $company->change >= 0 ? 'sr-pill-pos' : 'sr-pill-neg' }}">{{ $company->change >= 0 ? '+' : '' }}{{ number_format($company->change, 2) }}%</span>
                                     </td>
                                 </tr>
@@ -224,7 +224,7 @@
                                     $targetReturn = $buyPrice > 0 ? (($targetPrice - $buyPrice) / $buyPrice) * 100 : 0;
                                 @endphp
                                 <tr>
-                                    <td>
+                                    <td data-label="Company">
                                         <div class="sr-stock-cell">
                                             <span class="sr-ticker-bubble">{{ $company->symbol }}</span>
                                             <div>
@@ -233,12 +233,12 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="font-mono">${{ number_format($buyPrice, 2) }}</td>
-                                    <td class="font-mono">${{ number_format($targetPrice, 2) }}</td>
-                                    <td>
+                                    <td data-label="Buy price" class="font-mono">${{ number_format($buyPrice, 2) }}</td>
+                                    <td data-label="Target" class="font-mono">${{ number_format($targetPrice, 2) }}</td>
+                                    <td data-label="Return">
                                         <strong class="{{ $targetReturn >= 0 ? 'sr-text-green' : 'sr-text-red' }}">{{ $targetReturn >= 0 ? '+' : '' }}{{ number_format($targetReturn, 1) }}%</strong>
                                     </td>
-                                    <td>
+                                    <td data-label="Status">
                                         <span class="sr-status-chip {{ $company->recommendation_status === 'Active' ? 'active' : 'achieved' }}">
                                             {{ $company->recommendation_status }}
                                         </span>
