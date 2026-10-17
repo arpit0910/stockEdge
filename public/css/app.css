@@ -4011,7 +4011,7 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .sr-dark-table td:first-child strong,
   .sr-dark-table td:first-child small { display: block; }
   .sr-light-table .sr-stock-cell { width: 100%; }
-  .sr-sector-banner-section { padding-block: 30px; }
+  .sr-sector-banner-section { padding-block: 36px; }
   .sr-sector-banner-title { font-size: 24px; line-height: 1.25; }
   .sr-sector-banner-sub { margin-bottom: 24px; font-size: 13px; }
   .sr-sector-pills-row {
@@ -4097,7 +4097,6 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .sr-aggregator-item { flex: 1 1 135px; justify-content: center; text-align: center; }
 
   .sr-lead-gen-banner { padding: 26px 18px; border-radius: 16px; }
-  .sr-lead-gen-section { margin-bottom: 48px; }
   .sr-lead-left h2 { font-size: 24px; }
   .sr-lead-desc { font-size: 14px; }
   .sr-lead-perks { gap: 8px; }
@@ -4105,16 +4104,22 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .sr-lead-right-card { padding: 20px 16px; border-radius: 12px; }
   .btn-yellow-action { min-height: 46px; }
 
-  .sr-section, .sr-pricing-section, .sr-testimonials-section, .sr-testimonials-dark-section, .sr-faq-section { padding-block: 28px; }
-  .sr-section-heading-centered { margin-bottom: 16px; }
+  .sr-market-showcase-section,
+  .sr-categories-section,
+  .sr-news-section,
+  .sr-pricing-section,
+  .sr-testimonials-dark-section,
+  .sr-faq-section { padding-block: 44px; }
+  .sr-testimonials-section { padding-block: 44px 20px; }
+  .sr-section-heading-centered { margin-bottom: 24px; }
   .sr-section-heading-centered h2 { font-size: 26px; }
   .sr-section-heading-centered p { font-size: 14px; }
-  .sr-pricing-grid { gap: 16px; margin-top: 4px; }
-  .sr-testimonials-grid { grid-template-columns: 1fr; gap: 16px; }
+  .sr-pricing-grid { gap: 20px; margin-top: 4px; }
+  .sr-testimonials-grid { grid-template-columns: 1fr; gap: 20px; }
   .sr-testimonial-card { padding: 22px 18px; }
   .sr-pricing-card { padding: 26px 22px; }
   .sr-faq-accordion { gap: 10px; margin-top: 0; }
-  .sr-lead-gen-section { margin-block: 0 24px; }
+  .sr-lead-gen-section { margin-block: 24px 0; }
   .sr-footer { padding-top: 22px; padding-bottom: 12px; }
   .sr-footer-newsletter {
     grid-template-columns: 1fr;
@@ -4226,7 +4231,7 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
 
 @media (max-width: 480px) {
   .container { width: calc(100% - 24px); }
-  .sr-research-cta-section { padding-bottom: 28px; }
+  .sr-research-cta-section { padding-bottom: 44px; }
   .sr-research-cta { padding: 24px 18px; border-radius: 12px; }
   .sr-research-cta-eyebrow { margin-bottom: 15px; font-size: 11px; }
   .sr-research-cta h2 { margin-bottom: 14px; font-size: 25px; }

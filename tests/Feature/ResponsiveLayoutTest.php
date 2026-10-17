@@ -58,6 +58,8 @@ class ResponsiveLayoutTest extends TestCase
         $this->assertStringContainsString('.sr-footer-grid {', $publicCss);
         $this->assertStringContainsString('grid-template-columns: 1fr;', $publicCss);
         $this->assertStringContainsString('.sr-pricing-section .price-card { color: var(--slate-900); }', $publicCss);
+        $this->assertStringContainsString('.sr-faq-section { padding-block: 44px; }', $publicCss);
+        $this->assertStringContainsString('.sr-lead-gen-section { margin-block: 24px 0; }', $publicCss);
         $this->assertStringContainsString('@media(max-width:420px)', $workspaceCss);
         $this->assertStringContainsString('.a-table-scroll{overscroll-behavior-inline:contain', $workspaceCss);
     }
