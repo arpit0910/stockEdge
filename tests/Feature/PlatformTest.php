@@ -7,6 +7,7 @@ use App\Models\Report;
 use App\Models\Stock;
 use App\Models\Taxonomy;
 use App\Models\User;
+use Database\Seeders\AdminContentSeeder;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -115,6 +116,44 @@ class PlatformTest extends TestCase
             ->assertDontSee('Hidden Collection Card');
 
         $this->get('/research')->assertOk()->assertSee('Backend Collection');
+    }
+
+    public function test_home_market_tables_use_company_coverage_records(): void
+    {
+        $this->seed(AdminContentSeeder::class);
+        Stock::factory()->create([
+            'symbol' => 'HPC',
+            'name' => 'Homepage Company',
+            'sector' => 'Mining',
+            'price' => 51.25,
+            'day_high' => 53,
+            'day_low' => 49,
+            'change' => -1.75,
+            'buy_price' => 40,
+            'target_price' => 50,
+            'recommendation_status' => 'Target Achieved',
+            'homepage_position' => 1,
+            'show_on_homepage' => true,
+        ]);
+        Stock::factory()->create([
+            'symbol' => 'HID',
+            'name' => 'Hidden Homepage Company',
+            'homepage_position' => 0,
+            'show_on_homepage' => false,
+        ]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Homepage Company')
+            ->assertSee('HPC')
+            ->assertSee('$53.00')
+            ->assertSee('$49.00')
+            ->assertSee('-1.75%')
+            ->assertSee('$40.00')
+            ->assertSee('$50.00')
+            ->assertSee('+25.0%')
+            ->assertSee('Target Achieved')
+            ->assertDontSee('Hidden Homepage Company');
     }
 
     public function test_registration_starts_trial_and_does_not_allow_admin_assignment(): void

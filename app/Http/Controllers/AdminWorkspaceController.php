@@ -359,8 +359,15 @@ class AdminWorkspaceController extends Controller
             'seo_title' => 'string|max:70',
             'meta_description' => 'string|max:170',
             'price' => 'numeric|min:0|max:99999999',
+            'day_high' => 'numeric|min:0|max:99999999',
+            'day_low' => 'numeric|min:0|max:99999999',
             'change' => 'numeric|min:-100|max:99999',
             'yield' => 'numeric|min:0|max:100',
+            'buy_price' => 'numeric|min:0.0001|max:99999999',
+            'target_price' => 'numeric|min:0|max:99999999',
+            'recommendation_status' => ['string', Rule::in(['Active', 'Target Achieved', 'Closed'])],
+            'homepage_position' => 'integer|min:0|max:9999',
+            'show_on_homepage' => 'boolean',
         ];
         $requiredForNew = ['name', 'sector', 'cap', 'description', 'price', 'change', 'yield'];
 

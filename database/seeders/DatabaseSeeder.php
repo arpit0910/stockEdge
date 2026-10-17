@@ -33,8 +33,18 @@ class DatabaseSeeder extends Seeder
             ['SEK', 'SEEK Limited', 'Services', 22.16, -0.63, 1.7, 'Mid Cap'],
             ['LTR', 'Liontown Resources', 'Mining', 0.82, 3.15, 0, 'Small Cap'],
         ];
-        foreach ($rows as [$symbol,$name,$sector,$price,$change,$yield,$cap]) {
-            Stock::updateOrCreate(['symbol' => $symbol], compact('name', 'sector', 'price', 'change', 'yield', 'cap') + ['description' => "$name is included in our $sector research coverage. Explore the operating environment, capital allocation and key risks. Prices shown are illustrative snapshots, not current market data."]);
+        foreach ($rows as $i => [$symbol,$name,$sector,$price,$change,$yield,$cap]) {
+            $movement = $price * abs($change) / 100;
+            Stock::updateOrCreate(['symbol' => $symbol], compact('name', 'sector', 'price', 'change', 'yield', 'cap') + [
+                'day_high' => round($price + $movement, 4),
+                'day_low' => round(max(0, $price - $movement), 4),
+                'buy_price' => round($price * 0.9, 4),
+                'target_price' => round($price * 1.15, 4),
+                'recommendation_status' => 'Active',
+                'show_on_homepage' => true,
+                'homepage_position' => $i + 1,
+                'description' => "$name is included in our $sector research coverage. Explore the operating environment, capital allocation and key risks. Prices shown are illustrative snapshots, not current market data.",
+            ]);
         }
         foreach (config('stockedge.categories') as $i => $category) {
             foreach ([0, 1] as $j) {

@@ -69,7 +69,7 @@ class AdminResources
                 'image_alt' => self::field('Image description', 'text', 'nullable|string|max:200', 'Presentation'),
                 'published' => self::field('Published on website', 'checkbox', 'boolean', 'Publication'),
             ]],
-            'stocks' => ['table' => 'stocks', 'singular' => 'Company', 'title' => 'Company coverage', 'description' => 'Maintain the company universe that powers research, portfolios and watchlists.', 'columns' => ['symbol' => 'Symbol', 'name' => 'Company', 'sector' => 'Sector', 'price' => 'Demo price', 'change' => 'Change %'], 'search' => ['symbol', 'name', 'sector'], 'fields' => [
+            'stocks' => ['table' => 'stocks', 'singular' => 'Company', 'title' => 'Company coverage', 'description' => 'Maintain the company universe and the market data displayed on the homepage.', 'columns' => ['symbol' => 'Symbol', 'name' => 'Company', 'sector' => 'Sector', 'price' => 'Demo price', 'change' => 'Change %', 'show_on_homepage' => 'Homepage'], 'search' => ['symbol', 'name', 'sector'], 'fields' => [
                 'symbol' => self::field('ASX symbol', 'text', 'required|alpha_dash|max:12', 'Company', [], 'Keep symbols consistent with company disclosures.'),
                 'name' => self::field('Company name', 'text', 'required|string|max:200', 'Company'),
                 'sector' => self::field('Sector', 'select', ['required', Rule::in(config('stockedge.sectors'))], 'Company', self::options(config('stockedge.sectors'))),
@@ -78,8 +78,15 @@ class AdminResources
                 'seo_title' => self::field('SEO title', 'text', 'nullable|string|max:70', 'Search visibility', [], 'Optional. The company name and ASX symbol are used when this is empty.'),
                 'meta_description' => self::field('Meta description', 'textarea', 'nullable|string|max:170', 'Search visibility', [], 'Optional. The company overview is used when this is empty.'),
                 'price' => self::field('Snapshot price (AUD)', 'number', 'required|numeric|min:0|max:99999999', 'Snapshot', [], 'Manual demonstration price. This does not connect a live market feed.'),
+                'day_high' => self::field('Day high (AUD)', 'number', 'nullable|numeric|min:0|max:99999999', 'Snapshot'),
+                'day_low' => self::field('Day low (AUD)', 'number', 'nullable|numeric|min:0|max:99999999', 'Snapshot'),
                 'change' => self::field('Snapshot change (%)', 'number', 'required|numeric|min:-100|max:99999', 'Snapshot'),
                 'yield' => self::field('Dividend yield (%)', 'number', 'required|numeric|min:0|max:100', 'Snapshot'),
+                'buy_price' => self::field('Coverage buy price (AUD)', 'number', 'nullable|numeric|min:0.0001|max:99999999', 'Homepage coverage'),
+                'target_price' => self::field('Coverage target (AUD)', 'number', 'nullable|numeric|min:0|max:99999999', 'Homepage coverage'),
+                'recommendation_status' => self::field('Coverage status', 'select', ['required', Rule::in(['Active', 'Target Achieved', 'Closed'])], 'Homepage coverage', self::options(['Active', 'Target Achieved', 'Closed'])),
+                'homepage_position' => self::field('Homepage display order', 'integer', 'required|integer|min:0|max:9999', 'Homepage coverage', [], 'Lower numbers appear first in both company tables.'),
+                'show_on_homepage' => self::field('Show in homepage company tables', 'checkbox', 'boolean', 'Homepage coverage'),
             ]],
             'taxonomies' => ['table' => 'taxonomies', 'singular' => 'Classification', 'title' => 'Collections & sectors', 'description' => 'Add research collections, company sectors and editorial topics. Renames update linked content.', 'columns' => ['name' => 'Name', 'kind' => 'Used for', 'position' => 'Order'], 'search' => ['name', 'kind'], 'fields' => [
                 'name' => self::field('Name', 'text', 'required|string|max:100', 'Classification'),

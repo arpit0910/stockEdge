@@ -153,8 +153,11 @@
             <div class="sr-market-dark-panel">
                 <div class="sr-panel-header">
                     <div>
-                        <div class="sr-panel-tag">MARKET SNAPSHOT</div>
-                        <h3 class="text-white">ASX market snapshot</h3>
+                        <div class="sr-panel-tag">{{ $marketSection->eyebrow ?: 'MARKET SNAPSHOT' }}</div>
+                        <h3 class="text-white">{{ $marketSection->title ?: 'ASX market snapshot' }}</h3>
+                        @if($marketSection->description)
+                            <p>{{ $marketSection->description }}</p>
+                        @endif
                     </div>
                 </div>
 
@@ -162,7 +165,7 @@
                     <table class="sr-dark-table">
                         <thead>
                             <tr>
-                                <th>Index Name</th>
+                                <th>Company</th>
                                 <th>Code</th>
                                 <th>Price</th>
                                 <th>Day High</th>
@@ -171,18 +174,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($marketIndices as $idx)
+                            @forelse($homepageStocks->take($marketSection->item_limit) as $company)
                                 <tr>
-                                    <td><strong>{{ $idx['name'] }}</strong></td>
-                                    <td><span class="sr-code-badge">{{ $idx['code'] }}</span></td>
-                                    <td class="font-mono">{{ $idx['price'] }}</td>
-                                    <td class="font-mono text-muted">{{ $idx['high'] }}</td>
-                                    <td class="font-mono text-muted">{{ $idx['low'] }}</td>
+                                    <td><strong>{{ $company->name }}</strong><small>{{ $company->sector }}</small></td>
+                                    <td><span class="sr-code-badge">{{ $company->symbol }}</span></td>
+                                    <td class="font-mono">${{ number_format($company->price, 2) }}</td>
+                                    <td class="font-mono text-muted">${{ number_format($company->day_high ?? $company->price, 2) }}</td>
+                                    <td class="font-mono text-muted">${{ number_format($company->day_low ?? $company->price, 2) }}</td>
                                     <td class="text-right">
-                                        <span class="sr-pill-pos">{{ $idx['change'] }}</span>
+                                        <span class="{{ $company->change >= 0 ? 'sr-pill-pos' : 'sr-pill-neg' }}">{{ $company->change >= 0 ? '+' : '' }}{{ number_format($company->change, 2) }}%</span>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr><td colspan="6">No companies are selected for the homepage.</td></tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -212,29 +217,36 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($pastRecommendations as $rec)
+                            @forelse($homepageStocks->take($researchSection->item_limit) as $company)
+                                @php
+                                    $buyPrice = (float) ($company->buy_price ?? $company->price);
+                                    $targetPrice = (float) ($company->target_price ?? $company->price);
+                                    $targetReturn = $buyPrice > 0 ? (($targetPrice - $buyPrice) / $buyPrice) * 100 : 0;
+                                @endphp
                                 <tr>
                                     <td>
                                         <div class="sr-stock-cell">
-                                            <span class="sr-ticker-bubble">{{ $rec['symbol'] }}</span>
+                                            <span class="sr-ticker-bubble">{{ $company->symbol }}</span>
                                             <div>
-                                                <b>{{ $rec['name'] }}</b>
-                                                <small>{{ $rec['sector'] }}</small>
+                                                <b>{{ $company->name }}</b>
+                                                <small>{{ $company->sector }}</small>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="font-mono">${{ number_format($rec['buy'], 2) }}</td>
-                                    <td class="font-mono">${{ number_format($rec['target'], 2) }}</td>
+                                    <td class="font-mono">${{ number_format($buyPrice, 2) }}</td>
+                                    <td class="font-mono">${{ number_format($targetPrice, 2) }}</td>
                                     <td>
-                                        <strong class="sr-text-green">{{ $rec['return'] }}</strong>
+                                        <strong class="{{ $targetReturn >= 0 ? 'sr-text-green' : 'sr-text-red' }}">{{ $targetReturn >= 0 ? '+' : '' }}{{ number_format($targetReturn, 1) }}%</strong>
                                     </td>
                                     <td>
-                                        <span class="sr-status-chip {{ $rec['active'] ? 'active' : 'achieved' }}">
-                                            {{ $rec['status'] }}
+                                        <span class="sr-status-chip {{ $company->recommendation_status === 'Active' ? 'active' : 'achieved' }}">
+                                            {{ $company->recommendation_status }}
                                         </span>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr><td colspan="5">No companies are selected for the homepage.</td></tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

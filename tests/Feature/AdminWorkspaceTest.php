@@ -287,7 +287,7 @@ CSV;
 
         $export = $this->get('/admin/manage/stocks/export')->assertOk();
         $exportedCsv = $export->streamedContent();
-        $this->assertStringContainsString('symbol,name,sector,cap,description,seo_title,meta_description,price,change,yield', $exportedCsv);
+        $this->assertStringContainsString('symbol,name,sector,cap,description,seo_title,meta_description,price,day_high,day_low,change,yield,buy_price,target_price,recommendation_status,homepage_position,show_on_homepage', $exportedCsv);
         $this->assertStringContainsString('AAA,"Updated Company"', $exportedCsv);
         $this->assertStringContainsString('NEW,"New Technology Company"', $exportedCsv);
 
@@ -303,6 +303,49 @@ CSV;
 
         $this->assertDatabaseHas('stocks', ['symbol' => 'AAA', 'price' => 30.25]);
         $this->assertDatabaseMissing('stocks', ['symbol' => 'MISSING']);
+    }
+
+    public function test_admin_can_manage_homepage_company_market_data(): void
+    {
+        $this->seed(AdminContentSeeder::class);
+        $admin = User::factory()->admin()->create();
+        $stock = Stock::factory()->create(['symbol' => 'HPC']);
+
+        $this->actingAs($admin)->get('/admin/manage/stocks/'.$stock->id.'/edit')
+            ->assertOk()
+            ->assertSee('Day high (AUD)')
+            ->assertSee('Coverage target (AUD)')
+            ->assertSee('Show in homepage company tables');
+
+        $this->actingAs($admin)->put('/admin/manage/stocks/'.$stock->id, [
+            '_version' => (string) $stock->updated_at,
+            'symbol' => 'HPC',
+            'name' => 'Homepage Company',
+            'sector' => 'Mining',
+            'cap' => 'Blue Chip',
+            'description' => 'Homepage-managed company coverage.',
+            'price' => 51.25,
+            'day_high' => 53,
+            'day_low' => 49,
+            'change' => -1.75,
+            'yield' => 4.2,
+            'buy_price' => 40,
+            'target_price' => 50,
+            'recommendation_status' => 'Target Achieved',
+            'homepage_position' => 1,
+            'show_on_homepage' => 1,
+        ])->assertSessionHas('success');
+
+        $this->assertDatabaseHas('stocks', [
+            'id' => $stock->id,
+            'day_high' => 53,
+            'day_low' => 49,
+            'buy_price' => 40,
+            'target_price' => 50,
+            'recommendation_status' => 'Target Achieved',
+            'homepage_position' => 1,
+            'show_on_homepage' => true,
+        ]);
     }
 
     public function test_admin_can_save_settings(): void

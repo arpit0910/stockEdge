@@ -15,8 +15,15 @@ class StockCsvImporter
         'seo_title',
         'meta_description',
         'price',
+        'day_high',
+        'day_low',
         'change',
         'yield',
+        'buy_price',
+        'target_price',
+        'recommendation_status',
+        'homepage_position',
+        'show_on_homepage',
     ];
 
     /**
