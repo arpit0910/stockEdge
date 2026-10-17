@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable(['name', 'email', 'phone', 'type', 'message', 'consent', 'status', 'admin_notes', 'assigned_to', 'contact_id'])]
 class Lead extends Model
@@ -33,5 +34,10 @@ class Lead extends Model
     public function activities(): HasMany
     {
         return $this->hasMany(LeadActivity::class)->orderByDesc('occurred_at')->orderByDesc('id');
+    }
+
+    public function latestActivity(): HasOne
+    {
+        return $this->hasOne(LeadActivity::class)->latestOfMany(['occurred_at', 'id']);
     }
 }

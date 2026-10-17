@@ -41,7 +41,7 @@
                @class(['sr-cat-pill', 'active' => !request('category')])>
                 All Research
             </a>
-            @foreach(config('stockedge.categories', []) as $category)
+            @foreach($categories as $category)
                 <a href="{{ route('research', array_merge(request()->except('page'), ['category' => $category])) }}"
                    @class(['sr-cat-pill', 'active' => request('category') === $category])>
                     {{ $category }}

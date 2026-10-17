@@ -12,6 +12,7 @@
     $researchSection = $siteSections->get('research');
     $collectionsSection = $siteSections->get('collections');
     $editorialSection = $siteSections->get('editorial');
+    $testimonialSection = $siteSections->get('testimonials');
 @endphp
 <section class="sr-hero">
     <div class="container sr-hero-grid">
@@ -307,55 +308,48 @@
         </div>
 
         <div class="sr-category-cards-grid" data-mobile-carousel>
-            <!-- 1. Daily Recommendations -->
-            <a href="{{ route('research', ['category' => 'Daily Analysis']) }}" class="sr-cat-photo-card">
-                <img src="{{ asset('images/city.jpg') }}" alt="Daily Recommendations" loading="lazy">
-                <div class="sr-cat-overlay">
-                    <span class="sr-cat-pill-tag">DAILY DESK</span>
-                    <h3>Daily Recommendations</h3>
-                    <p>Timely updates and intraday catalyst analysis on active ASX stocks.</p>
-                    <span class="sr-cat-link">Explore Reports →</span>
-                </div>
-            </a>
-
-            <!-- 2. Dividend Report -->
-            <a href="{{ route('research', ['category' => 'Dividend Investor']) }}" class="sr-cat-photo-card">
-                <img src="{{ asset('images/mining.jpg') }}" alt="Dividend Report" loading="lazy">
-                <div class="sr-cat-overlay">
-                    <span class="sr-cat-pill-tag">INCOME INVESTING</span>
-                    <h3>Dividend Report</h3>
-                    <p>High-yield, fully franked dividend champions with robust free cash flow.</p>
-                    <span class="sr-cat-link">Explore Reports →</span>
-                </div>
-            </a>
-
-            <!-- 3. Resources & Energy Report -->
-            <a href="{{ route('research', ['category' => 'Resources']) }}" class="sr-cat-photo-card">
-                <img src="{{ asset('images/energy.jpg') }}" alt="Resources & Energy Report" loading="lazy">
-                <div class="sr-cat-overlay">
-                    <span class="sr-cat-pill-tag">COMMODITIES</span>
-                    <h3>Resources & Energy</h3>
-                    <p>Deep-dive research on critical minerals, copper, gold, and energy transition.</p>
-                    <span class="sr-cat-link">Explore Reports →</span>
-                </div>
-            </a>
-
-            <!-- 4. Growth Report -->
-            <a href="{{ route('research', ['category' => 'Growth']) }}" class="sr-cat-photo-card">
-                <img src="{{ asset('images/city.jpg') }}" alt="Growth Report" loading="lazy">
-                <div class="sr-cat-overlay">
-                    <span class="sr-cat-pill-tag">HIGH CONVICTION</span>
-                    <h3>Growth Report</h3>
-                    <p>High-upside mid and small-cap compounders with compounding earnings.</p>
-                    <span class="sr-cat-link">Explore Reports →</span>
-                </div>
-            </a>
+            @forelse($collections as $collection)
+                @php
+                    $fallbackImages = ['city.jpg', 'mining.jpg', 'energy.jpg', 'city.jpg'];
+                    $cardTitle = $collection->display_name ?: $collection->name;
+                    $imageUrl = $collection->image_path
+                        ? route('media.file', basename($collection->image_path))
+                        : asset('images/'.$fallbackImages[$loop->index % count($fallbackImages)]);
+                @endphp
+                <a href="{{ route('research', ['category' => $collection->name]) }}" class="sr-cat-photo-card">
+                    <img src="{{ $imageUrl }}" alt="{{ $collection->image_alt ?: $cardTitle }}" loading="lazy">
+                    <div class="sr-cat-overlay">
+                        @if($collection->label)
+                            <span class="sr-cat-pill-tag">{{ $collection->label }}</span>
+                        @endif
+                        <h3>{{ $cardTitle }}</h3>
+                        <p>{{ $collection->description }}</p>
+                        <span class="sr-cat-link">Explore Reports →</span>
+                    </div>
+                </a>
+            @empty
+                <p class="empty">Research collections will appear here when they are published.</p>
+            @endforelse
         </div>
     </div>
 </section>
 
 <!-- =========================================================================
-     6. LATEST ASX MARKET NEWS & INSIGHTS (Editorial Cards)
+     6. EXCLUSIVE RESEARCH CALL TO ACTION
+     ========================================================================= -->
+<section class="sr-research-cta-section">
+    <div class="container">
+        <div class="sr-research-cta">
+            <span class="sr-research-cta-eyebrow">EXCLUSIVE STOCK RESEARCH</span>
+            <h2>Discover High-Potential Investment Opportunities.</h2>
+            <p>Explore high-potential ASX sectors with in-depth research reports and expert market insights to make more informed investment decisions.</p>
+            <a class="btn-green sr-research-cta-button" href="{{ route('sample') }}">Download Sample Report <span aria-hidden="true">&rarr;</span></a>
+        </div>
+    </div>
+</section>
+
+<!-- =========================================================================
+     7. LATEST ASX MARKET NEWS & INSIGHTS (Editorial Cards)
      ========================================================================= -->
 <section class="sr-section sr-news-section">
     <div class="container">
@@ -456,36 +450,38 @@
     </div>
 </section>
 
-<!-- =========================================================================
-     9. FREQUENTLY ASKED QUESTIONS (Accordion)
-     ========================================================================= -->
-<section class="sr-section sr-faq-section">
-    <div class="container" style="max-width: 860px;">
-        <div class="sr-section-heading-centered">
-            <h2>Frequently asked questions</h2>
-            <p>Practical information about the research library, accounts, and memberships.</p>
+@if($testimonials->isNotEmpty())
+<section class="sr-testimonials-section">
+    <div class="container">
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">{{ $testimonialSection?->eyebrow ?: 'INVESTOR EXPERIENCES' }}</span>
+                <h2>{{ $testimonialSection?->title ?: 'Trusted by thoughtful investors.' }}</h2>
+                <p>{{ $testimonialSection?->description ?: 'Read experiences shared by the SharesRise community.' }}</p>
+            </div>
         </div>
-
-        <div class="sr-faq-accordion">
-            @forelse($faqs as $faq)
-                <details class="sr-faq-item" {{ $loop->first ? 'open' : '' }}>
-                    <summary class="sr-faq-question">
-                        <span>{{ $faq->question }}</span>
-                        <span class="sr-faq-icon" aria-hidden="true"></span>
-                    </summary>
-                    <div class="sr-faq-answer">
-                        <p>{{ $faq->answer }}</p>
+        <div class="sr-testimonials-grid">
+            @foreach($testimonials->take($testimonialSection?->item_limit ?: 3) as $testimonial)
+                <article class="sr-testimonial-card">
+                    <p class="sr-testimonial-quote">“{{ $testimonial->quote }}”</p>
+                    <div class="sr-reviewer-wrap">
+                        <div class="sr-reviewer-avatar-box a{{ ($loop->index % 3) + 1 }}">{{ $testimonial->avatar_initials ?: strtoupper(substr($testimonial->name, 0, 2)) }}</div>
+                        <div class="sr-reviewer-meta">
+                            <b>{{ $testimonial->name }}</b>
+                            <small>{{ $testimonial->role }}</small>
+                            <div class="sr-stars-row" aria-label="{{ $testimonial->rating }} out of 5 stars">{{ str_repeat('★', min(5, max(1, $testimonial->rating))) }}</div>
+                        </div>
                     </div>
-                </details>
-            @empty
-                <p style="text-align: center; color: var(--slate-400);">No FAQs published.</p>
-            @endforelse
+                </article>
+            @endforeach
         </div>
     </div>
 </section>
 
+@endif
+
 <!-- =========================================================================
-     10. INSTANT FREE ASX REPORT LEAD GENERATION BANNER
+     9. INSTANT FREE ASX REPORT LEAD GENERATION BANNER
      ========================================================================= -->
 <section class="container sr-lead-gen-section">
     <div class="sr-lead-gen-banner">
@@ -549,6 +545,34 @@
                     </button>
                 </form>
             </div>
+        </div>
+    </div>
+</section>
+
+<!-- =========================================================================
+     10. FREQUENTLY ASKED QUESTIONS (Accordion)
+     ========================================================================= -->
+<section class="sr-section sr-faq-section">
+    <div class="container" style="max-width: 860px;">
+        <div class="sr-section-heading-centered">
+            <h2>Frequently asked questions</h2>
+            <p>Practical information about the research library, accounts, and memberships.</p>
+        </div>
+
+        <div class="sr-faq-accordion">
+            @forelse($faqs as $faq)
+                <details class="sr-faq-item" {{ $loop->first ? 'open' : '' }}>
+                    <summary class="sr-faq-question">
+                        <span>{{ $faq->question }}</span>
+                        <span class="sr-faq-icon" aria-hidden="true"></span>
+                    </summary>
+                    <div class="sr-faq-answer">
+                        <p>{{ $faq->answer }}</p>
+                    </div>
+                </details>
+            @empty
+                <p style="text-align: center; color: var(--slate-400);">No FAQs published.</p>
+            @endforelse
         </div>
     </div>
 </section>

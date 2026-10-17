@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Contact;
 use App\Models\Lead;
+use App\Models\LeadActivity;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -70,6 +71,55 @@ class SalesCrmTest extends TestCase
             ->assertOk()
             ->assertSee('Website Lead')
             ->assertSee('website-lead@example.test');
+    }
+
+    public function test_sales_user_can_filter_leads_by_type_date_and_last_action(): void
+    {
+        $salesUser = User::factory()->sales()->create();
+        $emailLead = Lead::factory()->create([
+            'name' => 'Email Follow-up Lead',
+            'type' => 'report',
+            'created_at' => now()->subDays(2),
+        ]);
+        $callLead = Lead::factory()->create([
+            'name' => 'Called Lead',
+            'type' => 'report',
+            'created_at' => now()->subDay(),
+        ]);
+        Lead::factory()->create([
+            'name' => 'Old Contact Lead',
+            'type' => 'contact',
+            'created_at' => now()->subDays(20),
+        ]);
+        LeadActivity::factory()->create(['lead_id' => $emailLead->id, 'type' => 'note', 'occurred_at' => now()->subDay()]);
+        LeadActivity::factory()->create(['lead_id' => $emailLead->id, 'type' => 'email', 'occurred_at' => now()]);
+        LeadActivity::factory()->create(['lead_id' => $callLead->id, 'type' => 'call', 'occurred_at' => now()]);
+
+        $this->actingAs($salesUser)->get('/sales?type=contact')
+            ->assertOk()
+            ->assertSee('Old Contact Lead')
+            ->assertDontSee('Email Follow-up Lead');
+
+        $this->get('/sales?date_from='.now()->subDays(3)->toDateString().'&date_to='.now()->toDateString())
+            ->assertOk()
+            ->assertSee('Email Follow-up Lead')
+            ->assertSee('Called Lead')
+            ->assertDontSee('Old Contact Lead');
+
+        $this->get('/sales?date_to='.now()->subDays(10)->toDateString())
+            ->assertOk()
+            ->assertSee('Old Contact Lead')
+            ->assertDontSee('Email Follow-up Lead');
+
+        $this->get('/sales?last_action=email')
+            ->assertOk()
+            ->assertSee('Email Follow-up Lead')
+            ->assertDontSee('Called Lead');
+
+        $this->get('/sales?last_action=none')
+            ->assertOk()
+            ->assertSee('Old Contact Lead')
+            ->assertDontSee('Email Follow-up Lead');
     }
 
     public function test_sales_user_can_update_a_lead_and_record_its_journey(): void

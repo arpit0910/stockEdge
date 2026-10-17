@@ -10,9 +10,22 @@ class AdminContentSeeder extends Seeder
     public function run(): void
     {
         $defaults = require config_path('stockedge.php');
+        $categoryCards = [
+            'Daily Analysis' => ['Daily Recommendations', 'DAILY DESK', 'Timely updates and intraday catalyst analysis on active ASX stocks.'],
+            'Dividend Investor' => ['Dividend Report', 'INCOME INVESTING', 'High-yield, fully franked dividend champions with robust free cash flow.'],
+            'Resources' => ['Resources & Energy', 'COMMODITIES', 'Deep-dive research on critical minerals, copper, gold, and energy transition.'],
+            'Growth' => ['Growth Report', 'HIGH CONVICTION', 'High-upside mid and small-cap compounders with compounding earnings.'],
+        ];
         foreach (['categories' => 'category', 'sectors' => 'sector', 'topics' => 'topic'] as $key => $kind) {
             foreach ($defaults[$key] as $i => $name) {
-                $this->insert('taxonomies', ['kind' => $kind, 'name' => $name], ['description' => 'Explore '.$name.' research and perspectives.', 'position' => $i + 1]);
+                [$displayName, $label, $description] = $categoryCards[$name] ?? [null, null, 'Explore '.$name.' research and perspectives.'];
+                $this->insert('taxonomies', ['kind' => $kind, 'name' => $name], [
+                    'description' => $description,
+                    'display_name' => $kind === 'category' ? $displayName : null,
+                    'label' => $kind === 'category' ? $label : null,
+                    'published' => true,
+                    'position' => $i + 1,
+                ]);
             }
         }
         $sections = [

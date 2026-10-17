@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Article;
 use App\Models\Report;
 use App\Models\Stock;
+use App\Models\Taxonomy;
 use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,6 +27,10 @@ class PlatformTest extends TestCase
         $this->get('/about-us')
             ->assertSee('sr-about-split-layout', false)
             ->assertSee('sr-coverage-cards-grid', false);
+        $this->get('/')
+            ->assertSeeInOrder(['Research Collections', 'Discover High-Potential Investment Opportunities.', 'Market Insights'])
+            ->assertSee('href="'.route('sample').'"', false)
+            ->assertSeeInOrder(['Send my free report', 'Frequently asked questions']);
         $this->get('/contact')
             ->assertSee('sr-contact-hero-points', false)
             ->assertSee('sr-enquiry-heading', false)
@@ -50,6 +55,66 @@ class PlatformTest extends TestCase
         $this->get('/research?sector=Mining&category=Daily%20Analysis')->assertOk()->assertSee('BHP Group: the Daily Analysis perspective')->assertDontSee('Woodside Energy:');
         $this->get('/research?q=doesnotexist')->assertOk()->assertSee('No reports match');
         $this->get('/insights?topic=ETF%20News')->assertOk()->assertSee('Understanding the holdings behind an ETF')->assertDontSee('Better questions make better investors');
+    }
+
+    public function test_home_displays_only_published_testimonials(): void
+    {
+        DB::table('testimonials')->insert([
+            [
+                'name' => 'Visible Investor',
+                'role' => 'Long-term member',
+                'quote' => 'The research gives me a clearer investment process.',
+                'rating' => 5,
+                'position' => 1,
+                'published' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Hidden Investor',
+                'role' => 'Draft testimonial',
+                'quote' => 'This draft must stay hidden.',
+                'rating' => 4,
+                'position' => 2,
+                'published' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Visible Investor')
+            ->assertSee('The research gives me a clearer investment process.')
+            ->assertDontSee('Hidden Investor');
+    }
+
+    public function test_home_research_collections_come_from_published_backend_categories(): void
+    {
+        Taxonomy::factory()->create([
+            'name' => 'Backend Collection',
+            'display_name' => 'Backend Collection Card',
+            'label' => 'BACKEND MANAGED',
+            'description' => 'A category created through the backend.',
+            'position' => 2,
+            'published' => true,
+        ]);
+        Taxonomy::factory()->create([
+            'name' => 'Hidden Collection',
+            'display_name' => 'Hidden Collection Card',
+            'position' => 1,
+            'published' => false,
+        ]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Backend Collection Card')
+            ->assertSee('BACKEND MANAGED')
+            ->assertSee('A category created through the backend.')
+            ->assertSee(route('research', ['category' => 'Backend Collection']), false)
+            ->assertDontSee('Hidden Collection Card');
+
+        $this->get('/research')->assertOk()->assertSee('Backend Collection');
     }
 
     public function test_registration_starts_trial_and_does_not_allow_admin_assignment(): void

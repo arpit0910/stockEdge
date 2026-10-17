@@ -65,7 +65,10 @@ class AdminWorkspaceController extends Controller
             ? DB::table($definition['table'])->where('kind', 'category')->count()
             : DB::table($definition['table'])->count()];
         if ($definition['status'] === 'published') {
-            $counts['published'] = DB::table($definition['table'])->where('published', true)->count();
+            $counts['published'] = DB::table($definition['table'])
+                ->when($resource === 'report-categories', fn ($query) => $query->where('kind', 'category'))
+                ->where('published', true)
+                ->count();
             $counts['drafts'] = $counts['total'] - $counts['published'];
         }
         if (in_array($resource, ['sections', 'taxonomies', 'report-categories', 'plans'])) {
@@ -132,7 +135,8 @@ class AdminWorkspaceController extends Controller
         }
         $data = $request->validate($rules);
         if ($resource === 'reports') {
-            $data['body_format'] = ($record->body_format ?? 'text') === 'html' ? 'html' : 'text';
+            $data['body'] = $this->reportHtmlImporter->parse('<article class="body">'.$data['body'].'</article>')['body'];
+            $data['body_format'] = preg_match('/<[^>]+>/', $data['body']) ? 'html' : 'text';
             $data['import_warnings'] = null;
         }
         if ($resource === 'report-categories') {
@@ -154,7 +158,7 @@ class AdminWorkspaceController extends Controller
                 throw ValidationException::withMessages(['button_url' => 'Provide both button text and destination, or leave both empty.']);
             }
         }
-        if (in_array($resource, ['articles', 'sections']) && ! empty($data['image_path']) && empty($data['image_alt'])) {
+        if (in_array($resource, ['articles', 'sections', 'report-categories']) && ! empty($data['image_path']) && empty($data['image_alt'])) {
             throw ValidationException::withMessages(['image_alt' => 'Add a description for the selected image.']);
         }
         if ($resource === 'plans' && $data['is_trial'] && ((float) $data['monthly_price'] !== 0.0 || (float) $data['yearly_price'] !== 0.0)) {

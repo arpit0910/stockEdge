@@ -21,7 +21,9 @@ class ResponsiveLayoutTest extends TestCase
         $member = User::factory()->create();
         $this->actingAs($member)->get('/dashboard')
             ->assertOk()
-            ->assertSee('width=device-width, initial-scale=1', false);
+            ->assertSee('width=device-width, initial-scale=1', false)
+            ->assertSee('data-dashboard-theme-toggle', false)
+            ->assertSee('dashboard-theme', false);
     }
 
     public function test_admin_and_sales_layouts_include_mobile_viewport_and_sidebar_controls(): void
@@ -36,7 +38,8 @@ class ResponsiveLayoutTest extends TestCase
         $this->actingAs($salesUser)->get('/sales')
             ->assertOk()
             ->assertSee('width=device-width,initial-scale=1', false)
-            ->assertSee('aria-controls="admin-sidebar"', false);
+            ->assertSee('aria-controls="admin-sidebar"', false)
+            ->assertSee('data-theme-toggle', false);
     }
 
     public function test_stylesheets_include_phone_breakpoints_and_horizontal_table_guards(): void

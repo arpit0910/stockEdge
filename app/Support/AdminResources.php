@@ -47,10 +47,15 @@ class AdminResources
                 'premium' => self::field('Member-only report', 'checkbox', 'boolean', 'Publication'),
                 'published' => self::field('Published on website', 'checkbox', 'boolean', 'Publication'),
             ]],
-            'report-categories' => ['table' => 'taxonomies', 'singular' => 'Report category', 'title' => 'Report categories', 'description' => 'Create and order the categories displayed in the research library and available when uploading reports.', 'columns' => ['name' => 'Category', 'position' => 'Order'], 'search' => ['name', 'description'], 'fields' => [
+            'report-categories' => ['table' => 'taxonomies', 'singular' => 'Report category', 'title' => 'Report categories', 'description' => 'Create report categories and control how their cards appear on the homepage.', 'columns' => ['name' => 'Category', 'display_name' => 'Homepage title', 'position' => 'Order', 'published' => 'Homepage'], 'search' => ['name', 'display_name', 'label', 'description'], 'status' => 'published', 'fields' => [
                 'name' => self::field('Category name', 'text', 'required|string|max:100', 'Category'),
-                'description' => self::field('Description', 'textarea', 'nullable|string|max:1000', 'Category'),
+                'display_name' => self::field('Homepage card title', 'text', 'nullable|string|max:100', 'Homepage card', [], 'Optional. The category name is used when this is empty.'),
+                'label' => self::field('Card label', 'text', 'nullable|string|max:100', 'Homepage card', [], 'Short label shown above the card title, for example DAILY DESK.'),
+                'description' => self::field('Card description', 'textarea', 'required|string|max:1000', 'Homepage card'),
+                'image_path' => self::field('Card image', 'media', ['nullable', Rule::in(self::mediaPaths())], 'Homepage card', self::mediaOptions(), 'Upload images in the media library first. Leave empty to use a built-in fallback image.'),
+                'image_alt' => self::field('Image description', 'text', 'nullable|string|max:200', 'Homepage card'),
                 'position' => self::field('Display order', 'integer', 'required|integer|min:0|max:9999', 'Display', [], 'Lower numbers appear first on the website.'),
+                'published' => self::field('Visible on homepage', 'checkbox', 'boolean', 'Publication'),
             ]],
             'articles' => ['table' => 'articles', 'singular' => 'Article', 'title' => 'Editorial library', 'description' => 'Create considered market stories and manage their imagery and publication.', 'columns' => ['title' => 'Story', 'topic' => 'Topic', 'published' => 'Status'], 'search' => ['title', 'slug', 'topic'], 'status' => 'published', 'fields' => [
                 'title' => self::field('Article title', 'text', 'required|string|max:200', 'Content'),

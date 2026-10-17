@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" @class(['dashboard-theme' => request()->routeIs('dashboard', 'account')])>
 <head>
     @php
         $brandName = config('stockedge.site.brand_name', 'SharesRise');
@@ -27,6 +27,9 @@
     @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    @if(request()->routeIs('dashboard', 'account'))
+        <script>try{const savedTheme=localStorage.getItem('admin-theme');document.documentElement.dataset.theme=savedTheme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(error){document.documentElement.dataset.theme='light'}</script>
+    @endif
     <title>{{ $fullTitle }}</title>
     <meta name="description" content="{{ $metaDescription }}">
     <meta name="robots" content="{{ $robots }}">
@@ -50,7 +53,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}">
     <script defer src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}"></script>
 </head>
-<body>
+<body @class(['dashboard-page' => request()->routeIs('dashboard', 'account')])>
     <a class="skip-link" href="#main">Skip to content</a>
 
     <!-- Top Bar (Centered Announcement) -->

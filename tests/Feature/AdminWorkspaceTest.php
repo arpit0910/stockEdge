@@ -44,17 +44,42 @@ class AdminWorkspaceTest extends TestCase
         $admin = User::factory()->admin()->create();
         $stock = Stock::factory()->create(['symbol' => 'ANO', 'name' => 'Advance ZincTek Limited']);
         $secondStock = Stock::factory()->create(['symbol' => 'BNO', 'name' => 'Beta Nickel Limited']);
+        DB::table('media_assets')->insert([
+            'name' => 'Special situations card',
+            'path' => 'media/special-situations.jpg',
+            'alt_text' => 'An investor reviewing a company report',
+            'size' => 12000,
+            'mime' => 'image/jpeg',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         $this->actingAs($admin)->post('/admin/manage/report-categories', [
             'name' => 'Special Situations',
+            'display_name' => 'Special Situation Reports',
+            'label' => 'EVENT DRIVEN',
             'description' => 'Event-driven company research.',
+            'image_path' => 'media/special-situations.jpg',
+            'image_alt' => 'An investor reviewing a company report',
             'position' => 5,
+            'published' => 1,
         ])->assertSessionHas('success');
 
         $this->assertDatabaseHas('taxonomies', [
             'kind' => 'category',
             'name' => 'Special Situations',
+            'display_name' => 'Special Situation Reports',
+            'label' => 'EVENT DRIVEN',
+            'image_path' => 'media/special-situations.jpg',
+            'published' => true,
         ]);
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Special Situation Reports')
+            ->assertSee('EVENT DRIVEN')
+            ->assertSee('Event-driven company research.')
+            ->assertSee(route('research', ['category' => 'Special Situations']), false)
+            ->assertSee(route('media.file', 'special-situations.jpg'), false);
         $this->get('/admin/manage/reports')
             ->assertOk()
             ->assertSee('Import HTML files')
@@ -116,6 +141,48 @@ class AdminWorkspaceTest extends TestCase
             ->assertSee('<h2>Financial Summary</h2>', false)
             ->assertSee('<p class="data">Revenue increased.</p>', false)
             ->assertDontSee('Imported branding')
+            ->assertDontSee('alert("blocked")');
+    }
+
+    public function test_report_editor_supports_and_publishes_rich_content(): void
+    {
+        $this->seed(AdminContentSeeder::class);
+        $admin = User::factory()->admin()->create();
+        $stock = Stock::factory()->create();
+
+        $this->actingAs($admin)->get('/admin/manage/reports/create')
+            ->assertOk()
+            ->assertSee('data-html-editor-link', false)
+            ->assertSee('data-html-editor-image', false)
+            ->assertSee('data-html-editor-table', false)
+            ->assertSee('data-html-editor-chart', false);
+
+        $body = '<p>Investment case with supporting data.</p><figure class="report-figure"><img src="/media/revenue.png" alt="Revenue growth"><figcaption>Revenue growth</figcaption></figure><p><a href="https://example.com/source">Source</a></p><div class="report-table-scroll"><table><thead><tr><th scope="col">Year</th></tr></thead><tbody><tr><td>2026</td></tr></tbody></table></div><figure class="report-chart"><figcaption>Revenue</figcaption><div class="report-chart-bars"><div><span>FY26</span><meter min="0" max="100" value="75">75</meter><strong>75</strong></div></div></figure><script>alert("blocked")</script>';
+
+        $this->post('/admin/manage/reports', [
+            'title' => 'Rich research report',
+            'slug' => 'rich-research-report',
+            'stock_id' => $stock->id,
+            'category' => 'Daily Analysis',
+            'rating' => 'Buy',
+            'summary' => 'Research supported by visual evidence.',
+            'body' => $body,
+            'published' => 1,
+        ])->assertSessionHas('success');
+
+        $report = DB::table('reports')->where('slug', 'rich-research-report')->first();
+        $this->assertSame('html', $report->body_format);
+        $this->assertStringContainsString('<img src="/media/revenue.png" alt="Revenue growth">', $report->body);
+        $this->assertStringContainsString('<a href="https://example.com/source">Source</a>', $report->body);
+        $this->assertStringContainsString('<table>', $report->body);
+        $this->assertStringContainsString('<meter min="0" max="100" value="75">75</meter>', $report->body);
+        $this->assertStringNotContainsString('<script', $report->body);
+
+        $this->get('/reports/rich-research-report')
+            ->assertOk()
+            ->assertSee('<figure class="report-figure">', false)
+            ->assertSee('<div class="report-table-scroll">', false)
+            ->assertSee('<figure class="report-chart">', false)
             ->assertDontSee('alert("blocked")');
     }
 

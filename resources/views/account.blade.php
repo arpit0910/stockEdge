@@ -6,7 +6,13 @@
 <section class="container account-layout">
     <aside class="account-nav" aria-label="Account navigation">
         <span class="eyebrow">YOUR WORKSPACE</span>
-        <h3>{{ auth()->user()->name }}</h3>
+        <div class="account-nav-heading">
+            <h3>{{ auth()->user()->name }}</h3>
+            <button class="dashboard-theme-toggle" type="button" data-dashboard-theme-toggle aria-label="Switch to dark mode" title="Switch to dark mode">
+                <svg class="dashboard-theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <svg class="dashboard-theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 4V2 M12 22v-2 M4 12H2 M22 12h-2 M6.34 6.34 4.93 4.93 M19.07 19.07l-1.41-1.41 M6.34 17.66l-1.41 1.41 M19.07 4.93l-1.41 1.41 M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10"/></svg>
+            </button>
+        </div>
         @foreach(['dashboard' => 'Overview', 'portfolio' => 'Portfolio', 'watchlist' => 'Watchlist', 'subscription' => 'Membership'] as $key => $label)
             <a @class(['selected' => $tab === $key]) href="{{ $key === 'dashboard' ? route('dashboard') : route('account', $key) }}">
                 {{ $label }} <span>&rarr;</span>

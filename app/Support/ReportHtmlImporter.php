@@ -65,7 +65,7 @@ class ReportHtmlImporter
 
             foreach (iterator_to_array($element->attributes) as $attribute) {
                 $name = strtolower($attribute->name);
-                if (str_starts_with($name, 'on') || ! in_array($name, ['class', 'href', 'src', 'alt', 'title', 'colspan', 'rowspan', 'scope', 'target', 'rel', 'width', 'height'])) {
+                if (str_starts_with($name, 'on') || ! in_array($name, ['class', 'href', 'src', 'alt', 'title', 'colspan', 'rowspan', 'scope', 'target', 'rel', 'width', 'height', 'min', 'max', 'value'])) {
                     $element->removeAttribute($attribute->name);
                 }
             }

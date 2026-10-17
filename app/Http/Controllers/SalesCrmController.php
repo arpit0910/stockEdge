@@ -16,11 +16,26 @@ class SalesCrmController extends Controller
 {
     public function dashboard(Request $request): View
     {
-        $request->validate(['q' => 'nullable|string|max:100', 'status' => ['nullable', Rule::in($this->leadStatuses())]]);
-        $leads = Lead::query()->with(['assignee', 'contact'])->when($request->filled('q'), function ($query) use ($request): void {
-            $term = $request->string('q')->toString();
+        $filters = $request->validate([
+            'q' => 'nullable|string|max:100',
+            'status' => ['nullable', Rule::in($this->leadStatuses())],
+            'type' => ['nullable', Rule::in($this->leadTypes())],
+            'date_from' => 'nullable|date',
+            'date_to' => 'nullable|date|after_or_equal:date_from',
+            'last_action' => ['nullable', Rule::in([...$this->leadActionTypes(), 'none'])],
+        ]);
+        $leads = Lead::query()->with(['assignee', 'contact', 'latestActivity'])->when(! empty($filters['q']), function ($query) use ($filters): void {
+            $term = $filters['q'];
             $query->where(fn ($query) => $query->where('name', 'like', '%'.$term.'%')->orWhere('email', 'like', '%'.$term.'%')->orWhere('phone', 'like', '%'.$term.'%'));
-        })->when($request->filled('status'), fn ($query) => $query->where('status', $request->string('status')))->latest()->paginate(15)->withQueryString();
+        })->when(! empty($filters['status']), fn ($query) => $query->where('status', $filters['status']))
+            ->when(! empty($filters['type']), fn ($query) => $query->where('type', $filters['type']))
+            ->when(! empty($filters['date_from']), fn ($query) => $query->whereDate('created_at', '>=', $filters['date_from']))
+            ->when(! empty($filters['date_to']), fn ($query) => $query->whereDate('created_at', '<=', $filters['date_to']))
+            ->when(($filters['last_action'] ?? null) === 'none', fn ($query) => $query->whereDoesntHave('activities'))
+            ->when(! empty($filters['last_action']) && $filters['last_action'] !== 'none', fn ($query) => $query->whereHas('latestActivity', fn ($activity) => $activity->where('type', $filters['last_action'])))
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
         $leads->getCollection()->each(function (Lead $lead): void {
             if ($lead->contact && $lead->contact->status !== 'active') {
                 $lead->setAttribute('phone', null);
@@ -34,7 +49,7 @@ class SalesCrmController extends Controller
             'contacts' => Contact::where('status', 'active')->count(),
         ];
 
-        return view('sales.dashboard', ['leads' => $leads, 'metrics' => $metrics, 'statuses' => $this->leadStatuses()]);
+        return view('sales.dashboard', ['leads' => $leads, 'metrics' => $metrics, 'statuses' => $this->leadStatuses(), 'types' => $this->leadTypes(), 'actionTypes' => $this->leadActionTypes()]);
     }
 
     public function showLead(Lead $lead): View
@@ -186,6 +201,18 @@ class SalesCrmController extends Controller
     private function leadStatuses(): array
     {
         return ['new', 'contacted', 'qualified', 'proposal', 'converted', 'lost'];
+    }
+
+    /** @return list<string> */
+    private function leadTypes(): array
+    {
+        return ['contact', 'report', 'newsletter', 'manual'];
+    }
+
+    /** @return list<string> */
+    private function leadActionTypes(): array
+    {
+        return ['call', 'email', 'sms', 'meeting', 'response', 'note', 'status', 'converted'];
     }
 
     /** @return list<string> */

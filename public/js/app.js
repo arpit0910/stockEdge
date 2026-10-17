@@ -4,6 +4,10 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'){document.qu
 document.querySelectorAll('[data-billing]').forEach(button=>button.addEventListener('click',()=>{const period=button.dataset.billing;document.querySelectorAll('[data-billing]').forEach(b=>b.classList.toggle('selected',b===button));document.querySelectorAll('[data-monthly]').forEach(el=>{const price=Number(el.dataset[period]);el.textContent='$'+price.toLocaleString('en-AU',{maximumFractionDigits:2});if(Number(el.dataset.monthly)>0){el.nextElementSibling.textContent=period==='yearly'?'/ year':'/ month';}});document.querySelectorAll('.billing-input').forEach(el=>el.value=period);}));
 document.querySelectorAll('[data-confirm]').forEach(form=>form.addEventListener('submit',event=>{if(!window.confirm(form.dataset.confirm)){event.preventDefault();}}));
 
+const dashboardThemeToggle=document.querySelector('[data-dashboard-theme-toggle]');
+const applyDashboardTheme=theme=>{document.documentElement.dataset.theme=theme;const label=theme==='dark'?'Switch to light mode':'Switch to dark mode';dashboardThemeToggle?.setAttribute('aria-label',label);dashboardThemeToggle?.setAttribute('title',label);};
+if(dashboardThemeToggle){applyDashboardTheme(document.documentElement.dataset.theme||'light');dashboardThemeToggle.addEventListener('click',()=>{const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';applyDashboardTheme(theme);try{localStorage.setItem('admin-theme',theme);}catch(error){}});}
+
 const marketMarquee=document.querySelector('.market-marquee');
 if(marketMarquee){
     const marketTrack=marketMarquee.querySelector('.market-track');

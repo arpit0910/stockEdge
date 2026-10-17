@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use App\Models\Report;
 use App\Models\Stock;
+use App\Models\Taxonomy;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -35,7 +36,7 @@ class SiteController extends Controller
         return view('home', [
             'sections' => DB::table('site_sections')->where('published', true)->orderBy('position')->orderBy('id')->get(),
             'siteSections' => DB::table('site_sections')->where('published', true)->get()->keyBy('layout'),
-            'collections' => DB::table('taxonomies')->where('kind', 'category')->orderBy('position')->get(),
+            'collections' => Taxonomy::query()->categories()->published()->ordered()->get(),
             'stocks' => Stock::take(12)->get(),
             'reports' => Report::with('stock')->where('published', true)->latest()->take(12)->get(),
             'articles' => Article::where('published', true)->latest()->take(3)->get(),
@@ -49,7 +50,8 @@ class SiteController extends Controller
 
     public function research(Request $request): View
     {
-        $data = $request->validate(['q' => 'nullable|string|max:100', 'category' => ['nullable', Rule::in(config('stockedge.categories'))], 'sector' => ['nullable', Rule::in(config('stockedge.sectors'))], 'cap' => ['nullable', Rule::in(['Blue Chip', 'Mid Cap', 'Small Cap'])]]);
+        $categories = Taxonomy::query()->categories()->ordered()->pluck('name');
+        $data = $request->validate(['q' => 'nullable|string|max:100', 'category' => ['nullable', Rule::in($categories->all())], 'sector' => ['nullable', Rule::in(config('stockedge.sectors'))], 'cap' => ['nullable', Rule::in(['Blue Chip', 'Mid Cap', 'Small Cap'])]]);
         $query = Report::with('stock')->where('published', true);
         if (! empty($data['q'])) {
             $term = $data['q'];
@@ -64,7 +66,7 @@ class SiteController extends Controller
             }
         }
 
-        return view('research', ['reports' => $query->latest()->paginate(9)->withQueryString()]);
+        return view('research', ['reports' => $query->latest()->paginate(9)->withQueryString(), 'categories' => $categories]);
     }
 
     public function report(Request $request, Report $report): View
