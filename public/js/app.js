@@ -50,7 +50,6 @@ if(retirementForm){const calculate=()=>{const current=Number(document.getElement
 
 const categoryCarousel=document.querySelector('[data-category-carousel]');
 if(categoryCarousel){
-    const mobileCarouselQuery=window.matchMedia('(max-width: 640px)');
     const reducedMotionQuery=window.matchMedia('(prefers-reduced-motion: reduce)');
     const originalCategoryCards=Array.from(categoryCarousel.children);
     let carouselClones=[];
@@ -67,7 +66,6 @@ if(categoryCarousel){
 
         return firstCard?firstCard.getBoundingClientRect().width+parseFloat(styles.columnGap||styles.gap||0):0;
     };
-    const visibleCategoryCards=()=>mobileCarouselQuery.matches?1:4;
     const stopCategoryCarousel=()=>window.clearInterval(carouselTimer);
     const resetCategoryCarousel=()=>{
         window.clearTimeout(carouselResetTimer);
@@ -87,11 +85,11 @@ if(categoryCarousel){
     };
     const startCategoryCarousel=()=>{
         stopCategoryCarousel();
-        if(reducedMotionQuery.matches||document.hidden||originalCategoryCards.length<=visibleCategoryCards()){return;}
+        if(reducedMotionQuery.matches||document.hidden||originalCategoryCards.length<2){return;}
         carouselTimer=window.setInterval(advanceCategoryCarousel,3500);
     };
     const setupCategoryCarousel=()=>{
-        if(originalCategoryCards.length<=visibleCategoryCards()){
+        if(originalCategoryCards.length<2){
             stopCategoryCarousel();
             carouselClones.forEach(card=>card.remove());
             carouselClones=[];
@@ -139,7 +137,6 @@ if(categoryCarousel){
         },120);
     });
     document.addEventListener('visibilitychange',startCategoryCarousel);
-    mobileCarouselQuery.addEventListener('change',setupCategoryCarousel);
     reducedMotionQuery.addEventListener('change',startCategoryCarousel);
     window.addEventListener('resize',()=>{
         window.clearTimeout(carouselResizeTimer);
@@ -149,31 +146,70 @@ if(categoryCarousel){
 }
 
 document.querySelectorAll('[data-testimonials-carousel]').forEach(carousel=>{
-    const cards=Array.from(carousel.children);
+    const originalTestimonialCards=Array.from(carousel.children);
     const reducedMotionQuery=window.matchMedia('(prefers-reduced-motion: reduce)');
+    let carouselClones=[];
     let carouselTimer;
+    let carouselResetTimer;
     let resumeTimer;
+    let carouselScrollTimer;
+    let carouselResizeTimer;
+    let carouselIndex=0;
 
-    const visibleCards=()=>Math.max(1,Math.round(carousel.clientWidth/(cards[0]?.getBoundingClientRect().width||carousel.clientWidth)));
+    const testimonialCardStep=()=>{
+        const firstCard=carousel.firstElementChild;
+        const styles=window.getComputedStyle(carousel);
+
+        return firstCard?firstCard.getBoundingClientRect().width+parseFloat(styles.columnGap||styles.gap||0):0;
+    };
     const stopCarousel=()=>window.clearInterval(carouselTimer);
+    const resetCarousel=()=>{
+        window.clearTimeout(carouselResetTimer);
+        carouselIndex=0;
+        carousel.scrollTo({left:0,behavior:'auto'});
+    };
+    const advanceCarousel=()=>{
+        const step=testimonialCardStep();
+
+        if(!step){return;}
+
+        carouselIndex+=1;
+        carousel.scrollTo({left:carouselIndex*step,behavior:'smooth'});
+        if(carouselIndex===originalTestimonialCards.length){
+            carouselResetTimer=window.setTimeout(resetCarousel,650);
+        }
+    };
     const startCarousel=()=>{
         stopCarousel();
-        if(reducedMotionQuery.matches||document.hidden||cards.length<=visibleCards()){return;}
-        carouselTimer=window.setInterval(()=>{
-            const card=cards[0];
-            const styles=window.getComputedStyle(carousel);
-            const step=(card?.getBoundingClientRect().width||0)+parseFloat(styles.columnGap||styles.gap||0);
-            const atEnd=carousel.scrollLeft+carousel.clientWidth>=carousel.scrollWidth-2;
-            carousel.scrollTo({left:atEnd?0:carousel.scrollLeft+step,behavior:'smooth'});
-        },4000);
+        if(reducedMotionQuery.matches||document.hidden||originalTestimonialCards.length<2){return;}
+        carouselTimer=window.setInterval(advanceCarousel,4000);
+    };
+    const setupCarousel=()=>{
+        if(originalTestimonialCards.length<2){return;}
+        if(carouselClones.length===0){
+            carouselClones=originalTestimonialCards.map(card=>{
+                const clone=card.cloneNode(true);
+                clone.setAttribute('aria-hidden','true');
+                carousel.appendChild(clone);
+
+                return clone;
+            });
+        }
+        resetCarousel();
+        startCarousel();
     };
     const pauseCarousel=()=>{
         stopCarousel();
+        window.clearTimeout(carouselResetTimer);
         window.clearTimeout(resumeTimer);
     };
     const resumeCarousel=()=>{
         window.clearTimeout(resumeTimer);
-        resumeTimer=window.setTimeout(startCarousel,2500);
+        resumeTimer=window.setTimeout(()=>{
+            const step=testimonialCardStep();
+            carouselIndex=step?Math.round(carousel.scrollLeft/step)%originalTestimonialCards.length:0;
+            startCarousel();
+        },2500);
     };
 
     carousel.addEventListener('pointerdown',pauseCarousel);
@@ -181,9 +217,19 @@ document.querySelectorAll('[data-testimonials-carousel]').forEach(carousel=>{
     carousel.addEventListener('pointercancel',resumeCarousel);
     carousel.addEventListener('focusin',pauseCarousel);
     carousel.addEventListener('focusout',resumeCarousel);
-    window.addEventListener('resize',startCarousel);
+    carousel.addEventListener('scroll',()=>{
+        window.clearTimeout(carouselScrollTimer);
+        carouselScrollTimer=window.setTimeout(()=>{
+            const step=testimonialCardStep();
+            if(step&&carousel.scrollLeft>=step*originalTestimonialCards.length-2){resetCarousel();}
+        },120);
+    });
+    window.addEventListener('resize',()=>{
+        window.clearTimeout(carouselResizeTimer);
+        carouselResizeTimer=window.setTimeout(setupCarousel,150);
+    });
     document.addEventListener('visibilitychange',startCarousel);
     reducedMotionQuery.addEventListener('change',startCarousel);
-    startCarousel();
+    setupCarousel();
 });
 
