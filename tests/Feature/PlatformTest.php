@@ -30,6 +30,7 @@ class PlatformTest extends TestCase
             ->assertSee('sr-coverage-cards-grid', false);
         $this->get('/')
             ->assertSeeInOrder(['Research Collections', 'Discover High-Potential Investment Opportunities.', 'Market Insights'])
+            ->assertSee('data-category-carousel', false)
             ->assertSee('href="'.route('sample').'"', false)
             ->assertSeeInOrder(['Send my free report', 'Frequently asked questions']);
         $this->get('/contact')
@@ -81,13 +82,63 @@ class PlatformTest extends TestCase
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'name' => 'Second Visible Investor',
+                'role' => 'Member',
+                'quote' => 'The reports help me focus.',
+                'rating' => 5,
+                'position' => 3,
+                'published' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Third Visible Investor',
+                'role' => 'Member',
+                'quote' => 'The analysis is clear.',
+                'rating' => 5,
+                'position' => 4,
+                'published' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Fourth Visible Investor',
+                'role' => 'Member',
+                'quote' => 'The risks are easy to understand.',
+                'rating' => 5,
+                'position' => 5,
+                'published' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
 
         $this->get('/')
             ->assertOk()
             ->assertSee('Visible Investor')
             ->assertSee('The research gives me a clearer investment process.')
+            ->assertSee('Fourth Visible Investor')
+            ->assertSee('data-testimonials-carousel', false)
             ->assertDontSee('Hidden Investor');
+    }
+
+    public function test_report_thumbnail_is_shown_on_cards_but_not_the_detail_page(): void
+    {
+        $report = Report::factory()->create([
+            'image_path' => 'media/report-thumbnail.jpg',
+            'image_alt' => 'Analyst reviewing a company report',
+        ]);
+
+        $this->get('/research')
+            ->assertOk()
+            ->assertSee(route('media.file', 'report-thumbnail.jpg'), false)
+            ->assertSee('Analyst reviewing a company report');
+
+        $this->get('/reports/'.$report->slug)
+            ->assertOk()
+            ->assertDontSee('report-thumbnail.jpg')
+            ->assertDontSee('Analyst reviewing a company report');
     }
 
     public function test_footer_displays_configured_social_profiles(): void

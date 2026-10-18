@@ -319,7 +319,7 @@
             </div>
         </div>
 
-        <div class="sr-category-cards-grid" data-mobile-carousel>
+        <div class="sr-category-cards-grid" data-category-carousel>
             @forelse($collections as $collection)
                 @php
                     $fallbackImages = ['city.jpg', 'mining.jpg', 'energy.jpg', 'city.jpg'];
@@ -355,7 +355,7 @@
             <span class="sr-research-cta-eyebrow">EXCLUSIVE STOCK RESEARCH</span>
             <h2>Discover High-Potential Investment Opportunities.</h2>
             <p>Explore high-potential ASX sectors with in-depth research reports and expert market insights to make more informed investment decisions.</p>
-            <a class="btn-green sr-research-cta-button" href="{{ route('sample') }}">Download Sample Report <span aria-hidden="true">&rarr;</span></a>
+            <a class="btn-green sr-research-cta-button" href="{{ route('sample') }}">Download Your Sample Report Now <span aria-hidden="true">&rarr;</span></a>
         </div>
     </div>
 </section>
@@ -472,8 +472,8 @@
                 <p>{{ $testimonialSection?->description ?: 'Read experiences shared by the SharesRise community.' }}</p>
             </div>
         </div>
-        <div class="sr-testimonials-grid">
-            @foreach($testimonials->take($testimonialSection?->item_limit ?: 3) as $testimonial)
+        <div class="sr-testimonials-grid" data-testimonials-carousel tabindex="0" aria-label="Client testimonials">
+            @foreach($testimonials as $testimonial)
                 <article class="sr-testimonial-card">
                     <p class="sr-testimonial-quote">“{{ $testimonial->quote }}”</p>
                     <div class="sr-reviewer-wrap">

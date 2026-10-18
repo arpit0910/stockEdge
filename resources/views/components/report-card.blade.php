@@ -1,5 +1,11 @@
 @props(['report'])
 <article class="report-card">
+    @if($report->image_path)
+        <a class="report-card-thumbnail" href="{{ route('report', $report->slug) }}" aria-label="Read {{ $report->title }}">
+            <img src="{{ route('media.file', basename($report->image_path)) }}" alt="{{ $report->image_alt }}" loading="lazy">
+        </a>
+    @endif
+
     <div class="card-top">
         <span class="tag">{{ $report->category }}</span>
         <span class="access-label {{ $report->premium ? 'member' : 'open' }}">

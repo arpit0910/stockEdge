@@ -42,6 +42,8 @@ class AdminResources
                 'rating' => self::field('Research rating', 'select', ['required', Rule::in(['Buy', 'Hold', 'Sell'])], 'Classification', self::options(['Buy', 'Hold', 'Sell'])),
                 'summary' => self::field('Executive summary', 'textarea', 'required|string|max:2000', 'Content'),
                 'body' => self::field('Report body', 'editor', 'required|string|max:2000000', 'Content', [], 'HTML reports are imported from the reports list. You can edit the converted content here after importing.'),
+                'image_path' => self::field('Card thumbnail', 'media', ['nullable', Rule::in(self::mediaPaths())], 'Presentation', self::mediaOptions(), 'Shown on report cards only. Upload images in the media library first.'),
+                'image_alt' => self::field('Thumbnail description', 'text', 'nullable|string|max:200', 'Presentation'),
                 'seo_title' => self::field('SEO title', 'text', 'nullable|string|max:70', 'Search visibility', [], 'Optional. The report title is used when this is empty.'),
                 'meta_description' => self::field('Meta description', 'textarea', 'nullable|string|max:170', 'Search visibility', [], 'Optional. The executive summary is used when this is empty.'),
                 'premium' => self::field('Member-only report', 'checkbox', 'boolean', 'Publication'),

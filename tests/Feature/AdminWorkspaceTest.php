@@ -152,6 +152,7 @@ class AdminWorkspaceTest extends TestCase
 
         $this->actingAs($admin)->get('/admin/manage/reports/create')
             ->assertOk()
+            ->assertSee('Card thumbnail')
             ->assertSee('data-html-editor-link', false)
             ->assertSee('data-html-editor-image', false)
             ->assertSee('data-html-editor-table', false)

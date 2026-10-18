@@ -158,7 +158,7 @@ class AdminWorkspaceController extends Controller
                 throw ValidationException::withMessages(['button_url' => 'Provide both button text and destination, or leave both empty.']);
             }
         }
-        if (in_array($resource, ['articles', 'sections', 'report-categories']) && ! empty($data['image_path']) && empty($data['image_alt'])) {
+        if (in_array($resource, ['reports', 'articles', 'sections', 'report-categories']) && ! empty($data['image_path']) && empty($data['image_alt'])) {
             throw ValidationException::withMessages(['image_alt' => 'Add a description for the selected image.']);
         }
         if ($resource === 'plans' && $data['is_trial'] && ((float) $data['monthly_price'] !== 0.0 || (float) $data['yearly_price'] !== 0.0)) {

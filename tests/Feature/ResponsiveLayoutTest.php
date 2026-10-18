@@ -53,7 +53,10 @@ class ResponsiveLayoutTest extends TestCase
 
         $this->assertStringContainsString('@media (max-width: 380px)', $publicCss);
         $this->assertStringContainsString('.table-scroll, .sr-table-responsive', $publicCss);
-        $this->assertStringContainsString('.sr-testimonials-grid { grid-template-columns: 1fr;', $publicCss);
+        $this->assertStringContainsString('.sr-testimonials-grid { grid-auto-columns: 100%;', $publicCss);
+        $this->assertStringContainsString('grid-auto-columns: calc((100% - 66px) / 4);', $publicCss);
+        $this->assertStringContainsString('.sr-category-cards-grid {', $publicCss);
+        $this->assertStringContainsString('grid-auto-columns: 100%;', $publicCss);
         $this->assertStringContainsString('content: attr(data-label)', $publicCss);
         $this->assertStringContainsString('.sr-footer-grid {', $publicCss);
         $this->assertStringContainsString('grid-template-columns: 1fr;', $publicCss);
