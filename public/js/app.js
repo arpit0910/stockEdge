@@ -78,15 +78,15 @@ if(categoryCarousel){
         if(!step){return;}
 
         carouselIndex+=1;
-        categoryCarousel.scrollTo({left:carouselIndex*step,behavior:'smooth'});
+        categoryCarousel.scrollTo({left:carouselIndex*step,behavior:reducedMotionQuery.matches?'auto':'smooth'});
         if(carouselIndex===originalCategoryCards.length){
             carouselResetTimer=window.setTimeout(resetCategoryCarousel,650);
         }
     };
     const startCategoryCarousel=()=>{
         stopCategoryCarousel();
-        if(reducedMotionQuery.matches||document.hidden||originalCategoryCards.length<2){return;}
-        carouselTimer=window.setInterval(advanceCategoryCarousel,3500);
+        if(document.hidden||originalCategoryCards.length<2){return;}
+        carouselTimer=window.setInterval(advanceCategoryCarousel,3000);
     };
     const setupCategoryCarousel=()=>{
         if(originalCategoryCards.length<2){
@@ -137,7 +137,6 @@ if(categoryCarousel){
         },120);
     });
     document.addEventListener('visibilitychange',startCategoryCarousel);
-    reducedMotionQuery.addEventListener('change',startCategoryCarousel);
     window.addEventListener('resize',()=>{
         window.clearTimeout(carouselResizeTimer);
         carouselResizeTimer=window.setTimeout(setupCategoryCarousel,150);
@@ -174,15 +173,15 @@ document.querySelectorAll('[data-testimonials-carousel]').forEach(carousel=>{
         if(!step){return;}
 
         carouselIndex+=1;
-        carousel.scrollTo({left:carouselIndex*step,behavior:'smooth'});
+        carousel.scrollTo({left:carouselIndex*step,behavior:reducedMotionQuery.matches?'auto':'smooth'});
         if(carouselIndex===originalTestimonialCards.length){
             carouselResetTimer=window.setTimeout(resetCarousel,650);
         }
     };
     const startCarousel=()=>{
         stopCarousel();
-        if(reducedMotionQuery.matches||document.hidden||originalTestimonialCards.length<2){return;}
-        carouselTimer=window.setInterval(advanceCarousel,4000);
+        if(document.hidden||originalTestimonialCards.length<2){return;}
+        carouselTimer=window.setInterval(advanceCarousel,3000);
     };
     const setupCarousel=()=>{
         if(originalTestimonialCards.length<2){return;}
@@ -229,7 +228,6 @@ document.querySelectorAll('[data-testimonials-carousel]').forEach(carousel=>{
         carouselResizeTimer=window.setTimeout(setupCarousel,150);
     });
     document.addEventListener('visibilitychange',startCarousel);
-    reducedMotionQuery.addEventListener('change',startCarousel);
     setupCarousel();
 });
 

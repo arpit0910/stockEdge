@@ -2074,7 +2074,9 @@ small { font-size: 12px; }
   overscroll-behavior-inline: contain;
   scroll-behavior: smooth;
   scroll-snap-type: inline mandatory;
+  scrollbar-width: none;
 }
+.sr-testimonials-grid::-webkit-scrollbar { display: none; }
 .sr-testimonial-card {
   background: var(--slate-50);
   border: 1px solid var(--slate-200);
