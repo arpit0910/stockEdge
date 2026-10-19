@@ -3871,9 +3871,10 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .nav-dropdown summary { padding: 12px 14px; min-height: 44px; border-radius: 6px; }
   .nav-row nav > a.nav-login-link {
     display: flex;
-    width: 100%;
+    width: min(100%, 220px);
     min-height: 46px;
     align-items: center;
+    align-self: center;
     justify-content: center;
     margin-top: 10px;
     padding: 11px 18px;
@@ -3964,13 +3965,41 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .mega-menu { grid-template-columns: 1fr; gap: 16px; }
   .sr-hero { padding-top: 28px; padding-bottom: 34px; }
   .sr-hero-grid { gap: 22px; }
-  .sr-hero-content { text-align: center; }
+  .sr-hero-content {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
   .sr-hero-pill-badge { max-width: 100%; white-space: normal; text-align: left; }
-  .sr-hero-title { font-size: 32px; line-height: 1.18; }
-  .sr-hero-desc { font-size: 15px; margin-bottom: 24px; }
-  .sr-hero-actions { flex-direction: column; width: 100%; gap: 12px; }
-  .sr-hero-actions a, .sr-hero-actions .btn-green, .sr-hero-actions .btn-outline-white { width: 100%; min-height: 46px; }
-  .sr-hero-trust-row { justify-content: center; gap: 8px 14px; }
+  .sr-hero-title {
+    width: 100%;
+    max-width: 360px;
+    margin-inline: auto;
+    font-size: 32px;
+    line-height: 1.18;
+    text-wrap: balance;
+  }
+  .sr-hero-desc {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto 24px;
+    font-size: 15px;
+    text-wrap: pretty;
+  }
+  .sr-hero-actions { flex-direction: column; align-items: center; width: 100%; gap: 10px; }
+  .sr-hero-actions a, .sr-hero-actions .btn-green, .sr-hero-actions .btn-outline-white { width: min(100%, 220px); min-height: 46px; }
+  .sr-hero-trust-row {
+    display: grid;
+    width: min(100%, 220px);
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 9px;
+    margin-inline: auto;
+    text-align: left;
+  }
   .sr-hero-mockup-wrap { flex-direction: column; align-items: center; width: 100%; }
   .sr-device-screen { display: none; }
   .sr-phone-screen {
@@ -4002,10 +4031,10 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .sr-stat-label { font-size: 11px; }
 
   .sr-market-dark-panel, .sr-market-light-panel { padding: 18px 14px; border-radius: 14px; }
-  .sr-panel-header { flex-wrap: wrap; gap: 10px; }
-  .sr-panel-header > div:first-child { flex: 1 1 220px; min-width: 0; }
-  .sr-market-light-panel .sr-panel-header { justify-content: center; text-align: center; }
-  .sr-market-light-panel .sr-panel-header > div:first-child { flex-basis: 100%; }
+  .sr-panel-header { justify-content: center; flex-wrap: wrap; gap: 10px; text-align: center; }
+  .sr-panel-header > div:first-child { flex: 1 1 100%; min-width: 0; }
+  .sr-market-dark-panel .sr-panel-header h3,
+  .sr-market-dark-panel .sr-panel-header p,
   .sr-market-light-panel .sr-panel-header h3,
   .sr-market-light-panel .sr-panel-header p { text-align: center; }
   .sr-market-light-panel .sr-panel-header .sr-link-arrow { display: none; }
@@ -4065,7 +4094,7 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .sr-light-table .sr-stock-cell { width: 100%; }
   .sr-sector-banner-section { padding-block: 36px; }
   .sr-sector-banner-title { font-size: 24px; line-height: 1.25; }
-  .sr-sector-banner-sub { margin-bottom: 24px; font-size: 13px; }
+  .sr-sector-banner-sub { max-width: 340px; margin-bottom: 24px; font-size: 13px; text-wrap: pretty; }
   .sr-sector-pills-row {
     justify-content: flex-start;
     flex-wrap: nowrap;
@@ -4147,9 +4176,10 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .sr-aggregator-item { flex: 1 1 135px; justify-content: center; text-align: center; }
 
   .sr-lead-gen-banner { padding: 26px 18px; border-radius: 16px; }
-  .sr-lead-left h2 { font-size: 24px; }
-  .sr-lead-desc { font-size: 14px; }
-  .sr-lead-perks { gap: 8px; }
+  .sr-lead-left { text-align: center; }
+  .sr-lead-left h2 { font-size: 24px; text-wrap: balance; }
+  .sr-lead-desc { max-width: 340px; margin-inline: auto; font-size: 14px; text-wrap: pretty; }
+  .sr-lead-perks { width: min(100%, 300px); gap: 8px; margin-inline: auto; text-align: left; }
   .sr-lead-perk span { font-size: 13px; }
   .sr-lead-right-card { padding: 20px 16px; border-radius: 12px; }
   .btn-yellow-action { min-height: 46px; }
@@ -4161,13 +4191,15 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .sr-testimonials-dark-section,
   .sr-faq-section { padding-block: 44px; }
   .sr-testimonials-section { padding-block: 44px 20px; }
-  .sr-section-heading-centered { margin-bottom: 24px; }
-  .sr-section-heading-centered h2 { font-size: 26px; }
-  .sr-section-heading-centered p { font-size: 14px; }
+  .sr-section-heading-centered { max-width: 350px; margin: 0 auto 24px; }
+  .sr-section-heading-centered h2 { font-size: 26px; text-wrap: balance; }
+  .sr-section-heading-centered p { font-size: 14px; text-wrap: pretty; }
   .sr-carousel-heading {
     margin-bottom: 20px;
   }
-  .sr-carousel-heading-copy h2 { font-size: 26px; }
+  .sr-carousel-heading-copy { max-width: 350px; }
+  .sr-carousel-heading-copy h2 { font-size: 26px; text-wrap: balance; }
+  .sr-carousel-heading-copy p { text-wrap: pretty; }
   .sr-carousel-shell {
     grid-template-columns: 38px minmax(0, 1fr) 38px;
     gap: 8px;
@@ -4294,11 +4326,11 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
 @media (max-width: 480px) {
   .container { width: calc(100% - 24px); }
   .sr-research-cta-section { padding-bottom: 44px; }
-  .sr-research-cta { padding: 24px 18px; border-radius: 12px; }
+  .sr-research-cta { padding: 24px 18px; border-radius: 12px; text-align: center; }
   .sr-research-cta-eyebrow { margin-bottom: 15px; font-size: 11px; }
-  .sr-research-cta h2 { margin-bottom: 14px; font-size: 25px; }
-  .sr-research-cta p { margin-bottom: 22px; font-size: 14px; }
-  .sr-research-cta-button { width: 100%; padding-inline: 16px; }
+  .sr-research-cta h2 { margin-bottom: 14px; font-size: 25px; text-wrap: balance; }
+  .sr-research-cta p { margin-bottom: 22px; font-size: 14px; text-wrap: pretty; }
+  .sr-research-cta-button { width: min(100%, 280px); padding-inline: 16px; }
   .button { max-width: 100%; white-space: normal; text-align: center; line-height: 1.35; }
   .sr-hero-title { font-size: 28px; line-height: 1.2; }
   .sr-hero-desc { font-size: 14px; }
