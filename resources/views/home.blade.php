@@ -315,35 +315,37 @@
                 <h2>Research Collections</h2>
                 <p>Browse reports by research style and investment objective.</p>
             </div>
-            <div class="sr-carousel-controls" aria-label="Research collection controls">
-                <button class="sr-nav-arrow prev" type="button" aria-label="Previous research collection" data-category-prev>&larr;</button>
-                <button class="sr-nav-arrow next" type="button" aria-label="Next research collection" data-category-next>&rarr;</button>
-            </div>
         </div>
 
-        <div class="sr-category-cards-grid" data-category-carousel>
-            @forelse($collections as $collection)
-                @php
-                    $fallbackImages = ['city.jpg', 'mining.jpg', 'energy.jpg', 'city.jpg'];
-                    $cardTitle = $collection->display_name ?: $collection->name;
-                    $imageUrl = $collection->image_path
-                        ? route('media.file', basename($collection->image_path))
-                        : asset('images/'.$fallbackImages[$loop->index % count($fallbackImages)]);
-                @endphp
-                <a href="{{ route('research', ['category' => $collection->name]) }}" class="sr-cat-photo-card">
-                    <img src="{{ $imageUrl }}" alt="{{ $collection->image_alt ?: $cardTitle }}" loading="lazy">
-                    <div class="sr-cat-overlay">
-                        @if($collection->label)
-                            <span class="sr-cat-pill-tag">{{ $collection->label }}</span>
-                        @endif
-                        <h3>{{ $cardTitle }}</h3>
-                        <p>{{ $collection->description }}</p>
-                        <span class="sr-cat-link">Explore Reports →</span>
-                    </div>
-                </a>
-            @empty
-                <p class="empty">Research collections will appear here when they are published.</p>
-            @endforelse
+        <div class="sr-carousel-shell">
+            <button class="sr-nav-arrow prev" type="button" aria-label="Previous research collection" data-category-prev>&larr;</button>
+
+            <div class="sr-category-cards-grid" data-category-carousel>
+                @forelse($collections as $collection)
+                    @php
+                        $fallbackImages = ['city.jpg', 'mining.jpg', 'energy.jpg', 'city.jpg'];
+                        $cardTitle = $collection->display_name ?: $collection->name;
+                        $imageUrl = $collection->image_path
+                            ? route('media.file', basename($collection->image_path))
+                            : asset('images/'.$fallbackImages[$loop->index % count($fallbackImages)]);
+                    @endphp
+                    <a href="{{ route('research', ['category' => $collection->name]) }}" class="sr-cat-photo-card">
+                        <img src="{{ $imageUrl }}" alt="{{ $collection->image_alt ?: $cardTitle }}" loading="lazy">
+                        <div class="sr-cat-overlay">
+                            @if($collection->label)
+                                <span class="sr-cat-pill-tag">{{ $collection->label }}</span>
+                            @endif
+                            <h3>{{ $cardTitle }}</h3>
+                            <p>{{ $collection->description }}</p>
+                            <span class="sr-cat-link">Explore Reports →</span>
+                        </div>
+                    </a>
+                @empty
+                    <p class="empty">Research collections will appear here when they are published.</p>
+                @endforelse
+            </div>
+
+            <button class="sr-nav-arrow next" type="button" aria-label="Next research collection" data-category-next>&rarr;</button>
         </div>
     </div>
 </section>
@@ -473,25 +475,27 @@
                 <h2>{{ $testimonialSection?->title ?: 'Trusted by thoughtful investors.' }}</h2>
                 <p>{{ $testimonialSection?->description ?: 'Read experiences shared by the SharesRise community.' }}</p>
             </div>
-            <div class="sr-carousel-controls" aria-label="Testimonial controls">
-                <button class="sr-nav-arrow prev" type="button" aria-label="Previous testimonial" data-testimonial-prev>&larr;</button>
-                <button class="sr-nav-arrow next" type="button" aria-label="Next testimonial" data-testimonial-next>&rarr;</button>
-            </div>
         </div>
-        <div class="sr-testimonials-grid" data-testimonials-carousel tabindex="0" aria-label="Client testimonials">
-            @foreach($testimonials as $testimonial)
-                <article class="sr-testimonial-card">
-                    <p class="sr-testimonial-quote">“{{ $testimonial->quote }}”</p>
-                    <div class="sr-reviewer-wrap">
-                        <div class="sr-reviewer-avatar-box a{{ ($loop->index % 3) + 1 }}">{{ $testimonial->avatar_initials ?: strtoupper(substr($testimonial->name, 0, 2)) }}</div>
-                        <div class="sr-reviewer-meta">
-                            <b>{{ $testimonial->name }}</b>
-                            <small>{{ $testimonial->role }}</small>
-                            <div class="sr-stars-row" aria-label="{{ $testimonial->rating }} out of 5 stars">{{ str_repeat('★', min(5, max(1, $testimonial->rating))) }}</div>
+        <div class="sr-carousel-shell">
+            <button class="sr-nav-arrow prev" type="button" aria-label="Previous testimonial" data-testimonial-prev>&larr;</button>
+
+            <div class="sr-testimonials-grid" data-testimonials-carousel tabindex="0" aria-label="Client testimonials">
+                @foreach($testimonials as $testimonial)
+                    <article class="sr-testimonial-card">
+                        <p class="sr-testimonial-quote">“{{ $testimonial->quote }}”</p>
+                        <div class="sr-reviewer-wrap">
+                            <div class="sr-reviewer-avatar-box a{{ ($loop->index % 3) + 1 }}">{{ $testimonial->avatar_initials ?: strtoupper(substr($testimonial->name, 0, 2)) }}</div>
+                            <div class="sr-reviewer-meta">
+                                <b>{{ $testimonial->name }}</b>
+                                <small>{{ $testimonial->role }}</small>
+                                <div class="sr-stars-row" aria-label="{{ $testimonial->rating }} out of 5 stars">{{ str_repeat('★', min(5, max(1, $testimonial->rating))) }}</div>
+                            </div>
                         </div>
-                    </div>
-                </article>
-            @endforeach
+                    </article>
+                @endforeach
+            </div>
+
+            <button class="sr-nav-arrow next" type="button" aria-label="Next testimonial" data-testimonial-next>&rarr;</button>
         </div>
     </div>
 </section>
