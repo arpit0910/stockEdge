@@ -571,7 +571,7 @@ $testimonialSection = $siteSections->get('testimonials');
             <div class="sr-lead-left">
                 <h2>Start with a free report</h2>
                 <p class="sr-lead-desc">
-                    Assess company fundamentals, valuation and risk with a practical research framework.
+                    Evaluate investment opportunities by analysing business fundamentals, cash flow, profitability, valuation, and growth potential. Identify financial risks, assess market conditions, and make informed investment decisions using practical research and strategic insights.
                 </p>
 
                 <div class="sr-lead-perks">
@@ -585,13 +585,13 @@ $testimonialSection = $siteSections->get('testimonials');
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12" />
                         </svg>
-                        <span>Valuation and risk questions</span>
+                        <span>Questions for testing valuation assumptions and risk</span>
                     </div>
                     <div class="sr-lead-perk">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12" />
                         </svg>
-                        <span>Free educational material</span>
+                        <span>Educational material with no payment required</span>
                     </div>
                 </div>
             </div>
@@ -615,7 +615,7 @@ $testimonialSection = $siteSections->get('testimonials');
                         <input id="lead_phone" name="phone" type="tel" placeholder="+61 400 000 000">
                     </div>
 
-                    <div class="sr-form-group sr-lead-email-field">
+                    <div class="sr-form-group">
                         <label for="lead_email" class="sr-only">Email Address</label>
                         <input id="lead_email" name="email" type="email" placeholder="name@example.com" required>
                     </div>
