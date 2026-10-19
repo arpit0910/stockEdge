@@ -310,12 +310,14 @@
      ========================================================================= -->
 <section class="sr-section sr-categories-section">
     <div class="container">
-        <div class="sr-section-heading-centered">
-            <h2>Research Collections</h2>
-            <p>Browse reports by research style and investment objective.</p>
-            <div class="sr-slider-nav-centered" style="margin-top: 18px; display: inline-flex; gap: 10px;">
-                <button class="sr-nav-arrow prev" aria-label="Previous category" onclick="document.querySelector('.sr-category-cards-grid').scrollBy({left: -320, behavior: 'smooth'})">←</button>
-                <button class="sr-nav-arrow next" aria-label="Next category" onclick="document.querySelector('.sr-category-cards-grid').scrollBy({left: 320, behavior: 'smooth'})">→</button>
+        <div class="sr-carousel-heading">
+            <div class="sr-carousel-heading-copy">
+                <h2>Research Collections</h2>
+                <p>Browse reports by research style and investment objective.</p>
+            </div>
+            <div class="sr-carousel-controls" aria-label="Research collection controls">
+                <button class="sr-nav-arrow prev" type="button" aria-label="Previous research collection" data-category-prev>&larr;</button>
+                <button class="sr-nav-arrow next" type="button" aria-label="Next research collection" data-category-next>&rarr;</button>
             </div>
         </div>
 
@@ -465,11 +467,15 @@
 @if($testimonials->isNotEmpty())
 <section class="sr-testimonials-section">
     <div class="container">
-        <div class="section-heading">
-            <div>
+        <div class="sr-carousel-heading">
+            <div class="sr-carousel-heading-copy">
                 <span class="eyebrow">{{ $testimonialSection?->eyebrow ?: 'INVESTOR EXPERIENCES' }}</span>
                 <h2>{{ $testimonialSection?->title ?: 'Trusted by thoughtful investors.' }}</h2>
                 <p>{{ $testimonialSection?->description ?: 'Read experiences shared by the SharesRise community.' }}</p>
+            </div>
+            <div class="sr-carousel-controls" aria-label="Testimonial controls">
+                <button class="sr-nav-arrow prev" type="button" aria-label="Previous testimonial" data-testimonial-prev>&larr;</button>
+                <button class="sr-nav-arrow next" type="button" aria-label="Next testimonial" data-testimonial-next>&rarr;</button>
             </div>
         </div>
         <div class="sr-testimonials-grid" data-testimonials-carousel tabindex="0" aria-label="Client testimonials">

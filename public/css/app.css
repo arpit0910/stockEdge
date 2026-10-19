@@ -1338,11 +1338,28 @@ small { font-size: 12px; }
 }
 .sr-research-cta-button span { font-size: 20px; line-height: 1; }
 .sr-slider-nav,
-.sr-slider-nav-centered {
+.sr-slider-nav-centered,
+.sr-carousel-controls {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
+}
+.sr-carousel-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 32px;
+}
+.sr-carousel-heading-copy { max-width: 720px; }
+.sr-carousel-heading-copy h2 {
+  margin-bottom: 12px;
+  text-align: left;
+}
+.sr-carousel-heading-copy p {
+  margin-bottom: 0;
+  text-align: left;
 }
 .sr-nav-arrow {
   width: 42px;
@@ -1371,7 +1388,7 @@ small { font-size: 12px; }
   grid-auto-flow: column;
   grid-auto-columns: calc((100% - 66px) / 4);
   gap: 22px;
-  margin-top: 32px;
+  margin-top: 0;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   scroll-behavior: smooth;
@@ -2063,6 +2080,8 @@ small { font-size: 12px; }
   font-size: 34px;
   margin-bottom: 48px;
 }
+.sr-testimonials-section .sr-carousel-heading h2 { margin-bottom: 12px; }
+.sr-testimonials-section .sr-carousel-heading p { color: var(--slate-500); }
 .sr-testimonials-section .section-heading h2 { text-align: left; margin-bottom: 16px; }
 .sr-testimonials-section .section-heading p { color: var(--slate-500); }
 .sr-testimonials-grid {
@@ -4137,6 +4156,15 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .sr-section-heading-centered { margin-bottom: 24px; }
   .sr-section-heading-centered h2 { font-size: 26px; }
   .sr-section-heading-centered p { font-size: 14px; }
+  .sr-carousel-heading {
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .sr-carousel-heading-copy { flex: 1 1 220px; }
+  .sr-carousel-heading-copy h2 { font-size: 26px; }
+  .sr-carousel-controls { margin-left: auto; }
   .sr-pricing-grid { gap: 20px; margin-top: 4px; }
   .sr-testimonials-grid { grid-auto-columns: 100%; gap: 20px; }
   .sr-testimonial-card { padding: 22px 18px; }

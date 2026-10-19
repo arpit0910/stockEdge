@@ -31,6 +31,8 @@ class PlatformTest extends TestCase
         $this->get('/')
             ->assertSeeInOrder(['Research Collections', 'Discover High-Potential Investment Opportunities.', 'Market Insights'])
             ->assertSee('data-category-carousel', false)
+            ->assertSee('data-category-prev', false)
+            ->assertSee('data-category-next', false)
             ->assertSee('href="'.route('sample').'"', false)
             ->assertSeeInOrder(['Send my free report', 'Frequently asked questions']);
         $this->get('/contact')
@@ -120,6 +122,8 @@ class PlatformTest extends TestCase
             ->assertSee('The research gives me a clearer investment process.')
             ->assertSee('Fourth Visible Investor')
             ->assertSee('data-testimonials-carousel', false)
+            ->assertSee('data-testimonial-prev', false)
+            ->assertSee('data-testimonial-next', false)
             ->assertDontSee('Hidden Investor');
     }
 
