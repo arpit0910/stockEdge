@@ -1782,7 +1782,7 @@ small { font-size: 12px; }
 .sr-lead-gen-banner {
   background: linear-gradient(135deg, #061224 0%, #0b1e3d 60%, #047857 100%);
   border-radius: 20px;
-  padding: 38px;
+  padding: 32px;
   color: #ffffff;
   box-shadow: 0 20px 50px rgba(6, 18, 36, 0.35);
   border: 1px solid rgba(16, 185, 129, 0.25);
@@ -1792,10 +1792,13 @@ small { font-size: 12px; }
 .sr-lead-gen-grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
-  gap: 48px;
-  align-items: center;
+  gap: 36px;
+  align-items: start;
   position: relative;
   z-index: 1;
+}
+.sr-lead-left {
+  padding-top: 28px;
 }
 .sr-gold-badge {
   display: inline-block;
@@ -1817,18 +1820,18 @@ small { font-size: 12px; }
   font-size: 34px;
   font-weight: 800;
   line-height: 1.2;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 .sr-lead-desc {
   font-size: 15px;
   color: var(--slate-300);
   line-height: 1.6;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 .sr-lead-perks {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 9px;
 }
 .sr-lead-perk {
   display: flex;
@@ -1842,36 +1845,36 @@ small { font-size: 12px; }
 .sr-lead-right-card {
   background: #ffffff;
   border-radius: 16px;
-  padding: 32px 28px;
+  padding: 26px 24px;
   color: var(--slate-900);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
 }
 .sr-lead-right-card h3 {
   font-size: 20px;
   font-weight: 800;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   color: var(--slate-900);
 }
 .sr-lead-right-card p {
   font-size: 12px;
   color: var(--slate-500);
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 .sr-lead-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
-.sr-form-group input {
+.sr-lead-form .sr-form-group input {
   width: 100%;
-  padding: 12px 14px;
+  padding: 10px 12px;
   border: 1px solid var(--slate-300);
   border-radius: 8px;
   font-size: 14px;
   background: var(--slate-50);
   transition: all 0.2s ease;
 }
-.sr-form-group input:focus {
+.sr-lead-form .sr-form-group input:focus {
   background: #ffffff;
   border-color: var(--green-500);
   outline: none;
@@ -1912,6 +1915,18 @@ small { font-size: 12px; }
   background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(245, 158, 11, 0.45);
+}
+
+@media (min-width: 961px) {
+  .sr-lead-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sr-lead-email-field,
+  .sr-lead-form .sr-form-consent,
+  .sr-lead-form .btn-yellow-action {
+    grid-column: 1 / -1;
+  }
 }
 
 /* ==========================================================================
@@ -3908,7 +3923,8 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .sr-testimonial-video-grid { grid-template-columns: 1fr; gap: 24px; }
   .sr-news-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
   .sr-pricing-grid { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
-  .sr-lead-gen-grid { grid-template-columns: 1fr; gap: 28px; }
+  .sr-lead-gen-grid { grid-template-columns: 1fr; gap: 22px; }
+  .sr-lead-left { padding-top: 0; }
   .sr-footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
 
   .sr-library-layout { grid-template-columns: 1fr; }
@@ -3992,13 +4008,13 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .sr-hero-actions { flex-direction: column; align-items: center; width: 100%; gap: 10px; }
   .sr-hero-actions a, .sr-hero-actions .btn-green, .sr-hero-actions .btn-outline-white { width: min(100%, 220px); min-height: 46px; }
   .sr-hero-trust-row {
-    display: grid;
-    width: min(100%, 220px);
-    grid-template-columns: 1fr;
-    justify-items: start;
-    gap: 9px;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
     margin-inline: auto;
-    text-align: left;
+    font-size: 11px;
   }
   .sr-hero-mockup-wrap { flex-direction: column; align-items: center; width: 100%; }
   .sr-device-screen { display: none; }
@@ -4372,6 +4388,7 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .container { width: calc(100% - 16px); }
   .brand-logo { width: 116px; }
   .sr-hero-title { font-size: 25px; }
+  .sr-hero-trust-row { gap: 8px; font-size: 10px; }
   .sr-stats-grid { grid-template-columns: 1fr; }
   .metric-grid { grid-template-columns: 1fr; }
   .sr-stat-card { padding: 14px 12px; }
