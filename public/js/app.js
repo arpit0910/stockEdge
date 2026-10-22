@@ -129,8 +129,8 @@ if(categoryCarousel){
     };
 
     categoryCarousel.addEventListener('pointerdown',pauseForInteraction);
-    categoryCarousel.addEventListener('pointerup',resumeAfterInteraction);
-    categoryCarousel.addEventListener('pointercancel',resumeAfterInteraction);
+    window.addEventListener('pointerup',resumeAfterInteraction);
+    window.addEventListener('pointercancel',resumeAfterInteraction);
     categoryCarousel.addEventListener('focusin',pauseForInteraction);
     categoryCarousel.addEventListener('focusout',resumeAfterInteraction);
     document.querySelector('[data-category-prev]')?.addEventListener('click',()=>{
@@ -236,8 +236,8 @@ document.querySelectorAll('[data-testimonials-carousel]').forEach(carousel=>{
     };
 
     carousel.addEventListener('pointerdown',pauseCarousel);
-    carousel.addEventListener('pointerup',resumeCarousel);
-    carousel.addEventListener('pointercancel',resumeCarousel);
+    window.addEventListener('pointerup',resumeCarousel);
+    window.addEventListener('pointercancel',resumeCarousel);
     carousel.addEventListener('focusin',pauseCarousel);
     carousel.addEventListener('focusout',resumeCarousel);
     document.querySelector('[data-testimonial-prev]')?.addEventListener('click',()=>{
