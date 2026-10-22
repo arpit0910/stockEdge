@@ -91,8 +91,12 @@ class AccountController extends Controller
         return $status === Password::PasswordReset ? redirect()->route('login')->with('success', 'Password reset. You can now sign in.') : back()->withErrors(['email' => __($status)]);
     }
 
-    public function dashboard(Request $request, string $tab = 'dashboard'): View
+    public function dashboard(Request $request, string $tab = 'dashboard'): View|RedirectResponse
     {
+        if ($request->user()->is_admin) {
+            return redirect()->route('admin');
+        }
+
         abort_unless(in_array($tab, ['dashboard', 'portfolio', 'watchlist', 'subscription']), 404);
         $holdings = DB::table('holdings')->join('stocks', 'stocks.id', '=', 'holdings.stock_id')->where('user_id', $request->user()->id)->select('holdings.*', 'stocks.name', 'stocks.symbol', 'stocks.price', 'stocks.change')->get();
         $watchlist = DB::table('watchlists')->join('stocks', 'stocks.id', '=', 'watchlists.stock_id')->where('user_id', $request->user()->id)->select('watchlists.*', 'stocks.name', 'stocks.symbol', 'stocks.price', 'stocks.change')->get();
