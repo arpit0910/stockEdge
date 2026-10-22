@@ -70,6 +70,10 @@
                 <img class="brand-logo" src="{{ asset('images/sharesrise-logo-on-dark.png') }}" alt="" width="610" height="160">
             </a>
 
+            <a class="nav-mobile-login" href="{{ auth()->check() ? route('dashboard') : route('login') }}">
+                {{ auth()->check() ? 'Dashboard' : 'Log in' }}
+            </a>
+
             <button class="menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navigation">☰</button>
 
             <nav id="navigation" aria-label="Main navigation">
