@@ -4,6 +4,13 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'){document.qu
 document.querySelectorAll('[data-billing]').forEach(button=>button.addEventListener('click',()=>{const period=button.dataset.billing;document.querySelectorAll('[data-billing]').forEach(b=>b.classList.toggle('selected',b===button));document.querySelectorAll('[data-monthly]').forEach(el=>{const price=Number(el.dataset[period]);el.textContent='$'+price.toLocaleString('en-AU',{maximumFractionDigits:2});if(Number(el.dataset.monthly)>0){el.nextElementSibling.textContent=period==='yearly'?'/ year':'/ month';}});document.querySelectorAll('.billing-input').forEach(el=>el.value=period);}));
 document.querySelectorAll('[data-confirm]').forEach(form=>form.addEventListener('submit',event=>{if(!window.confirm(form.dataset.confirm)){event.preventDefault();}}));
 
+document.querySelector('[data-market-view-all]')?.addEventListener('click',function(){
+    const showAll=this.getAttribute('aria-expanded')!=='true';
+    this.closest('.sr-market-dark-panel').querySelectorAll('[data-market-extra]').forEach(row=>row.hidden=!showAll);
+    this.setAttribute('aria-expanded',String(showAll));
+    this.textContent=showAll?'View less':'View all';
+});
+
 const dashboardThemeToggle=document.querySelector('[data-dashboard-theme-toggle]');
 const applyDashboardTheme=theme=>{document.documentElement.dataset.theme=theme;const label=theme==='dark'?'Switch to light mode':'Switch to dark mode';dashboardThemeToggle?.setAttribute('aria-label',label);dashboardThemeToggle?.setAttribute('title',label);};
 if(dashboardThemeToggle){applyDashboardTheme(document.documentElement.dataset.theme||'light');dashboardThemeToggle.addEventListener('click',()=>{const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';applyDashboardTheme(theme);try{localStorage.setItem('admin-theme',theme);}catch(error){}});}
@@ -47,6 +54,94 @@ document.querySelectorAll('form input:not([type="hidden"]):not([type="checkbox"]
 });
 const retirementForm=document.getElementById('retirement-form');
 if(retirementForm){const calculate=()=>{const current=Number(document.getElementById('current-age').value);const retire=Number(document.getElementById('retirement-age').value);const ageInput=document.getElementById('retirement-age');ageInput.setCustomValidity(retire<=current?'Retirement age must be greater than current age.':'');if(!retirementForm.reportValidity()){return;}const initial=Number(document.getElementById('savings').value);const monthly=Number(document.getElementById('contribution').value);const rate=Math.pow(1+Number(document.getElementById('return-rate').value)/100,1/12)-1;const months=(retire-current)*12;const factor=Math.pow(1+rate,months);const total=initial*factor+(Math.abs(rate)<1e-10?monthly*months:monthly*(factor-1)/rate);const paid=initial+monthly*months;document.getElementById('projection-value').textContent=new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD',maximumFractionDigits:0}).format(total);document.getElementById('projection-summary').textContent='Illustrative savings at age '+retire+' after '+(retire-current)+' years. Total starting savings and contributions: '+new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD',maximumFractionDigits:0}).format(paid)+'.';document.getElementById('contribution-bar').style.width=(total>0?Math.min(100,paid/total*100):0)+'%';};retirementForm.addEventListener('submit',event=>{event.preventDefault();calculate();});retirementForm.addEventListener('input',()=>document.getElementById('retirement-age').setCustomValidity(''));calculate();}
+
+const sectorCarousel=document.querySelector('[data-sector-carousel]');
+if(sectorCarousel){
+    const mobileQuery=window.matchMedia('(max-width: 768px)');
+    const sectorCards=Array.from(sectorCarousel.children);
+    let sectorTimer;
+    let sectorResumeTimer;
+
+    const stopSectorCarousel=()=>window.clearInterval(sectorTimer);
+    const startSectorCarousel=()=>{
+        stopSectorCarousel();
+        if(!mobileQuery.matches||document.hidden||sectorCards.length<2){return;}
+        sectorTimer=window.setInterval(()=>{
+            if(sectorCarousel.scrollLeft>=sectorCarousel.scrollWidth-sectorCarousel.clientWidth-2){
+                sectorCarousel.scrollTo({left:0,behavior:'smooth'});
+                return;
+            }
+            const currentCard=sectorCards.reduce((current,card)=>
+                Math.abs(card.getBoundingClientRect().left-sectorCarousel.getBoundingClientRect().left)<Math.abs(current.getBoundingClientRect().left-sectorCarousel.getBoundingClientRect().left)?card:current
+            );
+            const nextCard=sectorCards[(sectorCards.indexOf(currentCard)+1)%sectorCards.length];
+            const scrollLeft=sectorCarousel.scrollLeft+nextCard.getBoundingClientRect().left-sectorCarousel.getBoundingClientRect().left;
+            sectorCarousel.scrollTo({left:scrollLeft,behavior:'smooth'});
+        },3500);
+    };
+    const pauseSectorCarousel=()=>{
+        stopSectorCarousel();
+        window.clearTimeout(sectorResumeTimer);
+    };
+    const resumeSectorCarousel=()=>{
+        window.clearTimeout(sectorResumeTimer);
+        sectorResumeTimer=window.setTimeout(startSectorCarousel,2500);
+    };
+
+    sectorCarousel.addEventListener('pointerdown',pauseSectorCarousel);
+    window.addEventListener('pointerup',resumeSectorCarousel);
+    window.addEventListener('pointercancel',resumeSectorCarousel);
+    sectorCarousel.addEventListener('focusin',pauseSectorCarousel);
+    sectorCarousel.addEventListener('focusout',resumeSectorCarousel);
+    document.addEventListener('visibilitychange',startSectorCarousel);
+    mobileQuery.addEventListener('change',startSectorCarousel);
+    startSectorCarousel();
+}
+
+const topPicksCarousel=document.querySelector('[data-top-picks-carousel]');
+if(topPicksCarousel){
+    const mobileQuery=window.matchMedia('(max-width: 640px)');
+    const topPickSlides=Array.from(topPicksCarousel.children);
+    const reducedMotionQuery=window.matchMedia('(prefers-reduced-motion: reduce)');
+    let topPicksTimer;
+    let topPicksResumeTimer;
+
+    const stopTopPicksCarousel=()=>window.clearInterval(topPicksTimer);
+    const startTopPicksCarousel=()=>{
+        stopTopPicksCarousel();
+        if(!mobileQuery.matches||document.hidden||topPickSlides.length<2){return;}
+        topPicksTimer=window.setInterval(()=>{
+            const behavior=reducedMotionQuery.matches?'auto':'smooth';
+            if(topPicksCarousel.scrollLeft>=topPicksCarousel.scrollWidth-topPicksCarousel.clientWidth-2){
+                topPicksCarousel.scrollTo({left:0,behavior});
+                return;
+            }
+            const currentSlide=topPickSlides.reduce((current,slide)=>
+                Math.abs(slide.getBoundingClientRect().left-topPicksCarousel.getBoundingClientRect().left)<Math.abs(current.getBoundingClientRect().left-topPicksCarousel.getBoundingClientRect().left)?slide:current
+            );
+            const nextSlide=topPickSlides[(topPickSlides.indexOf(currentSlide)+1)%topPickSlides.length];
+            const scrollLeft=topPicksCarousel.scrollLeft+nextSlide.getBoundingClientRect().left-currentSlide.getBoundingClientRect().left;
+            topPicksCarousel.scrollTo({left:scrollLeft,behavior});
+        },3500);
+    };
+    const pauseTopPicksCarousel=()=>{
+        stopTopPicksCarousel();
+        window.clearTimeout(topPicksResumeTimer);
+    };
+    const resumeTopPicksCarousel=()=>{
+        window.clearTimeout(topPicksResumeTimer);
+        topPicksResumeTimer=window.setTimeout(startTopPicksCarousel,2500);
+    };
+
+    topPicksCarousel.addEventListener('pointerdown',pauseTopPicksCarousel);
+    window.addEventListener('pointerup',resumeTopPicksCarousel);
+    window.addEventListener('pointercancel',resumeTopPicksCarousel);
+    topPicksCarousel.addEventListener('focusin',pauseTopPicksCarousel);
+    topPicksCarousel.addEventListener('focusout',resumeTopPicksCarousel);
+    document.addEventListener('visibilitychange',startTopPicksCarousel);
+    mobileQuery.addEventListener('change',startTopPicksCarousel);
+    startTopPicksCarousel();
+}
 
 const categoryCarousel=document.querySelector('[data-category-carousel]');
 if(categoryCarousel){

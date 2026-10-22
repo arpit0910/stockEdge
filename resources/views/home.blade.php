@@ -138,15 +138,21 @@ $testimonialSection = $siteSections->get('testimonials');
             </div>
 
             <!-- Overlapping Mobile Phone Mockup -->
-            <div class="sr-phone-screen">
-                <div class="sr-phone-header">
-                    <small>Top ASX Pick</small>
-                    <strong>CSL Limited (CSL)</strong>
-                </div>
-                <div class="sr-phone-badge-row">
-                    <span class="tag-buy">BUY</span>
-                </div>
+            @if($topAsxPicks->isNotEmpty())
+            <div class="sr-phone-screen" data-top-picks-carousel role="region" aria-label="Top ASX picks">
+                @foreach($topAsxPicks as $stock)
+                <a class="sr-top-pick-slide" href="{{ route('stock', $stock->symbol) }}">
+                    <span class="sr-phone-header">
+                        <small>Top ASX Pick</small>
+                        <strong>{{ $stock->name }} ({{ $stock->symbol }})</strong>
+                    </span>
+                    <span class="sr-phone-badge-row">
+                        <span class="tag-buy">BUY</span>
+                    </span>
+                </a>
+                @endforeach
             </div>
+            @endif
         </div>
     </div>
 </section>
@@ -184,7 +190,7 @@ $testimonialSection = $siteSections->get('testimonials');
                         </thead>
                         <tbody>
                             @forelse($homepageStocks->take($marketSection->item_limit) as $company)
-                            <tr>
+                            <tr @if($loop->iteration > 3) hidden data-market-extra @endif>
                                 <td data-label="Company"><strong>{{ $company->name }}</strong><small>{{ $company->sector }}</small></td>
                                 <td data-label="Code"><span class="sr-code-badge">{{ $company->symbol }}</span></td>
                                 <td data-label="Price" class="font-mono">${{ number_format($company->price, 2) }}</td>
@@ -202,6 +208,9 @@ $testimonialSection = $siteSections->get('testimonials');
                         </tbody>
                     </table>
                 </div>
+                @if($homepageStocks->take($marketSection->item_limit)->count() > 3)
+                <button class="sr-market-view-all" type="button" data-market-view-all aria-expanded="false">View all</button>
+                @endif
             </div>
             @endif
 
@@ -286,7 +295,7 @@ $testimonialSection = $siteSections->get('testimonials');
                 Browse company research across mining, banking, technology, healthcare, energy, and other major sectors.
             </p>
 
-            <div class="sr-sector-pills-row">
+            <div class="sr-sector-pills-row" data-sector-carousel>
                 @php
                 $sectors = [
                 ['name' => 'Healthcare', 'bg' => '#f43f5e', 'svg' => '
@@ -414,9 +423,9 @@ $testimonialSection = $siteSections->get('testimonials');
     <div class="container">
         <div class="sr-research-cta">
             <span class="sr-research-cta-eyebrow">EXCLUSIVE STOCK RESEARCH</span>
-            <h2>Discover High-Potential Investment Opportunities.</h2>
+            <h2>Discover High-Potential Investment Opportunities</h2>
             <p>Explore high-potential ASX sectors with in-depth research reports and expert market insights to make more informed investment decisions.</p>
-            <a class="btn-green sr-research-cta-button" href="{{ route('sample') }}">Download Your Sample Report Now <span aria-hidden="true">&rarr;</span></a>
+            <a class="btn-green sr-research-cta-button" href="{{ route('sample') }}">Download Your Sample Report <span aria-hidden="true">&rarr;</span></a>
         </div>
     </div>
 </section>
@@ -465,7 +474,7 @@ $testimonialSection = $siteSections->get('testimonials');
 <section class="sr-pricing-section">
     <div class="container">
         <div class="sr-section-heading-centered">
-            <h2>Membership options</h2>
+            <h2>Membership Options</h2>
             <p>Compare access levels and choose the plan that fits how you use the research library.</p>
             <div class="billing-toggle home-billing-toggle">
                 <button class="selected" type="button" data-billing="monthly">Monthly</button>
@@ -531,7 +540,7 @@ $testimonialSection = $siteSections->get('testimonials');
         <div class="sr-carousel-heading">
             <div class="sr-carousel-heading-copy">
                 <span class="eyebrow">{{ $testimonialSection?->eyebrow ?: 'INVESTOR EXPERIENCES' }}</span>
-                <h2>{{ $testimonialSection?->title ?: 'Trusted by thoughtful investors.' }}</h2>
+                <h2>{{ $testimonialSection?->title ?: 'Trusted By Thoughtful Investors' }}</h2>
                 <p>{{ $testimonialSection?->description ?: 'Read experiences shared by the SharesRise community.' }}</p>
             </div>
         </div>
@@ -622,7 +631,7 @@ $testimonialSection = $siteSections->get('testimonials');
 
                     <div class="sr-form-consent">
                         <label>
-                            <input type="checkbox" name="consent" value="1" required checked>
+                            <input type="checkbox" name="consent" value="1" required>
                             <span>By providing your details, you agree to {{ config('stockedge.site.brand_name', 'SharesRise') }}'s <a href="{{ route('page', 'terms') }}">Terms &amp; Conditions</a>, <a href="{{ route('page', 'privacy') }}">Privacy Policy</a> &amp; <a href="{{ route('page', 'financial-services-guide') }}">Financial Services Guide</a> and to receive marketing offers.</span>
                         </label>
                     </div>
@@ -642,7 +651,7 @@ $testimonialSection = $siteSections->get('testimonials');
 <section class="sr-section sr-faq-section">
     <div class="container" style="max-width: 860px;">
         <div class="sr-section-heading-centered">
-            <h2>Frequently asked questions</h2>
+            <h2>Frequently Asked Questions</h2>
             <p>Practical information about the research library, accounts, and memberships.</p>
         </div>
 

@@ -22,12 +22,18 @@ class SiteController extends Controller
             ->orderBy('homepage_position')
             ->orderBy('id')
             ->get();
+        $topAsxPicks = Stock::query()
+            ->where('top_asx_pick', true)
+            ->orderBy('homepage_position')
+            ->orderBy('id')
+            ->get();
 
         return view('home', [
             'sections' => DB::table('site_sections')->where('published', true)->orderBy('position')->orderBy('id')->get(),
             'siteSections' => DB::table('site_sections')->where('published', true)->get()->keyBy('layout'),
             'collections' => Taxonomy::query()->categories()->published()->ordered()->get(),
             'homepageStocks' => $homepageStocks,
+            'topAsxPicks' => $topAsxPicks,
             'reports' => Report::with('stock')->where('published', true)->latest()->take(12)->get(),
             'articles' => Article::where('published', true)->latest()->take(3)->get(),
             'plans' => DB::table('plans')->where('published', true)->orderBy('position')->get(),

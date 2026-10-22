@@ -1,10 +1,9 @@
 @props(['report'])
 <article class="report-card">
-    @if($report->image_path)
-        <a class="report-card-thumbnail" href="{{ route('report', $report->slug) }}" aria-label="Read {{ $report->title }}">
-            <img src="{{ route('media.file', basename($report->image_path)) }}" alt="{{ $report->image_alt }}" loading="lazy">
-        </a>
-    @endif
+    @php($fallbackThumbnail = match ($report->stock->sector) { 'Mining', 'Materials' => 'images/mining.jpg', 'Energy' => 'images/energy.jpg', default => 'images/city.jpg' })
+    <a class="report-card-thumbnail" href="{{ route('report', $report->slug) }}" aria-label="Read {{ $report->title }}">
+        <img src="{{ $report->image_path ? route('media.file', basename($report->image_path)) : asset($fallbackThumbnail) }}" alt="{{ $report->image_alt ?: $report->stock->name.' research report' }}" loading="lazy">
+    </a>
 
     <div class="card-top">
         <span class="tag">{{ $report->category }}</span>

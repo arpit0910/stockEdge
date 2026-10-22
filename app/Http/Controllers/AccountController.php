@@ -38,7 +38,11 @@ class AccountController extends Controller
         }
         $request->session()->regenerate();
 
-        $destination = $request->user()->is_admin ? route('admin') : ($request->user()->is_sales ? route('sales.dashboard') : route('dashboard'));
+        if ($request->user()->is_admin) {
+            return redirect()->route('admin');
+        }
+
+        $destination = $request->user()->is_sales ? route('sales.dashboard') : route('dashboard');
 
         return redirect()->intended($destination);
     }

@@ -71,7 +71,7 @@ class AdminResources
                 'image_alt' => self::field('Image description', 'text', 'nullable|string|max:200', 'Presentation'),
                 'published' => self::field('Published on website', 'checkbox', 'boolean', 'Publication'),
             ]],
-            'stocks' => ['table' => 'stocks', 'singular' => 'Company', 'title' => 'Company coverage', 'description' => 'Maintain the company universe and the market data displayed on the homepage.', 'columns' => ['symbol' => 'Symbol', 'name' => 'Company', 'sector' => 'Sector', 'price' => 'Demo price', 'change' => 'Change %', 'show_on_homepage' => 'Homepage'], 'search' => ['symbol', 'name', 'sector'], 'fields' => [
+            'stocks' => ['table' => 'stocks', 'singular' => 'Company', 'title' => 'Company coverage', 'description' => 'Maintain the company universe and the market data displayed on the homepage.', 'columns' => ['symbol' => 'Symbol', 'name' => 'Company', 'sector' => 'Sector', 'price' => 'Demo price', 'change' => 'Change %', 'show_on_homepage' => 'Homepage', 'top_asx_pick' => 'Top ASX pick'], 'search' => ['symbol', 'name', 'sector'], 'fields' => [
                 'symbol' => self::field('ASX symbol', 'text', 'required|alpha_dash|max:12', 'Company', [], 'Keep symbols consistent with company disclosures.'),
                 'name' => self::field('Company name', 'text', 'required|string|max:200', 'Company'),
                 'sector' => self::field('Sector', 'select', ['required', Rule::in(config('stockedge.sectors'))], 'Company', self::options(config('stockedge.sectors'))),
@@ -89,6 +89,7 @@ class AdminResources
                 'recommendation_status' => self::field('Coverage status', 'select', ['required', Rule::in(['Active', 'Target Achieved', 'Closed'])], 'Homepage coverage', self::options(['Active', 'Target Achieved', 'Closed'])),
                 'homepage_position' => self::field('Homepage display order', 'integer', 'required|integer|min:0|max:9999', 'Homepage coverage', [], 'Lower numbers appear first in both company tables.'),
                 'show_on_homepage' => self::field('Show in homepage company tables', 'checkbox', 'boolean', 'Homepage coverage'),
+                'top_asx_pick' => self::field('Show as a Top ASX Pick', 'checkbox', 'boolean', 'Homepage coverage', [], 'Selected companies rotate in the homepage hero on mobile.'),
             ]],
             'taxonomies' => ['table' => 'taxonomies', 'singular' => 'Classification', 'title' => 'Collections & sectors', 'description' => 'Add research collections, company sectors and editorial topics. Renames update linked content.', 'columns' => ['name' => 'Name', 'kind' => 'Used for', 'position' => 'Order'], 'search' => ['name', 'kind'], 'fields' => [
                 'name' => self::field('Name', 'text', 'required|string|max:100', 'Classification'),

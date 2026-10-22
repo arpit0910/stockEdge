@@ -25,6 +25,7 @@ class Stock extends Model
             'buy_price' => 'decimal:4',
             'target_price' => 'decimal:4',
             'show_on_homepage' => 'boolean',
+            'top_asx_pick' => 'boolean',
             'homepage_position' => 'integer',
         ];
     }

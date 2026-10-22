@@ -62,6 +62,17 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+.sr-not-found {
+  min-height: 50vh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 18px;
+  padding-block: 72px;
+  text-align: center;
+}
+.sr-not-found h1 { margin: 0; color: var(--slate-900); font-size: clamp(30px, 5vw, 48px); }
+.sr-not-found p { margin: 0; color: var(--slate-600); }
 body {
   margin: 0;
   color: var(--ink);
@@ -886,7 +897,17 @@ small { font-size: 12px; }
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
   z-index: 2;
   backdrop-filter: blur(12px);
+  overflow: hidden;
 }
+.sr-top-pick-slide {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  color: inherit;
+  text-decoration: none;
+}
+.sr-top-pick-slide:first-child { display: flex; }
 .sr-phone-notch {
   width: 44px;
   height: 4px;
@@ -1072,6 +1093,18 @@ small { font-size: 12px; }
   width: 100%;
   overflow-x: auto;
 }
+.sr-market-dark-panel [hidden] { display: none !important; }
+.sr-market-view-all {
+  align-self: center;
+  margin-top: 14px;
+  padding: 8px 16px;
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  border-radius: 8px;
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--green-400);
+  font-weight: 700;
+}
+.sr-market-view-all:hover { background: rgba(16, 185, 129, 0.2); }
 .sr-dark-table, .sr-light-table {
   width: 100%;
   border-collapse: collapse;
@@ -2388,6 +2421,7 @@ small { font-size: 12px; }
 }
 .report-card-thumbnail {
   display: block;
+  width: 100%;
   aspect-ratio: 16 / 9;
   margin-bottom: 20px;
   overflow: hidden;
@@ -2395,9 +2429,12 @@ small { font-size: 12px; }
   background: var(--slate-100);
 }
 .report-card-thumbnail img {
+  display: block;
   width: 100%;
   height: 100%;
+  max-width: none;
   object-fit: cover;
+  object-position: center;
   transition: transform 0.25s ease;
 }
 .report-card:hover .report-card-thumbnail img { transform: scale(1.025); }
@@ -3832,6 +3869,7 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
    ========================================================================== */
 @media (max-width: 1200px) {
   .container { width: calc(100% - 48px); }
+  .reports-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .sr-lead-gen-grid { gap: 32px; }
   .sr-library-layout { grid-template-columns: 240px 1fr; gap: 24px; }
 }
@@ -3959,6 +3997,7 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
 }
 
 @media (max-width: 640px) {
+  .reports-grid { grid-template-columns: 1fr; }
   .container { width: calc(100% - 32px); }
   body { overflow-wrap: anywhere; }
   .sr-topbar-right { display: none; }
@@ -4013,19 +4052,47 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
     display: flex;
     width: 100%;
     max-width: none;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 12px;
     margin: 0;
-    padding: 18px 20px;
-    border-width: 1px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sr-phone-screen::-webkit-scrollbar { display: none; }
+  .sr-phone-screen .sr-top-pick-slide {
+    display: flex;
+    flex: 0 0 calc(50% - 6px);
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 12px;
+    background: #0b1e3d;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+    scroll-snap-align: start;
   }
   .sr-phone-header { text-align: left; }
-  .sr-phone-header small { margin-bottom: 3px; font-size: 10px; }
-  .sr-phone-header strong { margin: 0; font-size: 15px; }
+  .sr-phone-header small { margin-bottom: 3px; font-size: 8px; }
+  .sr-phone-header strong {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
   .sr-phone-badge-row { flex: 0 0 auto; margin: 0; }
-  .sr-phone-badge-row .tag-buy { padding: 5px 10px; font-size: 10px; }
+  .sr-phone-badge-row .tag-buy { padding: 3px 7px; font-size: 8px; }
   .sr-screen-header { padding-inline: 12px; }
   .sr-screen-url { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sr-screen-body { padding: 14px; }
