@@ -378,8 +378,8 @@ $testimonialSection = $siteSections->get('testimonials');
     <div class="container">
         <div class="sr-carousel-heading">
             <div class="sr-carousel-heading-copy">
-                <h2>Research Collections</h2>
-                <p>Browse reports by research style and investment objective.</p>
+                <h2>SharesRise Reports Categories</h2>
+                <p>Actionable research and recommendations for every kind of investor.</p>
             </div>
         </div>
 
@@ -436,8 +436,8 @@ $testimonialSection = $siteSections->get('testimonials');
 <section class="sr-section sr-news-section">
     <div class="container">
         <div class="sr-section-heading-centered">
-            <h2>Market Insights</h2>
-            <p>Read the latest perspectives from the research desk.</p>
+            <h2>Latest ASX Market News, Stock Insights &amp; Investment Trends</h2>
+            <p>Stay informed with timely analysis and deep dives from our research desk.</p>
             <div class="sr-all-insights-link">
                 <a href="{{ route('editorial') }}" class="sr-link-arrow">All Insights &amp; Market Perspectives →</a>
             </div>

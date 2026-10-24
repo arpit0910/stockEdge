@@ -29,7 +29,7 @@ class PlatformTest extends TestCase
             ->assertSee('sr-about-split-layout', false)
             ->assertSee('sr-coverage-cards-grid', false);
         $this->get('/')
-            ->assertSeeInOrder(['Research Collections', 'Browse reports by research style and investment objective.', 'Market Insights'])
+            ->assertSeeInOrder(['SharesRise Reports Categories', 'Actionable research and recommendations for every kind of investor.', 'Latest ASX Market News, Stock Insights & Investment Trends'])
             ->assertSee('data-category-carousel', false)
             ->assertSee('data-category-prev', false)
             ->assertSee('data-category-next', false)
