@@ -366,3 +366,20 @@ document.querySelectorAll('[data-testimonials-carousel]').forEach(carousel=>{
     setupCarousel();
 });
 
+const wrapReportTables = () => {
+    document.querySelectorAll('.internal-article-body table, .prose table').forEach(table => {
+        if (!table.closest('.table-scroll, .report-table-scroll')) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'table-scroll sr-table-scroll';
+            table.parentNode.insertBefore(wrapper, table);
+            wrapper.appendChild(table);
+        }
+    });
+};
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wrapReportTables);
+} else {
+    wrapReportTables();
+}
+
+

@@ -29,11 +29,31 @@
         </header>
 
         @if($canRead)
+            @php
+                $renderedBody = null;
+                if ($kind === 'report' && $item->body_format === 'html') {
+                    $renderedBody = $item->body;
+                } elseif (str_contains($item->body, '##') || str_contains($item->body, '| ') || str_contains($item->body, "- ") || str_contains($item->body, '<') || str_contains($item->body, '**')) {
+                    $renderedBody = (string) \Illuminate\Support\Str::markdown($item->body);
+                }
+
+                if ($renderedBody !== null) {
+                    $renderedBody = preg_replace_callback(
+                        '/(<div[^>]*class="[^"]*(?:table-scroll|report-table-scroll)[^"]*"[^>]*>\s*)?<table\b([^>]*)>(.*?)<\/table>(\s*<\/div>)?/si',
+                        function ($matches) {
+                            if (!empty($matches[1]) && !empty($matches[4])) {
+                                return $matches[0];
+                            }
+                            return '<div class="table-scroll sr-table-scroll"><table' . $matches[2] . '>' . $matches[3] . '</table></div>';
+                        },
+                        $renderedBody
+                    );
+                }
+            @endphp
+
             <div class="prose internal-article-body">
-                @if($kind === 'report' && $item->body_format === 'html')
-                    {!! $item->body !!}
-                @elseif(str_contains($item->body, '##') || str_contains($item->body, '| ') || str_contains($item->body, "- ") || str_contains($item->body, '<') || str_contains($item->body, '**'))
-                    {!! \Illuminate\Support\Str::markdown($item->body) !!}
+                @if($renderedBody !== null)
+                    {!! $renderedBody !!}
                 @else
                     @foreach(explode("\n\n", $item->body) as $paragraph)
                         <section>

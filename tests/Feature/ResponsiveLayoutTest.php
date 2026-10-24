@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Report;
+use App\Models\Stock;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -65,5 +67,33 @@ class ResponsiveLayoutTest extends TestCase
         $this->assertStringContainsString('.sr-lead-gen-section { margin-block: 24px 0; }', $publicCss);
         $this->assertStringContainsString('@media(max-width:420px)', $workspaceCss);
         $this->assertStringContainsString('.a-table-scroll{overscroll-behavior-inline:contain', $workspaceCss);
+        $this->assertStringContainsString('.prose .table-scroll,', $publicCss);
+        $this->assertStringContainsString('.internal-article-body .table-scroll', $publicCss);
+        $this->assertStringContainsString('overflow-x: clip;', $publicCss);
+    }
+
+    public function test_report_detail_page_is_mobile_responsive_and_wraps_tables(): void
+    {
+        $user = User::factory()->create();
+        $stock = Stock::factory()->create(['symbol' => 'WZR', 'name' => 'Wisr Limited']);
+        $htmlTable = '<table><thead><tr><th>Metric</th><th>FY25</th></tr></thead><tbody><tr><td>Revenue</td><td>$25.8m</td></tr></tbody></table>';
+        $report = Report::factory()->create([
+            'stock_id' => $stock->id,
+            'slug' => 'wisr-limited-asx-wzr',
+            'title' => 'Wisr Limited',
+            'body_format' => 'html',
+            'body' => '<p>Company overview</p>'.$htmlTable.'<p class="data">Source: ASX</p>',
+            'published' => true,
+            'premium' => false,
+        ]);
+
+        $response = $this->actingAs($user)->get('/reports/'.$report->slug);
+        $response->assertOk();
+        $response->assertSee('class="table-scroll sr-table-scroll"', false);
+        $response->assertSee('<table', false);
+        $response->assertSee('Wisr Limited');
+
+        $js = file_get_contents(public_path('js/app.js'));
+        $this->assertStringContainsString('wrapReportTables', $js);
     }
 }
