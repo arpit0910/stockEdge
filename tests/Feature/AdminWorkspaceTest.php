@@ -319,7 +319,7 @@ CSV;
             ->assertSee('Show in homepage company tables');
 
         $this->actingAs($admin)->put('/admin/manage/stocks/'.$stock->id, [
-            '_version' => (string) $stock->updated_at,
+            '_version' => (string) DB::table('stocks')->where('id', $stock->id)->value('updated_at'),
             'symbol' => 'HPC',
             'name' => 'Homepage Company',
             'sector' => 'Mining',
@@ -346,6 +346,55 @@ CSV;
             'recommendation_status' => 'Target Achieved',
             'homepage_position' => 1,
             'show_on_homepage' => true,
+        ]);
+    }
+
+    public function test_admin_can_create_and_edit_stock_with_optional_fields_empty(): void
+    {
+        $this->seed(AdminContentSeeder::class);
+        $admin = User::factory()->admin()->create();
+
+        $createPage = $this->actingAs($admin)->get('/admin/manage/stocks/create');
+        $createPage->assertOk();
+
+        $createPage->assertDontSee('Market capitalisation group <span class="a-required">*</span>', false)
+            ->assertDontSee('Company overview <span class="a-required">*</span>', false)
+            ->assertDontSee('Snapshot change (%) <span class="a-required">*</span>', false);
+
+        $this->actingAs($admin)->post('/admin/manage/stocks', [
+            'symbol' => 'OPT',
+            'name' => 'Optional Fields Company',
+            'sector' => 'Technology',
+            'price' => 12.50,
+            'yield' => 1.5,
+            'recommendation_status' => 'Active',
+            'homepage_position' => 10,
+            'show_on_homepage' => 1,
+            'top_asx_pick' => 0,
+        ])->assertSessionHas('success');
+
+        $stock = Stock::where('symbol', 'OPT')->firstOrFail();
+        $this->assertNull($stock->cap);
+        $this->assertNull($stock->description);
+
+        $this->actingAs($admin)->put('/admin/manage/stocks/'.$stock->id, [
+            '_version' => (string) DB::table('stocks')->where('id', $stock->id)->value('updated_at'),
+            'symbol' => 'OPT',
+            'name' => 'Optional Fields Company Updated',
+            'sector' => 'Technology',
+            'price' => 14.00,
+            'yield' => 2.0,
+            'recommendation_status' => 'Active',
+            'homepage_position' => 10,
+            'show_on_homepage' => 1,
+            'top_asx_pick' => 0,
+        ])->assertSessionHas('success');
+
+        $this->assertDatabaseHas('stocks', [
+            'id' => $stock->id,
+            'name' => 'Optional Fields Company Updated',
+            'cap' => null,
+            'description' => null,
         ]);
     }
 

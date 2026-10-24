@@ -29,12 +29,12 @@ class PlatformTest extends TestCase
             ->assertSee('sr-about-split-layout', false)
             ->assertSee('sr-coverage-cards-grid', false);
         $this->get('/')
-            ->assertSeeInOrder(['Research Collections', 'Discover High-Potential Investment Opportunities.', 'Market Insights'])
+            ->assertSeeInOrder(['Research Collections', 'Browse reports by research style and investment objective.', 'Market Insights'])
             ->assertSee('data-category-carousel', false)
             ->assertSee('data-category-prev', false)
             ->assertSee('data-category-next', false)
             ->assertSee('href="'.route('sample').'"', false)
-            ->assertSeeInOrder(['Send my free report', 'Frequently asked questions']);
+            ->assertSeeInOrder(['Send my free report', 'Frequently Asked Questions']);
         $this->get('/contact')
             ->assertSee('sr-contact-hero-points', false)
             ->assertSee('sr-enquiry-heading', false)

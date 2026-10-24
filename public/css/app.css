@@ -2536,6 +2536,41 @@ small { font-size: 12px; }
 }
 .auth-story h1 { font-size: 52px; line-height: 1.15; color: var(--slate-900); }
 .auth-story p { font-size: 16px; line-height: 1.8; color: var(--slate-600); }
+
+/* Centered Auth Layout (Login, Register, Password Reset) */
+.auth-centered-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 420px);
+  padding-block: 64px 84px;
+}
+.auth-centered-layout .form-panel,
+.auth-layout:has(> .form-panel:only-child) .form-panel {
+  width: 100%;
+  max-width: 460px;
+  margin-inline: auto;
+}
+.auth-card-header {
+  margin-bottom: 24px;
+}
+.auth-card-header .eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+}
+.auth-card-header h2 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--slate-900);
+  margin: 0 0 6px;
+  letter-spacing: -0.025em;
+}
+.auth-card-header p {
+  font-size: 14px;
+  color: var(--slate-500);
+  margin: 0;
+  line-height: 1.5;
+}
 .form-panel {
   padding: 38px;
   border: 1px solid var(--slate-200);
@@ -4383,7 +4418,9 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .article-card, .price-card, .collection-card { padding: 18px; }
   .article-image { margin: -18px -18px 16px; }
   .about-art, .calculator > form, .projection { padding: 22px; }
-  .auth-layout { padding-block: 26px; }
+  .auth-layout, .auth-centered-layout { padding-block: 28px 36px; min-height: auto; }
+  .auth-centered-layout .form-panel { padding: 26px 20px; border-radius: 14px; }
+  .auth-card-header h2 { font-size: 22px; }
   .auth-story h1 { font-size: 30px; }
   .form-between { align-items: flex-start; gap: 10px; }
   .sample-report { padding-block: 28px; }

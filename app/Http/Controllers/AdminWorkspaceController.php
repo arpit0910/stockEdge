@@ -180,6 +180,15 @@ class AdminWorkspaceController extends Controller
         }
         if ($resource === 'stocks') {
             $data['symbol'] = strtoupper($data['symbol']);
+            $data['cap'] = $data['cap'] ?? null;
+            $data['description'] = $data['description'] ?? null;
+            $data['change'] = isset($data['change']) && $data['change'] !== '' ? $data['change'] : null;
+            $data['day_high'] = isset($data['day_high']) && $data['day_high'] !== '' ? $data['day_high'] : null;
+            $data['day_low'] = isset($data['day_low']) && $data['day_low'] !== '' ? $data['day_low'] : null;
+            $data['buy_price'] = isset($data['buy_price']) && $data['buy_price'] !== '' ? $data['buy_price'] : null;
+            $data['target_price'] = isset($data['target_price']) && $data['target_price'] !== '' ? $data['target_price'] : null;
+            $data['seo_title'] = $data['seo_title'] ?? null;
+            $data['meta_description'] = $data['meta_description'] ?? null;
         }
         DB::transaction(function () use ($request, $resource, $definition, $id, $data, $version): void {
             $current = $id ? DB::table($definition['table'])->where('id', $id)
@@ -369,7 +378,7 @@ class AdminWorkspaceController extends Controller
             'homepage_position' => 'integer|min:0|max:9999',
             'show_on_homepage' => 'boolean',
         ];
-        $requiredForNew = ['name', 'sector', 'cap', 'description', 'price', 'change', 'yield'];
+        $requiredForNew = ['name', 'sector', 'price', 'yield'];
 
         foreach ($csv['rows'] as $row) {
             $values = $row['values'];
