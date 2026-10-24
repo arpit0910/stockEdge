@@ -22,7 +22,11 @@ class ResponsiveLayoutTest extends TestCase
             ->assertSee('id="site-footer"', false)
             ->assertSee('id="footer-newsletter-email"', false)
             ->assertSee('name="type" value="newsletter"', false)
-            ->assertSeeInOrder(['Explore', 'Latest Research', 'Important Links', 'Privacy Policy', 'Get in Touch']);
+            ->assertSeeInOrder(['Explore', 'Latest Research', 'Important Links', 'Privacy Policy', 'Get in Touch'])
+            ->assertSee('sr-lead-desc-desktop', false)
+            ->assertSee('Evaluate investment opportunities by analysing business fundamentals', false)
+            ->assertSee('sr-lead-desc-mobile', false)
+            ->assertSee('Join the SharesRise community for expert investment insights', false);
 
         $member = User::factory()->create();
         $this->actingAs($member)->get('/dashboard')
@@ -70,6 +74,8 @@ class ResponsiveLayoutTest extends TestCase
         $this->assertStringContainsString('.prose .table-scroll,', $publicCss);
         $this->assertStringContainsString('.internal-article-body .table-scroll', $publicCss);
         $this->assertStringContainsString('overflow-x: clip;', $publicCss);
+        $this->assertStringContainsString('.sr-lead-desc-desktop', $publicCss);
+        $this->assertStringContainsString('.sr-lead-desc-mobile', $publicCss);
     }
 
     public function test_report_detail_page_is_mobile_responsive_and_wraps_tables(): void

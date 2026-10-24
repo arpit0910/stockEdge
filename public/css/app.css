@@ -1863,6 +1863,14 @@ small { font-size: 12px; }
   line-height: 1.6;
   margin-bottom: 18px;
 }
+.sr-lead-desc-mobile,
+.sr-mobile-only {
+  display: none !important;
+}
+.sr-lead-desc-desktop,
+.sr-desktop-only {
+  display: block;
+}
 .sr-lead-perks {
   display: flex;
   max-width: 500px;
@@ -4124,6 +4132,14 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   /* Prevent iOS auto-zoom on input focus */
   input[type="text"], input[type="email"], input[type="tel"], input[type="password"], input[type="number"], input[type="search"], select, textarea {
     font-size: 16px !important;
+  }
+  .sr-lead-desc-desktop,
+  .sr-desktop-only {
+    display: none !important;
+  }
+  .sr-lead-desc-mobile,
+  .sr-mobile-only {
+    display: block !important;
   }
 }
 

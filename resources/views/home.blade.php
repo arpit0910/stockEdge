@@ -579,8 +579,11 @@ $testimonialSection = $siteSections->get('testimonials');
             <!-- Left Info -->
             <div class="sr-lead-left">
                 <h2>Start with a free report</h2>
-                <p class="sr-lead-desc">
+                <p class="sr-lead-desc sr-lead-desc-desktop sr-desktop-only">
                     Evaluate investment opportunities by analysing business fundamentals, cash flow, profitability, valuation, and growth potential. Identify financial risks, assess market conditions, and make informed investment decisions using practical research and strategic insights.
+                </p>
+                <p class="sr-lead-desc sr-lead-desc-mobile sr-mobile-only">
+                    Join the SharesRise community for expert investment insights, company research, and smarter investing delivered straight to your inbox.
                 </p>
 
                 <div class="sr-lead-perks">
