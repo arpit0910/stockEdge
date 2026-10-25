@@ -28,6 +28,37 @@
             </div>
         </header>
 
+        @if($kind === 'report' && $item->stock)
+            <div class="detail-snapshot-mobile sr-mobile-only" aria-label="Company snapshot">
+                <div class="detail-snapshot-mobile-header">
+                    <div>
+                        <span class="eyebrow">COMPANY SNAPSHOT</span>
+                        <div class="detail-snapshot-mobile-title">
+                            <span class="detail-snapshot-mobile-symbol">{{ $item->stock->symbol }}</span>
+                            <span class="detail-snapshot-mobile-name">{{ $item->stock->name }}</span>
+                        </div>
+                    </div>
+                    <div class="detail-snapshot-mobile-price-badge">
+                        <div class="detail-snapshot-mobile-price">${{ number_format($item->stock->price, 2) }}</div>
+                        <span class="rating {{ strtolower($item->rating) }}">{{ $item->rating }} rating</span>
+                    </div>
+                </div>
+
+                <div class="detail-snapshot-mobile-metrics">
+                    <div class="detail-snapshot-metric">
+                        <span class="metric-label">Sector</span>
+                        <span class="metric-val">{{ $item->stock->sector }}</span>
+                    </div>
+                    <div class="detail-snapshot-metric">
+                        <span class="metric-label">Capitalisation</span>
+                        <span class="metric-val">{{ $item->stock->cap }}</span>
+                    </div>
+                </div>
+
+                <a class="btn-green detail-aside-action" href="{{ route('stock', $item->stock->symbol) }}">View company overview &rarr;</a>
+            </div>
+        @endif
+
         @if($canRead)
             @php
                 $renderedBody = null;
@@ -39,12 +70,12 @@
 
                 if ($renderedBody !== null) {
                     $renderedBody = preg_replace_callback(
-                        '/(<div[^>]*class="[^"]*(?:table-scroll|report-table-scroll)[^"]*"[^>]*>\s*)?<table\b([^>]*)>(.*?)<\/table>(\s*<\/div>)?/si',
+                        '/<div[^>]*class="[^"]*(?:table-scroll|report-table-scroll)[^"]*"[^>]*>\s*<table\b[^>]*>.*?<\/table>\s*<\/div>|<table\b([^>]*)>(.*?)<\/table>/si',
                         function ($matches) {
-                            if (!empty($matches[1]) && !empty($matches[4])) {
+                            if (!isset($matches[1])) {
                                 return $matches[0];
                             }
-                            return '<div class="table-scroll sr-table-scroll"><table' . $matches[2] . '>' . $matches[3] . '</table></div>';
+                            return '<div class="table-scroll sr-table-scroll"><table' . $matches[1] . '>' . $matches[2] . '</table></div>';
                         },
                         $renderedBody
                     );
@@ -84,7 +115,7 @@
         @endif
     </article>
 
-    <aside class="detail-aside" aria-label="Supporting details">
+    <aside class="detail-aside detail-aside-desktop" aria-label="Supporting details">
         @if($kind === 'report')
             <span class="eyebrow">COMPANY SNAPSHOT</span>
             <h2>{{ $item->stock->symbol }}</h2>
