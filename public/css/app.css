@@ -4092,6 +4092,14 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   .sr-pricing-grid { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
   .sr-lead-gen-grid { grid-template-columns: 1fr; gap: 22px; }
   .sr-lead-left { padding-top: 0; }
+  .sr-lead-desc-desktop,
+  .sr-desktop-only {
+    display: none !important;
+  }
+  .sr-lead-desc-mobile,
+  .sr-mobile-only {
+    display: block !important;
+  }
   .sr-footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
 
   .sr-library-layout { grid-template-columns: 1fr; }
