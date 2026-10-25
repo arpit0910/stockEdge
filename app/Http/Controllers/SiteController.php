@@ -36,7 +36,7 @@ class SiteController extends Controller
             'topAsxPicks' => $topAsxPicks,
             'reports' => Report::with('stock')->where('published', true)->latest()->take(12)->get(),
             'articles' => Article::where('published', true)->latest()->take(3)->get(),
-            'plans' => DB::table('plans')->where('published', true)->orderBy('position')->get(),
+            'plans' => DB::table('plans')->where('published', true)->where('show_on_homepage', true)->orderBy('position')->orderBy('id')->limit(3)->get(),
             'testimonials' => DB::table('testimonials')->where('published', true)->orderBy('position')->get(),
             'faqs' => DB::table('faqs')->where('published', true)->orderBy('position')->get(),
         ]);

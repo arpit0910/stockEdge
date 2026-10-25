@@ -76,6 +76,7 @@ class ResponsiveLayoutTest extends TestCase
         $this->assertStringContainsString('overflow-x: clip;', $publicCss);
         $this->assertStringContainsString('.sr-lead-desc-desktop', $publicCss);
         $this->assertStringContainsString('.sr-lead-desc-mobile', $publicCss);
+        $this->assertStringContainsString('.detail-snapshot-mobile', $publicCss);
     }
 
     public function test_report_detail_page_is_mobile_responsive_and_wraps_tables(): void
@@ -96,6 +97,7 @@ class ResponsiveLayoutTest extends TestCase
         $response = $this->actingAs($user)->get('/reports/'.$report->slug);
         $response->assertOk();
         $response->assertSee('class="table-scroll sr-table-scroll"', false);
+        $response->assertSee('detail-snapshot-mobile', false);
         $response->assertSee('<table', false);
         $response->assertSee('Wisr Limited');
 

@@ -20,6 +20,7 @@ class Plan extends Model
             'yearly_price' => 'decimal:2',
             'is_trial' => 'boolean',
             'featured' => 'boolean',
+            'show_on_homepage' => 'boolean',
             'published' => 'boolean',
             'position' => 'integer',
         ];

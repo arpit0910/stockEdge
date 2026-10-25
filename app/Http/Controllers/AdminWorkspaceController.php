@@ -191,6 +191,12 @@ class AdminWorkspaceController extends Controller
             $data['meta_description'] = $data['meta_description'] ?? null;
         }
         DB::transaction(function () use ($request, $resource, $definition, $id, $data, $version): void {
+            if ($resource === 'plans') {
+                $homepagePlans = DB::table('plans')->orderBy('id')->lockForUpdate()->get();
+                if ($data['show_on_homepage'] && $homepagePlans->where('show_on_homepage', true)->reject(fn (object $plan): bool => (int) $plan->id === $id)->count() >= 3) {
+                    throw ValidationException::withMessages(['show_on_homepage' => 'You can select a maximum of three homepage plans. Deselect another plan first.']);
+                }
+            }
             $current = $id ? DB::table($definition['table'])->where('id', $id)
                 ->when($resource === 'report-categories', fn ($query) => $query->where('kind', 'category'))
                 ->lockForUpdate()->first() : null;

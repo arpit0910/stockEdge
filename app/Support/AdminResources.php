@@ -122,7 +122,7 @@ class AdminResources
                 'image_alt' => self::field('Image description', 'text', 'nullable|string|max:200', 'Presentation'),
                 'published' => self::field('Visible on homepage', 'checkbox', 'boolean', 'Publication'),
             ]],
-            'plans' => ['table' => 'plans', 'singular' => 'Membership plan', 'title' => 'Membership plans', 'description' => 'Manage the public plan catalogue and pricing copy. Plan requests do not collect payments.', 'columns' => ['name' => 'Plan', 'monthly_price' => 'Monthly AUD', 'yearly_price' => 'Yearly AUD', 'featured' => 'Featured', 'published' => 'Visibility'], 'search' => ['name', 'headline'], 'status' => 'published', 'fields' => [
+            'plans' => ['table' => 'plans', 'singular' => 'Membership plan', 'title' => 'Membership plans', 'description' => 'Manage the public plan catalogue and pricing copy. Plan requests do not collect payments.', 'columns' => ['name' => 'Plan', 'monthly_price' => 'Monthly AUD', 'yearly_price' => 'Yearly AUD', 'show_on_homepage' => 'Homepage', 'featured' => 'Featured', 'published' => 'Visibility'], 'search' => ['name', 'headline'], 'status' => 'published', 'fields' => [
                 'name' => self::field('Plan name', 'text', 'required|string|max:100', 'Plan'),
                 'headline' => self::field('Short headline', 'text', 'required|string|max:150', 'Plan'),
                 'description' => self::field('Description', 'textarea', 'required|string|max:2000', 'Plan'),
@@ -131,6 +131,7 @@ class AdminResources
                 'yearly_price' => self::field('Annual price (AUD)', 'number', 'required|numeric|min:0|max:999999', 'Pricing'),
                 'is_trial' => self::field('Free trial plan', 'checkbox', 'boolean', 'Pricing', [], 'Free trial plans must have zero prices. The trial lasts seven days.'),
                 'featured' => self::field('Highlight this plan', 'checkbox', 'boolean', 'Display'),
+                'show_on_homepage' => self::field('Show on homepage', 'checkbox', 'boolean', 'Display', [], 'Select up to three plans. Only published plans appear on the homepage, in display order.'),
                 'position' => self::field('Display order', 'integer', 'required|integer|min:0|max:9999', 'Display'),
                 'published' => self::field('Visible on pricing page', 'checkbox', 'boolean', 'Publication'),
             ]],

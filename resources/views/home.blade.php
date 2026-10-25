@@ -493,7 +493,7 @@ $testimonialSection = $siteSections->get('testimonials');
                 <h2>{{ $plan->headline }}</h2>
 
                 <div class="plan-price">
-                    <span data-monthly="{{ $plan->monthly_price }}" data-yearly="{{ $plan->yearly_price }}" data-trial="{{ $plan->is_trial ? '1' : '0' }}">${{ number_format($plan->monthly_price, 2) }}</span>
+                    <span data-monthly="{{ $plan->monthly_price }}" data-yearly="{{ $plan->yearly_price }}" data-trial="{{ $plan->is_trial ? '1' : '0' }}">${{ preg_replace('/\.00$/', '', number_format($plan->monthly_price, 2)) }}</span>
                     <small>{{ $plan->is_trial ? '/ 7-day trial' : '/ month' }}</small>
                 </div>
                 <p>{{ $plan->description }}</p>
