@@ -3,12 +3,12 @@ document.addEventListener('click',event=>{document.querySelectorAll('.nav-dropdo
 document.addEventListener('keydown',event=>{if(event.key==='Escape'){document.querySelectorAll('.nav-dropdown[open]').forEach(el=>el.open=false);const menu=document.querySelector('.menu-toggle');if(document.getElementById('navigation')?.classList.contains('open')){menu.click();menu.focus();}}});
 document.querySelectorAll('[data-confirm]').forEach(form=>form.addEventListener('submit',event=>{if(!window.confirm(form.dataset.confirm)){event.preventDefault();}}));
 
-document.querySelector('[data-market-view-all]')?.addEventListener('click',function(){
+document.querySelectorAll('[data-market-view-all]').forEach(button=>button.addEventListener('click',function(){
     const showAll=this.getAttribute('aria-expanded')!=='true';
-    this.closest('.sr-market-dark-panel').querySelectorAll('[data-market-extra]').forEach(row=>row.hidden=!showAll);
+    this.closest('.sr-market-dark-panel, .sr-market-light-panel').querySelectorAll('[data-market-extra]').forEach(row=>row.hidden=!showAll);
     this.setAttribute('aria-expanded',String(showAll));
     this.textContent=showAll?'View less':'View all';
-});
+}));
 
 const dashboardThemeToggle=document.querySelector('[data-dashboard-theme-toggle]');
 const applyDashboardTheme=theme=>{document.documentElement.dataset.theme=theme;const label=theme==='dark'?'Switch to light mode':'Switch to dark mode';dashboardThemeToggle?.setAttribute('aria-label',label);dashboardThemeToggle?.setAttribute('title',label);};

@@ -217,7 +217,7 @@ $testimonialSection = $siteSections->get('testimonials');
                             $targetPrice = (float) ($company->target_price ?? $company->price);
                             $targetReturn = $buyPrice > 0 ? (($targetPrice - $buyPrice) / $buyPrice) * 100 : 0;
                             @endphp
-                            <article class="sr-company-entry">
+                            <article class="sr-company-entry" @if($loop->iteration > 3) hidden data-market-extra @endif>
                                 <div class="sr-company-entry-header">
                                     <div class="sr-company-identity"><h4>{{ $company->name }}</h4><p>{{ $company->symbol }} &middot; {{ $company->sector }}</p></div>
                                     <span class="sr-status-chip {{ $company->recommendation_status === 'Active' ? 'active' : 'achieved' }}">
@@ -234,6 +234,10 @@ $testimonialSection = $siteSections->get('testimonials');
                             <p>No companies are selected for the homepage.</p>
                             @endforelse
                 </div>
+
+                @if($homepageStocks->take($researchSection->item_limit)->count() > 3)
+                <button class="sr-market-view-all" type="button" data-market-view-all aria-expanded="false">View all</button>
+                @endif
 
                 <div class="sr-disclaimer-foot">
                     <small>Disclaimer: Past performance is not an indicator of future performance. All valuations and recommendations represent general advice only.</small>

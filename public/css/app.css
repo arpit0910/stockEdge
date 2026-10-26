@@ -1099,7 +1099,7 @@ small { font-size: 12px; }
   min-width: 0;
   overflow-x: auto;
 }
-.sr-market-dark-panel [hidden] { display: none !important; }
+.sr-market-dark-panel [hidden], .sr-market-light-panel [hidden] { display: none !important; }
 .sr-company-list { display: grid; gap: 14px; min-width: 0; }
 .sr-company-entry {
   min-width: 0;
@@ -1137,6 +1137,8 @@ small { font-size: 12px; }
   font-weight: 700;
 }
 .sr-market-view-all:hover { background: rgba(16, 185, 129, 0.2); }
+.sr-market-light-panel .sr-market-view-all { color: var(--green-700); border-color: var(--green-200); background: var(--green-50); }
+.sr-market-light-panel .sr-market-view-all:hover { background: var(--green-100); }
 .sr-dark-table, .sr-light-table {
   width: 100%;
   border-collapse: collapse;
