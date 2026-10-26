@@ -2124,7 +2124,7 @@ small { font-size: 12px; }
    TRUSTED BY INVESTORS AUSTRALIA-WIDE
    ========================================================================== */
 .sr-testimonials-section {
-  background: #f8faf9;
+  background: #f5f6f4;
   color: var(--slate-900);
   padding-block: 85px;
   border-top: 1px solid var(--slate-200);
@@ -2153,8 +2153,8 @@ small { font-size: 12px; }
 .sr-testimonials-grid::-webkit-scrollbar { display: none; }
 .sr-testimonial-card {
   background: var(--white);
-  border: 1px solid #dce5df;
-  border-radius: 4px;
+  border: 1px solid #e1e5e1;
+  border-radius: 16px;
   padding: 32px;
   display: flex;
   flex-direction: column;
@@ -2165,16 +2165,15 @@ small { font-size: 12px; }
 .sr-testimonial-rating {
   display: flex;
   gap: 3px;
-  margin-bottom: 24px;
-  color: var(--green-800);
+  color: #956408;
 }
 .sr-testimonial-rating svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.5; }
 .sr-testimonial-rating svg.is-filled { fill: currentColor; }
 .sr-testimonial-quote {
-  font-size: 18px;
-  line-height: 1.75;
+  font-size: 16px;
+  line-height: 1.85;
   color: var(--slate-800);
-  margin: 0 0 32px;
+  margin: 26px 0 30px;
   flex: 1;
   overflow-wrap: anywhere;
 }
@@ -2183,9 +2182,29 @@ small { font-size: 12px; }
   display: flex;
   align-items: center;
   gap: 14px;
-  border-top: 1px solid var(--slate-200);
-  padding-top: 20px;
+  padding: 0;
 }
+.sr-reviewer-monogram {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #edf0ed;
+  color: #3d5148;
+  font-size: 18px;
+  font-weight: 600;
+}
+.sr-testimonial-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 18px;
+  border-top: 1px solid var(--slate-100);
+}
+.sr-testimonial-score { font-size: 12px; color: var(--slate-600); font-variant-numeric: tabular-nums; }
 .sr-reviewer-avatar-box {
   width: 44px;
   height: 44px;
@@ -2232,17 +2251,6 @@ small { font-size: 12px; }
   background: #fff4d6;
   color: #554b35;
 }
-.sr-disclaimer-inner {
-  display: flex;
-  align-items: flex-start;
-  gap: 32px;
-}
-.sr-disclaimer-logo {
-  width: 140px;
-  height: auto;
-  flex-shrink: 0;
-  margin-top: 4px;
-}
 .sr-disclaimer p {
   margin: 0;
   font-size: 13px;
@@ -2251,8 +2259,6 @@ small { font-size: 12px; }
 .sr-disclaimer strong { color: var(--slate-800); }
 @media (max-width: 640px) {
   .sr-disclaimer { padding: 24px 0; }
-  .sr-disclaimer-inner { flex-direction: column; gap: 16px; }
-  .sr-disclaimer-logo { width: 130px; margin-top: 0; }
 }
 
 .sr-footer {

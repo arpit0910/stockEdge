@@ -20,6 +20,8 @@ class ResponsiveLayoutTest extends TestCase
             ->assertSee('class="menu-toggle"', false)
             ->assertSee('aria-controls="navigation"', false)
             ->assertSee('id="site-footer"', false)
+            ->assertSee('mailto:support@sharesrise.com', false)
+            ->assertDontSee('sr-disclaimer-logo', false)
             ->assertSee('id="footer-newsletter-email"', false)
             ->assertSee('name="type" value="newsletter"', false)
             ->assertSeeInOrder(['Explore', 'Latest Research', 'Important Links', 'Privacy Policy', 'Get in Touch'])

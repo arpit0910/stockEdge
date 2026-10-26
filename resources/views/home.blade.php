@@ -476,10 +476,6 @@ $testimonialSection = $siteSections->get('testimonials');
         <div class="sr-section-heading-centered">
             <h2>Membership Options</h2>
             <p>Compare access levels and choose the plan that fits how you use the research library.</p>
-            <div class="billing-toggle home-billing-toggle">
-                <button class="selected" type="button" data-billing="monthly">Monthly</button>
-                <button type="button" data-billing="yearly">Annual billing</button>
-            </div>
         </div>
 
         <div class="pricing-grid home-pricing-grid">
@@ -493,8 +489,8 @@ $testimonialSection = $siteSections->get('testimonials');
                 <h2>{{ $plan->headline }}</h2>
 
                 <div class="plan-price">
-                    <span data-monthly="{{ $plan->monthly_price }}" data-yearly="{{ $plan->yearly_price }}" data-trial="{{ $plan->is_trial ? '1' : '0' }}">${{ preg_replace('/\.00$/', '', number_format($plan->monthly_price, 2)) }}</span>
-                    <small>{{ $plan->is_trial ? '/ 7-day trial' : '/ month' }}</small>
+                    <span>${{ preg_replace('/\.00$/', '', number_format($plan->yearly_price, 2)) }}</span>
+                    <small>{{ $plan->is_trial ? '/ 7-day trial' : '/ year' }}</small>
                 </div>
                 <p>{{ $plan->description }}</p>
 
@@ -518,7 +514,7 @@ $testimonialSection = $siteSections->get('testimonials');
                 <form action="{{ route('subscribe') }}" method="post">
                     @csrf
                     <input type="hidden" name="plan" value="{{ $plan->name }}">
-                    <input class="billing-input" type="hidden" name="billing" value="monthly">
+                    <input class="billing-input" type="hidden" name="billing" value="yearly">
                     <button class="button full">Request {{ $plan->name }} <span aria-hidden="true">→</span></button>
                 </form>
                 @else

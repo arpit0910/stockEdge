@@ -136,7 +136,6 @@
 
     <section class="sr-disclaimer" aria-label="Investment disclaimer">
         <div class="container sr-disclaimer-inner">
-            <img class="sr-disclaimer-logo" src="{{ asset('images/sharesrise-logo-on-light.png') }}" alt="{{ $brandName }}" width="610" height="160" loading="lazy">
             <p><strong>Disclaimer:</strong> Sharesrise provides stock market research, investment insights, and general information relating to Australian Securities Exchange (ASX) listed companies. Sharesrise | ABN: 52 435 298 361. All information published on this website is intended for general informational and educational purposes only and does not constitute personalised financial advice. Sharesrise does not consider your individual financial circumstances, investment objectives, or financial needs. Investing in financial markets involves risks, and past performance is not a reliable indicator of future returns. Sharesrise does not guarantee investment performance, profitability, or returns. Investors are encouraged to conduct their own research and seek advice from a suitably licensed financial adviser before making investment decisions.</p>
         </div>
     </section>

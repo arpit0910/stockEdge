@@ -133,7 +133,7 @@ class AccountController extends Controller
     {
         $publishedPlans = DB::table('plans')->where('published', true)->where('is_trial', false)->pluck('name');
         $validPlans = $publishedPlans->isNotEmpty() ? $publishedPlans->all() : array_keys(config('stockedge.plans', []));
-        $data = $request->validate(['plan' => ['required', Rule::in($validPlans)], 'billing' => ['required', Rule::in(['monthly', 'yearly'])]]);
+        $data = $request->validate(['plan' => ['required', Rule::in($validPlans)], 'billing' => ['required', Rule::in(['yearly'])]]);
         DB::table('subscription_requests')->updateOrInsert(['user_id' => $request->user()->id, 'status' => 'pending'], $data + ['created_at' => now(), 'updated_at' => now()]);
 
         return redirect()->route('account', ['tab' => 'subscription'])->with('success', 'Plan request saved. No payment has been taken; paid activation is not yet connected.');

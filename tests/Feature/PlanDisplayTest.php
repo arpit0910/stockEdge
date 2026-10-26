@@ -30,15 +30,34 @@ class PlanDisplayTest extends TestCase
     {
         $this->seed(AdminContentSeeder::class);
         Plan::query()->delete();
-        Plan::factory()->create(['monthly_price' => 1234, 'show_on_homepage' => true]);
-        Plan::factory()->create(['monthly_price' => 49.95, 'show_on_homepage' => true]);
+        Plan::factory()->create(['yearly_price' => 1234, 'monthly_price' => 111, 'show_on_homepage' => true]);
+        Plan::factory()->create(['yearly_price' => 49.95, 'monthly_price' => 222, 'show_on_homepage' => true]);
         $pricingOnly = Plan::factory()->create(['show_on_homepage' => false]);
 
         foreach (['/', '/pricing'] as $path) {
             $this->get($path)->assertOk()->assertSee('$1,234</span>', false)
-                ->assertDontSee('$1,234.00')->assertSee('$49.95</span>', false);
+                ->assertDontSee('$1,234.00')->assertSee('$49.95</span>', false)
+                ->assertSee('/ year')->assertDontSee('/ month')
+                ->assertDontSee('data-billing', false)
+                ->assertDontSee('$111</span>', false)->assertDontSee('$222</span>', false);
         }
         $this->get('/pricing')->assertSee($pricingOnly->name);
+    }
+
+    public function test_plan_requests_only_accept_yearly_billing(): void
+    {
+        $this->seed(AdminContentSeeder::class);
+        $user = User::factory()->create();
+        $plan = Plan::factory()->create(['published' => true, 'is_trial' => false]);
+
+        $this->actingAs($user)->post('/subscribe', ['plan' => $plan->name, 'billing' => 'monthly'])
+            ->assertSessionHasErrors('billing');
+        $this->assertDatabaseCount('subscription_requests', 0);
+
+        $this->post('/subscribe', ['plan' => $plan->name, 'billing' => 'yearly'])
+            ->assertSessionHasNoErrors()->assertRedirect('/account/subscription');
+        $this->assertDatabaseHas('subscription_requests', ['user_id' => $user->id, 'billing' => 'yearly']);
+        $this->get('/pricing')->assertOk()->assertSee('name="billing" value="yearly"', false);
     }
 
     public function test_admin_cannot_select_a_fourth_plan_and_can_replace_a_selection(): void
