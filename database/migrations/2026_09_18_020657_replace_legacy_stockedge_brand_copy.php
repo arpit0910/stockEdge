@@ -37,7 +37,7 @@ return new class extends Migration
 
         foreach ([
             ['name' => 'Membership preview', 'layout' => 'pricing', 'eyebrow' => 'MEMBERSHIP OPTIONS', 'title' => 'Choose your research access.', 'description' => 'Compare published SharesRise memberships and find the access level that suits your research journey.', 'button_label' => 'View all plans', 'button_url' => '/pricing', 'item_limit' => 3, 'position' => 65, 'published' => true],
-            ['name' => 'Investor stories', 'layout' => 'testimonials', 'eyebrow' => 'INVESTOR EXPERIENCES', 'title' => 'Trusted by thoughtful investors.', 'description' => 'Read experiences shared by the SharesRise community.', 'button_label' => null, 'button_url' => null, 'item_limit' => 3, 'position' => 75, 'published' => true],
+            ['name' => 'Investor stories', 'layout' => 'testimonials', 'eyebrow' => 'INVESTOR EXPERIENCES', 'title' => 'Trusted By Thoughtful Investors', 'description' => 'Read experiences shared by the SharesRise community.', 'button_label' => null, 'button_url' => null, 'item_limit' => 3, 'position' => 75, 'published' => true],
         ] as $section) {
             DB::table('site_sections')->updateOrInsert(
                 ['name' => $section['name']],
