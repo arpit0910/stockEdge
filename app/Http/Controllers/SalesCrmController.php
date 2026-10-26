@@ -6,11 +6,14 @@ use App\Models\Contact;
 use App\Models\Lead;
 use App\Models\LeadActivity;
 use App\Models\User;
+use App\Support\ContactCsvImport;
+use App\Support\SalesCrm;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SalesCrmController extends Controller
 {
@@ -44,7 +47,7 @@ class SalesCrmController extends Controller
 
         $metrics = [
             'new' => Lead::where('status', 'new')->count(),
-            'active' => Lead::whereIn('status', ['contacted', 'qualified', 'proposal'])->count(),
+            'active' => Lead::whereIn('status', ['contacted', 'qualified', 'proposal', 'interested', 'opportunity'])->count(),
             'converted' => Lead::where('status', 'converted')->count(),
             'contacts' => Contact::where('status', 'active')->count(),
         ];
@@ -72,6 +75,9 @@ class SalesCrmController extends Controller
             'assigned_to' => ['nullable', Rule::exists('users', 'id')->where(fn ($query) => $query->where('is_sales', true)->orWhere('is_admin', true))],
         ]);
         $previousStatus = $lead->status;
+        if (empty($data['phone'])) {
+            unset($data['phone']);
+        }
         if ($lead->contact()->where('status', '!=', 'active')->exists()) {
             unset($data['phone']);
         }
@@ -167,7 +173,11 @@ class SalesCrmController extends Controller
 
     public function updateContact(Request $request, Contact $contact): RedirectResponse
     {
-        $contact->update($this->contactData($request));
+        $data = $this->contactData($request);
+        if (empty($data['phone'])) {
+            unset($data['phone']);
+        }
+        $contact->update($data);
 
         return back()->with('success', 'Contact updated.');
     }
@@ -177,6 +187,39 @@ class SalesCrmController extends Controller
         $contact->delete();
 
         return redirect()->route('sales.contacts')->with('success', 'Contact removed.');
+    }
+
+    public function dialLead(Lead $lead): RedirectResponse
+    {
+        abort_unless($lead->phone, 404);
+        abort_if($lead->contact && $lead->contact->status !== 'active', 403);
+
+        return redirect()->away('tel:'.preg_replace('/[^+0-9]/', '', $lead->phone));
+    }
+
+    public function dialContact(Contact $contact): RedirectResponse
+    {
+        abort_unless($contact->phone && $contact->status === 'active', 403);
+
+        return redirect()->away('tel:'.preg_replace('/[^+0-9]/', '', $contact->phone));
+    }
+
+    public function importContacts(Request $request, ContactCsvImport $importer): RedirectResponse
+    {
+        $request->validate(['contact_csv' => 'required|file|mimes:csv,txt|max:2048']);
+        $result = $importer->import($request->file('contact_csv'), $request->user()->id);
+
+        return redirect()->route('sales.contacts')->with('success', "{$result['created']} contacts imported. {$result['skipped']} duplicates skipped.");
+    }
+
+    public function contactSample(): StreamedResponse
+    {
+        return response()->streamDownload(function (): void {
+            $stream = fopen('php://output', 'w');
+            fputcsv($stream, ['name', 'email', 'phone', 'company', 'status', 'notes'], escape: '');
+            fputcsv($stream, ['Alex Example', 'alex@example.com', '+61 400 000 000', 'Example Company', 'new', 'Requested information'], escape: '');
+            fclose($stream);
+        }, 'contacts-sample.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
     /** @return array<string, mixed> */
@@ -200,7 +243,7 @@ class SalesCrmController extends Controller
     /** @return list<string> */
     private function leadStatuses(): array
     {
-        return ['new', 'contacted', 'qualified', 'proposal', 'converted', 'lost'];
+        return array_values(array_unique([...array_keys(SalesCrm::pipelineOptions()), 'contacted', 'qualified', 'proposal', 'lost']));
     }
 
     /** @return list<string> */
@@ -218,6 +261,6 @@ class SalesCrmController extends Controller
     /** @return list<string> */
     private function contactStatuses(): array
     {
-        return ['active', 'blocked', 'dnd', 'archived'];
+        return ['active', 'blocked', 'dnd', 'archived', ...array_keys(SalesCrm::pipelineOptions())];
     }
 }

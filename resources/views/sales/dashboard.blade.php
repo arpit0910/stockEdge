@@ -1,13 +1,13 @@
 @extends('layouts.sales')
 @section('title','Lead pipeline')
 @section('content')
-<div class="a-page-heading"><div><div class="a-kicker"><span class="a-status-dot"></span> SALES PIPELINE</div><h1>Leads that need attention.</h1><p>Qualify enquiries, call prospects and move every conversation forward.</p></div><div class="a-heading-actions"><a class="a-button secondary" href="{{ route('sales.contacts') }}"><x-admin-icon name="members"/>Contacts</a><a class="a-button" href="{{ route('sales.contacts.create') }}"><x-admin-icon name="plus"/>Add contact</a></div></div>
+<div class="a-page-heading"><div><div class="a-kicker"><span class="a-status-dot"></span> SALES PIPELINE</div><h1>Leads that need attention.</h1><p>Qualify enquiries, call prospects and move every conversation forward.</p></div><div class="a-heading-actions"><button class="a-button secondary" type="button" data-contact-import-button>Import contacts</button><a class="a-button secondary" href="{{ route('sales.contacts') }}"><x-admin-icon name="members"/>Contacts</a><a class="a-button" href="{{ route('sales.contacts.create') }}"><x-admin-icon name="plus"/>Add contact</a></div></div>
 <div class="a-metrics"><a href="{{ route('sales.dashboard',['status'=>'new']) }}"><div><span>New leads</span><x-admin-icon name="leads"/></div><strong>{{ str_pad($metrics['new'],2,'0',STR_PAD_LEFT) }}</strong><small>Awaiting first contact <x-admin-icon name="arrow"/></small></a><a href="{{ route('sales.dashboard',['status'=>'contacted']) }}"><div><span>Active pipeline</span><x-admin-icon name="activity"/></div><strong>{{ str_pad($metrics['active'],2,'0',STR_PAD_LEFT) }}</strong><small>Contacted through proposal <x-admin-icon name="arrow"/></small></a><a href="{{ route('sales.dashboard',['status'=>'converted']) }}"><div><span>Converted</span><x-admin-icon name="check"/></div><strong>{{ str_pad($metrics['converted'],2,'0',STR_PAD_LEFT) }}</strong><small>Leads turned into customers <x-admin-icon name="arrow"/></small></a><a href="{{ route('sales.contacts',['status'=>'active']) }}"><div><span>Active contacts</span><x-admin-icon name="members"/></div><strong>{{ str_pad($metrics['contacts'],2,'0',STR_PAD_LEFT) }}</strong><small>Available for follow-up <x-admin-icon name="arrow"/></small></a></div>
 <section class="a-panel">
     <div class="a-panel-heading"><div><h2>Lead queue</h2><p>Newest enquiries appear first.</p></div></div>
     <form class="a-filter-bar a-lead-filters" method="get">
         <div class="a-search"><x-admin-icon name="search"/><input name="q" value="{{ request('q') }}" placeholder="Search name, email or phone" aria-label="Search leads"></div>
-        <select name="status" aria-label="Filter by status"><option value="">All statuses</option>@foreach($statuses as $status)<option value="{{ $status }}" @selected(request('status')===$status)>{{ ucfirst($status) }}</option>@endforeach</select>
+        <select name="status" aria-label="Filter by status"><option value="">All statuses</option>@foreach($statuses as $status)<option value="{{ $status }}" @selected(request('status')===$status)>{{ \App\Support\SalesCrm::statusLabel($status) }}</option>@endforeach</select>
         <select name="type" aria-label="Filter by lead type"><option value="">All types</option>@foreach($types as $type)<option value="{{ $type }}" @selected(request('type')===$type)>{{ ucfirst($type) }}</option>@endforeach</select>
         <select name="last_action" aria-label="Filter by last action"><option value="">Any last action</option><option value="none" @selected(request('last_action')==='none')>No action yet</option>@foreach($actionTypes as $actionType)<option value="{{ $actionType }}" @selected(request('last_action')===$actionType)>{{ ucfirst($actionType) }}</option>@endforeach</select>
         <label class="a-filter-date"><span>From</span><input type="date" name="date_from" value="{{ request('date_from') }}" aria-label="Received from date"></label>
@@ -21,13 +21,13 @@
             <tbody>
                 @forelse($leads as $lead)
                     <tr>
-                        <td><a class="a-record-title" href="{{ route('sales.leads.show',$lead) }}">{{ $lead->name ?: $lead->email }}</a><small>{{ $lead->email }}@if($lead->phone) · {{ $lead->phone }}@endif</small></td>
+                        <td><a class="a-record-title" href="{{ route('sales.leads.show',$lead) }}">{{ $lead->name ?: $lead->email }}</a><small>{{ $lead->email }}@if($lead->phone) · {{ \App\Support\SalesCrm::maskPhone($lead->phone) }}@endif</small></td>
                         <td>{{ ucfirst($lead->type) }}</td>
-                        <td><span class="a-badge {{ $lead->status==='converted'?'green':($lead->status==='new'?'amber':'neutral') }}"><i></i>{{ ucfirst($lead->status) }}</span></td>
+                        <td><span class="a-badge {{ $lead->status==='converted'?'green':($lead->status==='new'?'amber':'neutral') }}"><i></i>{{ \App\Support\SalesCrm::statusLabel($lead->status) }}</span></td>
                         <td>{{ $lead->assignee?->name ?? 'Unassigned' }}</td>
                         <td>@if($lead->latestActivity)<span class="a-last-action">{{ ucfirst(str_replace('_',' ',$lead->latestActivity->type)) }}<small>{{ $lead->latestActivity->occurred_at->format('d M Y, H:i') }}</small></span>@else<span class="a-last-action muted">No action yet</span>@endif</td>
                         <td class="a-date-cell">{{ $lead->created_at->format('d M Y') }}</td>
-                        <td><div class="a-row-actions">@if($lead->phone)<a class="a-icon-button" href="tel:{{ preg_replace('/[^+0-9]/','',$lead->phone) }}" aria-label="Call {{ $lead->name ?: $lead->email }}"><x-admin-icon name="phone"/></a>@endif<a class="a-icon-button" href="{{ route('sales.leads.show',$lead) }}" aria-label="Open lead"><x-admin-icon name="arrow"/></a></div></td>
+                        <td><div class="a-row-actions">@if($lead->phone)<a class="a-icon-button" href="{{ route('sales.leads.dial', $lead) }}" aria-label="Call {{ $lead->name ?: $lead->email }}"><x-admin-icon name="phone"/></a>@endif<a class="a-icon-button" href="{{ route('sales.leads.show',$lead) }}" aria-label="Open lead"><x-admin-icon name="arrow"/></a></div></td>
                     </tr>
                 @empty
                     <tr><td colspan="7"><div class="a-empty"><x-admin-icon name="check"/><h3>No leads found.</h3><p>Try changing or resetting the active filters.</p></div></td></tr>
@@ -37,4 +37,5 @@
     </div>
     {{ $leads->links() }}
 </section>
+<x-contact-import />
 @endsection

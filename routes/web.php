@@ -43,12 +43,16 @@ Route::middleware('auth')->group(function () {
     Route::middleware('can:sales')->prefix('sales')->name('sales.')->group(function () {
         Route::get('/', [SalesCrmController::class, 'dashboard'])->name('dashboard');
         Route::get('/leads/{lead}', [SalesCrmController::class, 'showLead'])->name('leads.show');
+        Route::get('/leads/{lead}/dial', [SalesCrmController::class, 'dialLead'])->name('leads.dial');
         Route::put('/leads/{lead}', [SalesCrmController::class, 'updateLead'])->name('leads.update');
         Route::post('/leads/{lead}/journey', [SalesCrmController::class, 'storeActivity'])->name('leads.journey');
         Route::post('/leads/{lead}/calls', [SalesCrmController::class, 'logCall'])->name('leads.calls');
         Route::post('/leads/{lead}/convert', [SalesCrmController::class, 'convert'])->name('leads.convert');
         Route::get('/contacts', [SalesCrmController::class, 'contacts'])->name('contacts');
         Route::get('/contacts/create', [SalesCrmController::class, 'createContact'])->name('contacts.create');
+        Route::post('/contacts/import', [SalesCrmController::class, 'importContacts'])->name('contacts.import');
+        Route::get('/contacts/sample', [SalesCrmController::class, 'contactSample'])->name('contacts.sample');
+        Route::get('/contacts/{contact}/dial', [SalesCrmController::class, 'dialContact'])->name('contacts.dial');
         Route::post('/contacts', [SalesCrmController::class, 'storeContact'])->name('contacts.store');
         Route::get('/contacts/{contact}/edit', [SalesCrmController::class, 'editContact'])->name('contacts.edit');
         Route::put('/contacts/{contact}', [SalesCrmController::class, 'updateContact'])->name('contacts.update');
