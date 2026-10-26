@@ -176,37 +176,22 @@ $testimonialSection = $siteSections->get('testimonials');
                     </div>
                 </div>
 
-                <div class="sr-table-responsive">
-                    <table class="sr-dark-table">
-                        <thead>
-                            <tr>
-                                <th>Company</th>
-                                <th>Code</th>
-                                <th>Price</th>
-                                <th>Day High</th>
-                                <th>Day Low</th>
-                                <th class="text-right">Change</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                <div class="sr-company-list">
                             @forelse($homepageStocks->take($marketSection->item_limit) as $company)
-                            <tr @if($loop->iteration > 3) hidden data-market-extra @endif>
-                                <td data-label="Company"><strong>{{ $company->name }}</strong><small>{{ $company->sector }}</small></td>
-                                <td data-label="Code"><span class="sr-code-badge">{{ $company->symbol }}</span></td>
-                                <td data-label="Price" class="font-mono">${{ number_format($company->price, 2) }}</td>
-                                <td data-label="Day high" class="font-mono text-muted">${{ number_format($company->day_high ?? $company->price, 2) }}</td>
-                                <td data-label="Day low" class="font-mono text-muted">${{ number_format($company->day_low ?? $company->price, 2) }}</td>
-                                <td data-label="Change" class="text-right">
+                            <article class="sr-company-entry" @if($loop->iteration > 3) hidden data-market-extra @endif>
+                                <div class="sr-company-entry-header">
+                                    <div class="sr-company-identity"><h4>{{ $company->name }}</h4><p>{{ $company->symbol }} &middot; {{ $company->sector }}</p></div>
                                     <span class="{{ $company->change >= 0 ? 'sr-pill-pos' : 'sr-pill-neg' }}">{{ $company->change >= 0 ? '+' : '' }}{{ number_format($company->change, 2) }}%</span>
-                                </td>
-                            </tr>
+                                </div>
+                                <dl class="sr-company-metrics">
+                                    <div><dt>Price</dt><dd>${{ number_format($company->price, 2) }}</dd></div>
+                                    <div><dt>Day high</dt><dd>${{ number_format($company->day_high ?? $company->price, 2) }}</dd></div>
+                                    <div><dt>Day low</dt><dd>${{ number_format($company->day_low ?? $company->price, 2) }}</dd></div>
+                                </dl>
+                            </article>
                             @empty
-                            <tr>
-                                <td colspan="6">No companies are selected for the homepage.</td>
-                            </tr>
+                            <p>No companies are selected for the homepage.</p>
                             @endforelse
-                        </tbody>
-                    </table>
                 </div>
                 @if($homepageStocks->take($marketSection->item_limit)->count() > 3)
                 <button class="sr-market-view-all" type="button" data-market-view-all aria-expanded="false">View all</button>
@@ -225,52 +210,29 @@ $testimonialSection = $siteSections->get('testimonials');
                     <a href="{{ url($researchSection->button_url ?: route('research')) }}" class="sr-link-arrow">{{ $researchSection->button_label ?: 'View All →' }}</a>
                 </div>
 
-                <div class="sr-table-responsive">
-                    <table class="sr-light-table">
-                        <thead>
-                            <tr>
-                                <th>Company</th>
-                                <th>Buy Price</th>
-                                <th>Target</th>
-                                <th>Return</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                <div class="sr-company-list">
                             @forelse($homepageStocks->take($researchSection->item_limit) as $company)
                             @php
                             $buyPrice = (float) ($company->buy_price ?? $company->price);
                             $targetPrice = (float) ($company->target_price ?? $company->price);
                             $targetReturn = $buyPrice > 0 ? (($targetPrice - $buyPrice) / $buyPrice) * 100 : 0;
                             @endphp
-                            <tr>
-                                <td data-label="Company">
-                                    <div class="sr-stock-cell">
-                                        <span class="sr-ticker-bubble">{{ $company->symbol }}</span>
-                                        <div>
-                                            <b>{{ $company->name }}</b>
-                                            <small>{{ $company->sector }}</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td data-label="Buy price" class="font-mono">${{ number_format($buyPrice, 2) }}</td>
-                                <td data-label="Target" class="font-mono">${{ number_format($targetPrice, 2) }}</td>
-                                <td data-label="Return">
-                                    <strong class="{{ $targetReturn >= 0 ? 'sr-text-green' : 'sr-text-red' }}">{{ $targetReturn >= 0 ? '+' : '' }}{{ number_format($targetReturn, 1) }}%</strong>
-                                </td>
-                                <td data-label="Status">
+                            <article class="sr-company-entry">
+                                <div class="sr-company-entry-header">
+                                    <div class="sr-company-identity"><h4>{{ $company->name }}</h4><p>{{ $company->symbol }} &middot; {{ $company->sector }}</p></div>
                                     <span class="sr-status-chip {{ $company->recommendation_status === 'Active' ? 'active' : 'achieved' }}">
                                         {{ $company->recommendation_status }}
                                     </span>
-                                </td>
-                            </tr>
+                                </div>
+                                <dl class="sr-company-metrics">
+                                    <div><dt>Buy price</dt><dd>${{ number_format($buyPrice, 2) }}</dd></div>
+                                    <div><dt>Target</dt><dd>${{ number_format($targetPrice, 2) }}</dd></div>
+                                    <div><dt>Return</dt><dd class="{{ $targetReturn >= 0 ? 'sr-text-green' : 'sr-text-red' }}">{{ $targetReturn >= 0 ? '+' : '' }}{{ number_format($targetReturn, 1) }}%</dd></div>
+                                </dl>
+                            </article>
                             @empty
-                            <tr>
-                                <td colspan="5">No companies are selected for the homepage.</td>
-                            </tr>
+                            <p>No companies are selected for the homepage.</p>
                             @endforelse
-                        </tbody>
-                    </table>
                 </div>
 
                 <div class="sr-disclaimer-foot">
