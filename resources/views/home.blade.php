@@ -539,7 +539,6 @@ $testimonialSection = $siteSections->get('testimonials');
     <div class="container">
         <div class="sr-carousel-heading">
             <div class="sr-carousel-heading-copy">
-                <span class="eyebrow">{{ $testimonialSection?->eyebrow ?: 'INVESTOR EXPERIENCES' }}</span>
                 <h2>{{ $testimonialSection?->title ?: 'Trusted By Thoughtful Investors' }}</h2>
                 <p>{{ $testimonialSection?->description ?: 'Read experiences shared by the SharesRise community.' }}</p>
             </div>
@@ -549,17 +548,7 @@ $testimonialSection = $siteSections->get('testimonials');
 
             <div class="sr-testimonials-grid" data-testimonials-carousel tabindex="0" aria-label="Client testimonials">
                 @foreach($testimonials as $testimonial)
-                <article class="sr-testimonial-card">
-                    <p class="sr-testimonial-quote">“{{ $testimonial->quote }}”</p>
-                    <div class="sr-reviewer-wrap">
-                        <div class="sr-reviewer-avatar-box a{{ ($loop->index % 3) + 1 }}">{{ $testimonial->avatar_initials ?: strtoupper(substr($testimonial->name, 0, 2)) }}</div>
-                        <div class="sr-reviewer-meta">
-                            <b>{{ $testimonial->name }}</b>
-                            <small>{{ $testimonial->role }}</small>
-                            <div class="sr-stars-row" aria-label="{{ $testimonial->rating }} out of 5 stars">{{ str_repeat('★', min(5, max(1, $testimonial->rating))) }}</div>
-                        </div>
-                    </div>
-                </article>
+                <x-testimonial-card :testimonial="$testimonial" />
                 @endforeach
             </div>
 

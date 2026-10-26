@@ -2124,7 +2124,7 @@ small { font-size: 12px; }
    TRUSTED BY INVESTORS AUSTRALIA-WIDE
    ========================================================================== */
 .sr-testimonials-section {
-  background: #ffffff;
+  background: #f8faf9;
   color: var(--slate-900);
   padding-block: 85px;
   border-top: 1px solid var(--slate-200);
@@ -2152,27 +2152,33 @@ small { font-size: 12px; }
 }
 .sr-testimonials-grid::-webkit-scrollbar { display: none; }
 .sr-testimonial-card {
-  background: var(--slate-50);
-  border: 1px solid var(--slate-200);
-  border-radius: 14px;
-  padding: 32px 28px;
+  background: var(--white);
+  border: 1px solid #dce5df;
+  border-radius: 4px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: all 0.25s ease;
   scroll-snap-align: start;
+  min-width: 0;
 }
-.sr-testimonial-card:hover {
-  background: #ffffff;
-  transform: translateY(-4px);
-  border-color: rgba(16, 185, 129, 0.35);
+.sr-testimonial-rating {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 24px;
+  color: var(--green-800);
 }
+.sr-testimonial-rating svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.sr-testimonial-rating svg.is-filled { fill: currentColor; }
 .sr-testimonial-quote {
-  font-size: 15px;
-  line-height: 1.65;
-  color: var(--slate-700);
-  margin-bottom: 28px;
+  font-size: 18px;
+  line-height: 1.75;
+  color: var(--slate-800);
+  margin: 0 0 32px;
+  flex: 1;
+  overflow-wrap: anywhere;
 }
+.sr-testimonial-quote p { margin: 0; }
 .sr-reviewer-wrap {
   display: flex;
   align-items: center;
@@ -2204,6 +2210,7 @@ small { font-size: 12px; }
   font-weight: 700;
   color: var(--slate-900);
   margin-bottom: 2px;
+  overflow-wrap: anywhere;
 }
 .sr-reviewer-meta small {
   display: block;
@@ -2219,6 +2226,35 @@ small { font-size: 12px; }
 /* ==========================================================================
    FOOTER (Deep Dark Navy)
    ========================================================================== */
+.sr-disclaimer {
+  padding: 32px 0;
+  border-top: 2px solid #e5a51b;
+  background: #fff4d6;
+  color: #554b35;
+}
+.sr-disclaimer-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+}
+.sr-disclaimer-logo {
+  width: 140px;
+  height: auto;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.sr-disclaimer p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.sr-disclaimer strong { color: var(--slate-800); }
+@media (max-width: 640px) {
+  .sr-disclaimer { padding: 24px 0; }
+  .sr-disclaimer-inner { flex-direction: column; gap: 16px; }
+  .sr-disclaimer-logo { width: 130px; margin-top: 0; }
+}
+
 .sr-footer {
   background: var(--navy-950);
   color: var(--slate-300);

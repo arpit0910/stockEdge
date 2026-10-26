@@ -50,6 +50,13 @@
                     </p>
                 </div>
 
+                @if(config('stockedge.site.contact_address'))
+                    <div class="sr-contact-office">
+                        <h3 class="sr-step-title">Office Address</h3>
+                        <p class="sr-next-desc">{!! nl2br(e(config('stockedge.site.contact_address'))) !!}</p>
+                    </div>
+                @endif
+
                 <!-- 2x2 Steps Grid -->
                 <div class="sr-next-steps-grid">
                     <!-- Step 01 -->

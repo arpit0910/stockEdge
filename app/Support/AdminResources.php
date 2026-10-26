@@ -27,7 +27,7 @@ class AdminResources
             ]],
             'testimonials' => ['table' => 'testimonials', 'singular' => 'Testimonial', 'title' => 'Client testimonials', 'description' => 'Manage the investor testimonials displayed on the homepage.', 'columns' => ['name' => 'Client name', 'role' => 'Role', 'rating' => 'Rating', 'position' => 'Order', 'published' => 'Status'], 'search' => ['name', 'role', 'quote'], 'status' => 'published', 'fields' => [
                 'name' => self::field('Client name', 'text', 'required|string|max:120', 'Client'),
-                'role' => self::field('Client role / occupation', 'text', 'required|string|max:120', 'Client', [], 'e.g., Retired Investor, Financial Adviser, Full-Time Trader'),
+                'role' => self::field('Client role / occupation', 'text', 'nullable|string|max:120', 'Client', [], 'Optional. Add an occupation only if the client has provided one.'),
                 'quote' => self::field('Testimonial quote', 'textarea', 'required|string|max:1000', 'Content'),
                 'rating' => self::field('Rating (Stars)', 'select', ['required', Rule::in(['1', '2', '3', '4', '5'])], 'Rating', ['5' => '5 Stars ★★★★★', '4' => '4 Stars ★★★★', '3' => '3 Stars ★★★', '2' => '2 Stars ★★', '1' => '1 Star ★']),
                 'avatar_initials' => self::field('Avatar initials', 'text', 'nullable|string|max:4', 'Client', [], 'e.g., MD, SK, JT'),
