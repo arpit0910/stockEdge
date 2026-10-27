@@ -90,13 +90,13 @@ $testimonialSection = $siteSections->get('testimonials');
                     @endphp
                     <!-- Top metrics row -->
                     <div class="sr-dash-metrics">
-                        <div class="sr-dash-metric">
-                            <small>ASX: {{ $workspaceStock->symbol }}</small>
-                            <strong>{{ $workspaceStock->sector }}</strong>
+                        <div class="sr-dash-metric sr-workspace-company">
+                            <small>ASX: {{ $workspaceStock->symbol }} · {{ $workspaceStock->sector }}</small>
+                            <strong>{{ $workspaceStock->name }}</strong>
                             <a href="{{ route('stock', $workspaceStock->symbol) }}">View company coverage</a>
                         </div>
                         <div class="sr-dash-metric">
-                            <small>{{ $workspaceStock->name }}</small>
+                            <small>Snapshot price</small>
                             <strong>${{ number_format($workspacePrice, 2) }}</strong>
                             <span @class(['pos' => $workspaceStock->change !== null && $workspaceStock->change >= 0, 'neg' => $workspaceStock->change !== null && $workspaceStock->change < 0])>{{ $workspaceStock->change !== null ? sprintf('%+.2f%%', $workspaceStock->change) : 'Change unavailable' }}</span>
                         </div>
@@ -131,11 +131,11 @@ $testimonialSection = $siteSections->get('testimonials');
 
                     <!-- Mini Orderbook / Highlights -->
                     <div class="sr-dash-footer-row">
-                        <span class="sr-rec-tag">{{ $workspaceStock->recommendation_status ?: 'Status unavailable' }}</span>
-                        <span class="sr-rec-stat">Target upside: <strong>{{ $workspaceUpside !== null ? sprintf('%+.1f%%', $workspaceUpside) : 'Unavailable' }}</strong></span>
-                        <span class="sr-rec-stat">Dividend yield: <strong>{{ $workspaceStock->yield !== null ? number_format($workspaceStock->yield, 2).'%' : 'Unavailable' }}</strong></span>
+                        <div class="sr-workspace-stat"><small>Coverage status</small><strong>{{ $workspaceStock->recommendation_status ?: 'Unavailable' }}</strong></div>
+                        <div class="sr-workspace-stat"><small>Target upside</small><strong>{{ $workspaceUpside !== null ? sprintf('%+.1f%%', $workspaceUpside) : 'Unavailable' }}</strong></div>
+                        <div class="sr-workspace-stat"><small>Dividend yield</small><strong>{{ $workspaceStock->yield !== null ? number_format($workspaceStock->yield, 2).'%' : 'Unavailable' }}</strong></div>
                     </div>
-                    <p class="sr-rec-stat">Manually maintained coverage snapshot · Updated {{ $workspaceStock->updated_at?->format('d M Y') ?? 'date unavailable' }}</p>
+                    <p class="sr-workspace-note">Manually maintained coverage snapshot · Updated {{ $workspaceStock->updated_at?->format('d M Y') ?? 'date unavailable' }}</p>
                     @else
                     <p>Company coverage will appear here when a company is selected as a Top ASX Pick or shown on the homepage.</p>
                     @endif
