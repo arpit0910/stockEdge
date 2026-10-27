@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['owner_id', 'source_lead_id', 'name', 'email', 'phone', 'company', 'status', 'notes', 'converted_at'])]
+#[Fillable(['owner_id', 'source_lead_id', 'name', 'email', 'phone', 'country_region', 'company', 'status', 'notes', 'converted_at'])]
 class Contact extends Model
 {
     /** @use HasFactory<ContactFactory> */

@@ -21,10 +21,16 @@ class ContactCsvImport
         $rows = [];
         try {
             $header = fgetcsv($stream, escape: '');
-            $columns = ['name', 'email', 'phone', 'company', 'status', 'notes'];
+            $columns = ['name', 'first name', 'last name', 'email', 'phone', 'country_region', 'company', 'status', 'notes'];
             $header = $header ? array_map(fn (?string $value): string => strtolower(trim(ltrim($value ?? '', "\xEF\xBB\xBF"))), $header) : [];
-            if (! in_array('name', $header, true) || count(array_unique($header)) !== count($header) || array_diff($header, $columns)) {
-                throw ValidationException::withMessages(['contact_csv' => 'Use the sample CSV headers. The name column is required.']);
+            $header = array_map(fn (string $value): string => match ($value) {
+                'email address' => 'email',
+                'phone number' => 'phone',
+                'country/region' => 'country_region',
+                default => $value,
+            }, $header);
+            if ((! in_array('name', $header, true) && ! in_array('first name', $header, true) && ! in_array('last name', $header, true)) || count(array_unique($header)) !== count($header) || array_diff($header, $columns)) {
+                throw ValidationException::withMessages(['contact_csv' => 'Use the sample CSV headers. Include First name or Last name, or the legacy name column.']);
             }
             $line = 1;
             while (($values = fgetcsv($stream, escape: '')) !== false) {
@@ -35,7 +41,11 @@ class ContactCsvImport
                 if (count($rows) >= 1000 || count($values) !== count($header)) {
                     throw ValidationException::withMessages(['contact_csv' => "Row {$line}: check the column count. Upload at most 1,000 contacts per file."]);
                 }
-                $row = array_combine($header, array_map(fn (?string $value): ?string => trim($value ?? '') ?: null, $values));
+                $row = array_combine($header, array_map(fn (?string $value): ?string => trim($value ?? '') === '' ? null : trim($value), $values));
+                if (! in_array('name', $header, true)) {
+                    $row['name'] = trim(($row['first name'] ?? '').' '.($row['last name'] ?? ''));
+                }
+                unset($row['first name'], $row['last name']);
                 $status = strtolower(str_replace(' ', '_', $row['status'] ?? 'new'));
                 $row['status'] = match ($status) {
                     'new_lead' => 'new', 'voice_mail' => 'voicemail', default => $status
@@ -45,6 +55,7 @@ class ContactCsvImport
                     'email' => 'nullable|email|max:200',
                     'phone' => ['nullable', 'string', 'max:30', 'regex:/^\+?[0-9 ()\-.]+$/'],
                     'company' => 'nullable|string|max:150',
+                    'country_region' => 'nullable|string|max:150',
                     'status' => ['required', Rule::in(['active', 'blocked', 'dnd', 'archived', ...array_keys(SalesCrm::pipelineOptions())])],
                     'notes' => 'nullable|string|max:5000',
                 ]);

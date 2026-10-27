@@ -216,8 +216,8 @@ class SalesCrmController extends Controller
     {
         return response()->streamDownload(function (): void {
             $stream = fopen('php://output', 'w');
-            fputcsv($stream, ['name', 'email', 'phone', 'company', 'status', 'notes'], escape: '');
-            fputcsv($stream, ['Alex Example', 'alex@example.com', '+61 400 000 000', 'Example Company', 'new', 'Requested information'], escape: '');
+            fputcsv($stream, ['First name', 'Last name', 'Email address', 'Phone number', 'Country/Region'], escape: '');
+            fputcsv($stream, ['Alex', 'Example', 'alex@example.com', '+61 400 000 000', 'Australia'], escape: '');
             fclose($stream);
         }, 'contacts-sample.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
@@ -230,6 +230,7 @@ class SalesCrmController extends Controller
             'email' => 'nullable|email|max:200',
             'phone' => 'nullable|string|max:30',
             'company' => 'nullable|string|max:150',
+            'country_region' => 'nullable|string|max:150',
             'status' => ['required', Rule::in($this->contactStatuses())],
             'notes' => 'nullable|string|max:5000',
         ]);
