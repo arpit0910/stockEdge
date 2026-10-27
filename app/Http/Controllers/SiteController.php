@@ -34,6 +34,7 @@ class SiteController extends Controller
             'collections' => Taxonomy::query()->categories()->published()->ordered()->get(),
             'homepageStocks' => $homepageStocks,
             'topAsxPicks' => $topAsxPicks,
+            'workspaceStock' => $topAsxPicks->first() ?? $homepageStocks->first(),
             'reports' => Report::with('stock')->where('published', true)->latest()->take(12)->get(),
             'articles' => Article::where('published', true)->latest()->take(3)->get(),
             'plans' => DB::table('plans')->where('published', true)->where('show_on_homepage', true)->orderBy('position')->orderBy('id')->limit(3)->get(),

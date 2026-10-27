@@ -75,65 +75,70 @@ $testimonialSection = $siteSections->get('testimonials');
                         <span></span><span></span><span></span>
                     </div>
                     <div class="sr-screen-url">SharesRise research workspace</div>
-                    <span class="sr-screen-badge">DEMO DATA</span>
+                    <span class="sr-screen-badge">COVERAGE SNAPSHOT</span>
                 </div>
 
                 <div class="sr-screen-body">
+                    @if($workspaceStock)
+                    @php
+                        $workspacePrice = (float) $workspaceStock->price;
+                        $workspaceTarget = $workspaceStock->target_price !== null ? (float) $workspaceStock->target_price : null;
+                        $workspaceUpside = $workspaceTarget !== null && $workspacePrice > 0 ? ($workspaceTarget - $workspacePrice) / $workspacePrice * 100 : null;
+                        $workspaceScale = max($workspacePrice, $workspaceTarget ?? 0, 1) * 1.2;
+                        $workspacePriceY = 115 - ($workspacePrice / $workspaceScale * 100);
+                        $workspaceTargetY = $workspaceTarget !== null ? 115 - ($workspaceTarget / $workspaceScale * 100) : null;
+                    @endphp
                     <!-- Top metrics row -->
                     <div class="sr-dash-metrics">
                         <div class="sr-dash-metric">
-                            <small>S&P/ASX 200</small>
-                            <strong>7,812.60</strong>
-                            <span class="pos">+1.28% (98.75)</span>
+                            <small>ASX: {{ $workspaceStock->symbol }}</small>
+                            <strong>{{ $workspaceStock->sector }}</strong>
+                            <a href="{{ route('stock', $workspaceStock->symbol) }}">View company coverage</a>
                         </div>
                         <div class="sr-dash-metric">
-                            <small>BHP Group</small>
-                            <strong>$42.85</strong>
-                            <span class="pos">+2.14%</span>
+                            <small>{{ $workspaceStock->name }}</small>
+                            <strong>${{ number_format($workspacePrice, 2) }}</strong>
+                            <span @class(['pos' => $workspaceStock->change !== null && $workspaceStock->change >= 0, 'neg' => $workspaceStock->change !== null && $workspaceStock->change < 0])>{{ $workspaceStock->change !== null ? sprintf('%+.2f%%', $workspaceStock->change) : 'Change unavailable' }}</span>
                         </div>
                         <div class="sr-dash-metric">
-                            <small>Valuation Model</small>
-                            <strong style="color: var(--green-400);">UNDERVALUED</strong>
-                            <span class="sr-fair-val">Target: $48.50</span>
+                            <small>Target comparison</small>
+                            <strong>{{ $workspaceTarget === null ? 'NOT SET' : ($workspacePrice < $workspaceTarget ? 'BELOW TARGET' : ($workspacePrice > $workspaceTarget ? 'ABOVE TARGET' : 'AT TARGET')) }}</strong>
+                            <span class="sr-fair-val">Target: {{ $workspaceTarget !== null ? '$'.number_format($workspaceTarget, 2) : 'Unavailable' }}</span>
                         </div>
                     </div>
 
                     <!-- Interactive Chart Preview -->
                     <div class="sr-dash-chart">
                         <div class="sr-chart-header">
-                            <span>ASX: BHP — Valuation vs Market Price</span>
+                            <span>ASX: {{ $workspaceStock->symbol }} — Price vs Coverage Target</span>
                             <span class="sr-chart-legend">
                                 <i class="dot-green"></i> Target
                                 <i class="dot-blue"></i> Price
                             </span>
                         </div>
-                        <svg viewBox="0 0 400 130" class="sr-svg-chart" aria-hidden="true">
-                            <defs>
-                                <linearGradient id="heroGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#10b981" stop-opacity="0.4" />
-                                    <stop offset="100%" stop-color="#10b981" stop-opacity="0.0" />
-                                </linearGradient>
-                            </defs>
+                        <svg viewBox="0 0 400 130" class="sr-svg-chart" role="img" aria-label="{{ $workspaceStock->symbol }} snapshot price ${{ number_format($workspacePrice, 2) }}{{ $workspaceTarget !== null ? ', coverage target $'.number_format($workspaceTarget, 2) : ', target unavailable' }}">
                             <!-- Grid lines -->
                             <line x1="0" y1="30" x2="400" y2="30" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4" />
                             <line x1="0" y1="70" x2="400" y2="70" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4" />
                             <line x1="0" y1="110" x2="400" y2="110" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4" />
 
-                            <!-- Area & Line -->
-                            <path d="M0,105 Q50,90 100,95 T200,60 T300,45 T400,20 L400,130 L0,130 Z" fill="url(#heroGrad)" />
-                            <path d="M0,105 Q50,90 100,95 T200,60 T300,45 T400,20" stroke="#10b981" stroke-width="2.5" fill="none" stroke-linecap="round" />
-                            <!-- Candlesticks sample points -->
-                            <circle cx="200" cy="60" r="4" fill="#10b981" stroke="#ffffff" stroke-width="1.5" />
-                            <circle cx="400" cy="20" r="4" fill="#34d399" stroke="#ffffff" stroke-width="1.5" />
+                            @if($workspaceTargetY !== null)
+                            <line x1="15" y1="{{ $workspaceTargetY }}" x2="385" y2="{{ $workspaceTargetY }}" stroke="#10b981" stroke-width="2.5" stroke-dasharray="6 4" />
+                            @endif
+                            <line x1="15" y1="{{ $workspacePriceY }}" x2="385" y2="{{ $workspacePriceY }}" stroke="#60a5fa" stroke-width="2.5" />
                         </svg>
                     </div>
 
                     <!-- Mini Orderbook / Highlights -->
                     <div class="sr-dash-footer-row">
-                        <span class="sr-rec-tag buy">CONVICTION: BUY</span>
-                        <span class="sr-rec-stat">Intrinsic Margin of Safety: <strong>16.2%</strong></span>
-                        <span class="sr-rec-stat">ROE: <strong>24.8%</strong></span>
+                        <span class="sr-rec-tag">{{ $workspaceStock->recommendation_status ?: 'Status unavailable' }}</span>
+                        <span class="sr-rec-stat">Target upside: <strong>{{ $workspaceUpside !== null ? sprintf('%+.1f%%', $workspaceUpside) : 'Unavailable' }}</strong></span>
+                        <span class="sr-rec-stat">Dividend yield: <strong>{{ $workspaceStock->yield !== null ? number_format($workspaceStock->yield, 2).'%' : 'Unavailable' }}</strong></span>
                     </div>
+                    <p class="sr-rec-stat">Manually maintained coverage snapshot · Updated {{ $workspaceStock->updated_at?->format('d M Y') ?? 'date unavailable' }}</p>
+                    @else
+                    <p>Company coverage will appear here when a company is selected as a Top ASX Pick or shown on the homepage.</p>
+                    @endif
                 </div>
             </div>
 

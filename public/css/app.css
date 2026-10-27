@@ -798,6 +798,8 @@ small { font-size: 12px; }
   margin-bottom: 16px;
 }
 .sr-dash-metric {
+  min-width: 0;
+  overflow-wrap: anywhere;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 10px;
@@ -820,6 +822,17 @@ small { font-size: 12px; }
   font-weight: 700;
   color: var(--green-400);
 }
+.sr-dash-metric .neg {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fda4af;
+}
+.sr-dash-metric a {
+  font-size: 10px;
+  color: var(--slate-300);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .sr-dash-metric .sr-fair-val {
   font-size: 10px;
   color: var(--slate-300);
@@ -833,6 +846,8 @@ small { font-size: 12px; }
   margin-bottom: 14px;
 }
 .sr-chart-header {
+  flex-wrap: wrap;
+  gap: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -861,6 +876,7 @@ small { font-size: 12px; }
 }
 
 .sr-dash-footer-row {
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -868,6 +884,10 @@ small { font-size: 12px; }
   padding-top: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 11px;
+}
+.sr-rec-tag {
+  color: var(--slate-300);
+  font-weight: 700;
 }
 .sr-rec-tag.buy {
   background: rgba(16, 185, 129, 0.2);
