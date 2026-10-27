@@ -108,6 +108,7 @@ $testimonialSection = $siteSections->get('testimonials');
                     </div>
 
                     <!-- Interactive Chart Preview -->
+                    @if($workspacePrice > 0 && $workspaceTarget !== null && $workspaceTarget > 0)
                     <div class="sr-dash-chart">
                         <div class="sr-chart-header">
                             <span>ASX: {{ $workspaceStock->symbol }} — Price vs Coverage Target</span>
@@ -128,6 +129,7 @@ $testimonialSection = $siteSections->get('testimonials');
                             <line x1="15" y1="{{ $workspacePriceY }}" x2="385" y2="{{ $workspacePriceY }}" stroke="#60a5fa" stroke-width="2.5" />
                         </svg>
                     </div>
+                    @endif
 
                     <!-- Mini Orderbook / Highlights -->
                     <div class="sr-dash-footer-row">

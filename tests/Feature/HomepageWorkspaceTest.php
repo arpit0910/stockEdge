@@ -10,6 +10,21 @@ class HomepageWorkspaceTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_graph_is_hidden_without_a_positive_price_and_target(): void
+    {
+        $stock = Stock::factory()->create();
+        foreach ([[0, 0.83], [20, null], [20, 0]] as [$price, $target]) {
+            $stock->update(['price' => $price, 'target_price' => $target]);
+            $this->get('/')->assertOk()->assertSee($stock->name)
+                ->assertDontSee('class="sr-dash-chart"', false)
+                ->assertDontSee('class="sr-svg-chart"', false)
+                ->assertDontSee('Price vs Coverage Target');
+        }
+        $stock->update(['price' => 20, 'target_price' => 25]);
+        $this->get('/')->assertOk()->assertSee('class="sr-dash-chart"', false)
+            ->assertSee('class="sr-svg-chart"', false)->assertSee('Price vs Coverage Target');
+    }
+
     public function test_workspace_uses_first_top_pick_and_updates_with_company_coverage(): void
     {
         Stock::factory()->create(['homepage_position' => 0, 'name' => 'Homepage fallback']);
