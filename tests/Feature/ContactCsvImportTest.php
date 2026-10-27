@@ -12,6 +12,46 @@ class ContactCsvImportTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_valid_csv_is_accepted_when_mime_detection_reports_excel_or_binary(): void
+    {
+        $this->actingAs(User::factory()->sales()->create());
+        foreach (['application/vnd.ms-excel', 'application/octet-stream'] as $index => $mimeType) {
+            $csv = "First name,Last name,Email address,Phone number,Country/Region\nAlex,Example,alex{$index}@example.com,,Australia\n";
+            $file = UploadedFile::fake()->createWithContent('contacts.csv', $csv)->mimeType($mimeType);
+            $this->post(route('sales.contacts.import'), ['contact_csv' => $file])->assertSessionHasNoErrors();
+            $this->assertDatabaseHas('contacts', ['email' => "alex{$index}@example.com", 'country_region' => 'Australia']);
+        }
+    }
+
+    public function test_unsupported_extensions_invalid_content_and_oversized_files_are_rejected(): void
+    {
+        $this->actingAs(User::factory()->sales()->create());
+        foreach ([
+            UploadedFile::fake()->createWithContent('contacts.xlsx', "name,email\nAlex,alex@example.com\n"),
+            UploadedFile::fake()->createWithContent('contacts.csv', "PK\x03\x04\x00\x00binary workbook"),
+            UploadedFile::fake()->createWithContent('contacts.csv', "name,email\nAlex,alex@example.com\n")->size(2049),
+        ] as $file) {
+            $this->post(route('sales.contacts.import'), ['contact_csv' => $file])->assertSessionHasErrors('contact_csv');
+            $this->assertDatabaseCount('contacts', 0);
+        }
+    }
+
+    public function test_crm_status_navigation_has_icons_on_dashboard_and_contacts(): void
+    {
+        $this->actingAs(User::factory()->sales()->create());
+        foreach (['sales.dashboard', 'sales.contacts'] as $routeName) {
+            $response = $this->get(route($routeName))->assertOk();
+            $document = new \DOMDocument;
+            @$document->loadHTML($response->getContent());
+            $xpath = new \DOMXPath($document);
+            $links = $xpath->query('//div[contains(@class, "crm-status-links")]/a');
+            $this->assertSame(14, $links->length);
+            foreach ($links as $link) {
+                $this->assertSame(1, $xpath->query('.//svg[@aria-hidden="true"]/path', $link)->length);
+            }
+        }
+    }
+
     public function test_requested_columns_preserve_names_country_and_defaults(): void
     {
         $owner = User::factory()->sales()->create();

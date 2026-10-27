@@ -206,7 +206,9 @@ class SalesCrmController extends Controller
 
     public function importContacts(Request $request, ContactCsvImport $importer): RedirectResponse
     {
-        $request->validate(['contact_csv' => 'required|file|mimes:csv,txt|max:2048']);
+        $request->validate(['contact_csv' => 'bail|required|file|extensions:csv,txt|max:2048'], [
+            'contact_csv.extensions' => 'Upload a CSV or TXT file. Save Excel workbooks as CSV UTF-8 before uploading.',
+        ]);
         $result = $importer->import($request->file('contact_csv'), $request->user()->id);
 
         return redirect()->route('sales.contacts')->with('success', "{$result['created']} contacts imported. {$result['skipped']} duplicates skipped.");
