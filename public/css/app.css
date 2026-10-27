@@ -723,6 +723,7 @@ small { font-size: 12px; }
   align-items: center;
   gap: 6px;
 }
+.sr-hero-trust-row .sr-trust-item { color: #ffffff; }
 
 /* Hero Terminal & Multi-Device UI */
 .sr-hero-mockup-wrap {
