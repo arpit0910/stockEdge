@@ -6,11 +6,44 @@ use App\Models\Stock;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class StockCsvImportTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_new_sectors_are_registered_and_available_for_editing_and_filtering(): void
+    {
+        $this->actingAs(User::factory()->admin()->create());
+        DB::table('taxonomies')->insert(['kind' => 'sector', 'name' => 'Mining']);
+        $csv = "symbol,name,sector,price,yield\nNEW,New Company,Space Technology,5,0\nNEXT,Another Company,space technology,4,0";
+
+        $this->post('/admin/manage/stocks/import', [
+            'stock_csv' => UploadedFile::fake()->createWithContent('new-sectors.csv', $csv),
+        ])->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('taxonomies', ['kind' => 'sector', 'name' => 'Space Technology']);
+        $this->assertSame(1, DB::table('taxonomies')->where('kind', 'sector')->whereRaw('LOWER(name) = ?', ['space technology'])->count());
+        $this->assertDatabaseHas('stocks', ['symbol' => 'NEXT', 'sector' => 'Space Technology']);
+        $stock = Stock::where('symbol', 'NEW')->firstOrFail();
+        $this->get('/admin/manage/stocks/'.$stock->id.'/edit')->assertOk()->assertSee('Space Technology');
+        $this->get('/research?sector=Space%20Technology')->assertOk()->assertSessionHasNoErrors();
+        $this->get('/research?sector=Mining')->assertOk()->assertSessionHasNoErrors();
+    }
+
+    public function test_failed_import_does_not_register_new_sectors(): void
+    {
+        $this->actingAs(User::factory()->admin()->create());
+        $csv = "symbol,name,sector,price,yield\nNEW,New Company,Unregistered Sector,-5,0";
+
+        $this->post('/admin/manage/stocks/import', [
+            'stock_csv' => UploadedFile::fake()->createWithContent('invalid-sector.csv', $csv),
+        ])->assertSessionHasErrors('stock_csv');
+
+        $this->assertDatabaseMissing('taxonomies', ['name' => 'Unregistered Sector']);
+        $this->assertDatabaseCount('stocks', 0);
+    }
 
     public function test_import_preserves_ratings_and_normalizes_supplied_classifications(): void
     {

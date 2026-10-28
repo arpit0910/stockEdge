@@ -363,12 +363,13 @@ class AdminWorkspaceController extends Controller
         }
 
         $existingStocks = DB::table('stocks')->get()->keyBy(fn (object $stock): string => strtoupper($stock->symbol));
+        $sectorNames = collect(config('stockedge.sectors'))->mapWithKeys(fn (string $sector): array => [mb_strtolower($sector) => $sector])->all();
         $seenSymbols = [];
         $preparedRows = [];
         $errors = [];
         $fieldRules = [
             'name' => 'string|max:200',
-            'sector' => ['string', Rule::in(config('stockedge.sectors'))],
+            'sector' => 'string|max:100',
             'cap' => ['string', Rule::in(['Blue Chip', 'Mid Cap', 'Small Cap'])],
             'description' => 'string|max:10000',
             'seo_title' => 'string|max:70',
@@ -391,6 +392,12 @@ class AdminWorkspaceController extends Controller
             $values = $row['values'];
             $values['symbol'] = strtoupper($values['symbol'] ?? '');
             $symbol = $values['symbol'];
+            if (($values['sector'] ?? '') !== '') {
+                $sector = trim((string) preg_replace('/\s+/', ' ', $values['sector']));
+                $sectorKey = mb_strtolower($sector);
+                $sectorNames[$sectorKey] ??= $sector;
+                $values['sector'] = $sectorNames[$sectorKey];
+            }
             $current = $existingStocks->get($symbol);
 
             if ($symbol !== '' && isset($seenSymbols[$symbol])) {
@@ -421,7 +428,6 @@ class AdminWorkspaceController extends Controller
             }
 
             $validator = Validator::make($data, $rules, [
-                'sector.in' => 'The sector must be one of: '.implode(', ', config('stockedge.sectors')).'.',
                 'cap.in' => 'The cap must be Blue Chip, Mid Cap or Small Cap.',
                 'recommendation_status.in' => 'The coverage status must be Active, Target Achieved or Closed. Use investment_rating for Buy, Accumulate, Speculative Buy, Hold or Sell.',
                 'investment_rating.in' => 'The investment rating must be one of: '.implode(', ', StockCsvImporter::INVESTMENT_RATINGS).'.',
@@ -444,6 +450,15 @@ class AdminWorkspaceController extends Controller
         $created = 0;
         $updated = 0;
         DB::transaction(function () use ($request, $preparedRows, $csv, &$created, &$updated): void {
+            $sectors = array_unique(array_merge(config('stockedge.sectors'), array_filter(array_column(array_column($preparedRows, 'data'), 'sector'))));
+            foreach ($sectors as $sector) {
+                DB::table('taxonomies')->insertOrIgnore([
+                    'kind' => 'sector',
+                    'name' => $sector,
+                    'created_at' => $this->timestamp(),
+                    'updated_at' => $this->timestamp(),
+                ]);
+            }
             foreach ($preparedRows as $row) {
                 $values = $row['data'] + ['updated_at' => $this->timestamp()];
                 if ($row['current']) {
