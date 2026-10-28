@@ -57,24 +57,6 @@
                     </div>
                 @endif
 
-                <!-- Australian Investors Stronger Together Tagline & Art -->
-                <div class="sr-contact-art-quote">
-                    <div class="sr-script-slogan">
-                        <em>Australian Investors Stronger Together</em>
-                    </div>
-                    <div class="sr-sydney-skyline-wrap" aria-hidden="true">
-                        <!-- Stylized Sydney Harbor Silhouette SVG -->
-                        <svg width="220" height="42" viewBox="0 0 220 42" fill="none" stroke="currentColor" stroke-width="1.3" opacity="0.35">
-                            <path d="M5,38 C25,38 35,28 48,28 C60,28 68,36 82,36 C92,36 100,20 114,20 C125,20 132,32 145,32 C155,32 165,24 175,24 C185,24 195,38 215,38"/>
-                            <path d="M85,36 Q110,6 135,36"/>
-                            <path d="M92,36 Q110,14 128,36"/>
-                            <path d="M148,32 Q158,16 168,32"/>
-                            <path d="M154,32 Q162,20 170,32"/>
-                            <line x1="0" y1="40" x2="220" y2="40" stroke-width="1.5"/>
-                        </svg>
-                    </div>
-                </div>
-
                 <!-- Trust Badges Row -->
                 <div class="sr-contact-trust-row">
                     <div class="sr-trust-item">
