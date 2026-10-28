@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Stock;
 use App\Support\AdminResources;
 use App\Support\ReportHtmlImporter;
 use App\Support\StockCsvImporter;
@@ -334,6 +335,28 @@ class AdminWorkspaceController extends Controller
         }
 
         return redirect()->route('admin.records', 'reports')->with('success', $message);
+    }
+
+    public function updateStockVisibility(Request $request, Stock $stock): RedirectResponse
+    {
+        $data = $request->validate([
+            'field' => ['required', Rule::in(['show_on_homepage', 'top_asx_pick'])],
+            'value' => 'required|boolean',
+            '_version' => 'required|string',
+        ]);
+
+        DB::transaction(function () use ($request, $stock, $data): void {
+            $current = DB::table('stocks')->where('id', $stock->id)->lockForUpdate()->first();
+            abort_unless($current, 404);
+            $this->assertVersion($current, $data['_version']);
+            DB::table('stocks')->where('id', $stock->id)->update([
+                $data['field'] => (bool) $data['value'],
+                'updated_at' => $this->timestamp(),
+            ]);
+            $this->audit($request, 'updated', 'stocks', $stock->id, $stock->name, [$data['field']]);
+        });
+
+        return back()->with('success', 'Company visibility updated.');
     }
 
     public function exportStocks(): StreamedResponse
