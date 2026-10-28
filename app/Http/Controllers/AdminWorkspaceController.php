@@ -381,6 +381,7 @@ class AdminWorkspaceController extends Controller
             'buy_price' => 'numeric|min:0.0001|max:99999999',
             'target_price' => 'numeric|min:0|max:99999999',
             'recommendation_status' => ['string', Rule::in(['Active', 'Target Achieved', 'Closed'])],
+            'investment_rating' => ['string', Rule::in(StockCsvImporter::INVESTMENT_RATINGS)],
             'homepage_position' => 'integer|min:0|max:9999',
             'show_on_homepage' => 'boolean',
         ];
@@ -419,7 +420,12 @@ class AdminWorkspaceController extends Controller
                 continue;
             }
 
-            $validator = Validator::make($data, $rules);
+            $validator = Validator::make($data, $rules, [
+                'sector.in' => 'The sector must be one of: '.implode(', ', config('stockedge.sectors')).'.',
+                'cap.in' => 'The cap must be Blue Chip, Mid Cap or Small Cap.',
+                'recommendation_status.in' => 'The coverage status must be Active, Target Achieved or Closed. Use investment_rating for Buy, Accumulate, Speculative Buy, Hold or Sell.',
+                'investment_rating.in' => 'The investment rating must be one of: '.implode(', ', StockCsvImporter::INVESTMENT_RATINGS).'.',
+            ]);
             if ($validator->fails()) {
                 foreach ($validator->errors()->all() as $error) {
                     $errors[] = "Row {$row['line']}: {$error}";

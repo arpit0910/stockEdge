@@ -6,6 +6,8 @@ use InvalidArgumentException;
 
 class StockCsvImporter
 {
+    public const INVESTMENT_RATINGS = ['Buy', 'Accumulate', 'Speculative Buy', 'Hold', 'Sell'];
+
     public const COLUMNS = [
         'symbol',
         'name',
@@ -24,6 +26,7 @@ class StockCsvImporter
         'recommendation_status',
         'homepage_position',
         'show_on_homepage',
+        'investment_rating',
     ];
 
     /**
@@ -75,6 +78,7 @@ class StockCsvImporter
                 }
 
                 $values = array_combine($headers, array_map(fn (?string $value): string => trim((string) $value), $row));
+                $values = $this->normalizeClassifications($values, $line);
                 $rows[] = ['line' => $line, 'values' => $values];
             }
         } finally {
@@ -86,5 +90,46 @@ class StockCsvImporter
         }
 
         return ['headers' => $headers, 'rows' => $rows];
+    }
+
+    /**
+     * @param  array<string, string>  $values
+     * @return array<string, string>
+     */
+    private function normalizeClassifications(array $values, int $line): array
+    {
+        $choices = [
+            'sector' => config('stockedge.sectors'),
+            'cap' => ['Blue Chip', 'Mid Cap', 'Small Cap'],
+            'recommendation_status' => ['Active', 'Target Achieved', 'Closed', ...self::INVESTMENT_RATINGS],
+            'investment_rating' => self::INVESTMENT_RATINGS,
+        ];
+
+        foreach ($choices as $field => $options) {
+            if (empty($values[$field])) {
+                continue;
+            }
+            $value = preg_replace('/\s+/', ' ', $values[$field]);
+            foreach ($options as $option) {
+                if (strcasecmp($value, $option) === 0) {
+                    $values[$field] = $option;
+                    break;
+                }
+            }
+        }
+
+        if (isset($values['cap']) && in_array(strtolower($values['cap']), ['large cap', 'large cap / blue-chip scale', 'blue-chip'], true)) {
+            $values['cap'] = 'Blue Chip';
+        }
+
+        if (in_array($values['recommendation_status'] ?? '', self::INVESTMENT_RATINGS, true)) {
+            if (! empty($values['investment_rating']) && $values['investment_rating'] !== $values['recommendation_status']) {
+                throw new InvalidArgumentException("Row {$line}: investment_rating conflicts with the rating in recommendation_status.");
+            }
+            $values['investment_rating'] = $values['recommendation_status'];
+            unset($values['recommendation_status']);
+        }
+
+        return $values;
     }
 }

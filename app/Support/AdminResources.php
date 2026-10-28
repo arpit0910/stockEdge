@@ -87,6 +87,7 @@ class AdminResources
                 'buy_price' => self::field('Coverage buy price (AUD)', 'number', 'nullable|numeric|min:0.0001|max:99999999', 'Homepage coverage'),
                 'target_price' => self::field('Coverage target (AUD)', 'number', 'nullable|numeric|min:0|max:99999999', 'Homepage coverage'),
                 'recommendation_status' => self::field('Coverage status', 'select', ['required', Rule::in(['Active', 'Target Achieved', 'Closed'])], 'Homepage coverage', self::options(['Active', 'Target Achieved', 'Closed'])),
+                'investment_rating' => self::field('Investment rating', 'select', ['nullable', Rule::in(StockCsvImporter::INVESTMENT_RATINGS)], 'Homepage coverage', self::options(StockCsvImporter::INVESTMENT_RATINGS)),
                 'homepage_position' => self::field('Homepage display order', 'integer', 'required|integer|min:0|max:9999', 'Homepage coverage', [], 'Lower numbers appear first in both company tables.'),
                 'show_on_homepage' => self::field('Show in homepage company tables', 'checkbox', 'boolean', 'Homepage coverage'),
                 'top_asx_pick' => self::field('Show as a Top ASX Pick', 'checkbox', 'boolean', 'Homepage coverage', [], 'Selected companies rotate in the homepage hero on mobile.'),
