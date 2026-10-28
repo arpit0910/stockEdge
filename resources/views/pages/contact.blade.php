@@ -57,57 +57,6 @@
                     </div>
                 @endif
 
-                <!-- 2x2 Steps Grid -->
-                <div class="sr-next-steps-grid">
-                    <!-- Step 01 -->
-                    <div class="sr-next-step-card">
-                        <div class="sr-step-card-top">
-                            <div class="sr-step-icon-badge">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                            </div>
-                            <span class="sr-step-number" aria-hidden="true">01</span>
-                        </div>
-                        <h3 class="sr-step-title">Quick Response</h3>
-                        <p class="sr-step-text">Expect a reply within 24 hours from our investor support team.</p>
-                    </div>
-
-                    <!-- Step 02 -->
-                    <div class="sr-next-step-card">
-                        <div class="sr-step-card-top">
-                            <div class="sr-step-icon-badge">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                            </div>
-                            <span class="sr-step-number" aria-hidden="true">02</span>
-                        </div>
-                        <h3 class="sr-step-title">Research Consultation</h3>
-                        <p class="sr-step-text">Discuss our equity research plans, market coverage and investor needs.</p>
-                    </div>
-
-                    <!-- Step 03 -->
-                    <div class="sr-next-step-card">
-                        <div class="sr-step-card-top">
-                            <div class="sr-step-icon-badge">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            </div>
-                            <span class="sr-step-number" aria-hidden="true">03</span>
-                        </div>
-                        <h3 class="sr-step-title">Plan Guidance</h3>
-                        <p class="sr-step-text">We help you choose the right research subscription based on your investing style.</p>
-                    </div>
-
-                    <!-- Step 04 -->
-                    <div class="sr-next-step-card">
-                        <div class="sr-step-card-top">
-                            <div class="sr-step-icon-badge">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
-                            </div>
-                            <span class="sr-step-number" aria-hidden="true">04</span>
-                        </div>
-                        <h3 class="sr-step-title">Dedicated Support</h3>
-                        <p class="sr-step-text">Get help with subscriptions, reports, billing and access to research tools.</p>
-                    </div>
-                </div>
-
                 <!-- Australian Investors Stronger Together Tagline & Art -->
                 <div class="sr-contact-art-quote">
                     <div class="sr-script-slogan">
@@ -151,7 +100,6 @@
                     <div class="sr-enquiry-heading">
                         <span class="eyebrow">SEND AN ENQUIRY</span>
                         <h2>How can we help?</h2>
-                        <p>Tell us what you need and our team will direct your enquiry to the right person.</p>
                     </div>
 
                     @if (session('success'))
@@ -207,85 +155,7 @@
                             </div>
                         </div>
 
-                        <!-- Row 2: Investor Type (Selectable Cards) -->
-                        <div class="sr-form-group">
-                            <label class="sr-form-label">
-                                Investor type<span class="req">*</span>
-                            </label>
-                            <div class="sr-chip-selector-grid cols-4">
-                                @php
-                                    $currentInvestorType = old('investor_type', 'Retail Investor');
-                                @endphp
-                                <label class="sr-chip-option">
-                                    <input type="radio" name="investor_type" value="Retail Investor" @checked($currentInvestorType === 'Retail Investor') />
-                                    <span class="sr-chip-box">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                        <span>Retail Investor</span>
-                                    </span>
-                                </label>
-
-                                <label class="sr-chip-option">
-                                    <input type="radio" name="investor_type" value="Adviser" @checked($currentInvestorType === 'Adviser') />
-                                    <span class="sr-chip-box">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-                                        <span>Adviser</span>
-                                    </span>
-                                </label>
-
-                                <label class="sr-chip-option">
-                                    <input type="radio" name="investor_type" value="SMSF" @checked($currentInvestorType === 'SMSF') />
-                                    <span class="sr-chip-box">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M6 18V9"/><path d="M10 18V9"/><path d="M14 18V9"/><path d="M18 18V9"/><polygon points="12 2 2 7 22 7"/></svg>
-                                        <span>SMSF</span>
-                                    </span>
-                                </label>
-
-                                <label class="sr-chip-option">
-                                    <input type="radio" name="investor_type" value="Business" @checked($currentInvestorType === 'Business') />
-                                    <span class="sr-chip-box">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
-                                        <span>Business</span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Row 3: Market Focus (Selectable Cards) -->
-                        <div class="sr-form-group">
-                            <label class="sr-form-label">
-                                Market focus<span class="req">*</span>
-                            </label>
-                            <div class="sr-chip-selector-grid cols-3">
-                                @php
-                                    $currentMarketFocus = old('market_focus', 'ASX Stocks');
-                                @endphp
-                                <label class="sr-chip-option">
-                                    <input type="radio" name="market_focus" value="ASX Stocks" @checked($currentMarketFocus === 'ASX Stocks') />
-                                    <span class="sr-chip-box">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                                        <span>ASX Stocks</span>
-                                    </span>
-                                </label>
-
-                                <label class="sr-chip-option">
-                                    <input type="radio" name="market_focus" value="ETFs" @checked($currentMarketFocus === 'ETFs') />
-                                    <span class="sr-chip-box">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
-                                        <span>ETFs</span>
-                                    </span>
-                                </label>
-
-                                <label class="sr-chip-option">
-                                    <input type="radio" name="market_focus" value="Research Plans" @checked($currentMarketFocus === 'Research Plans') />
-                                    <span class="sr-chip-box">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                                        <span>Research Plans</span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Row 4: Mobile Number & Portfolio Size -->
+                        <!-- Row 2: Mobile Number -->
                         <div class="sr-form-row-2">
                             <div class="sr-form-group">
                                 <label class="sr-form-label" for="contact-phone">
@@ -318,24 +188,9 @@
                                 @error('phone')<span class="sr-field-err">{{ $message }}</span>@enderror
                             </div>
 
-                            <div class="sr-form-group">
-                                <label class="sr-form-label" for="contact-portfolio">
-                                    Portfolio size
-                                </label>
-                                <div class="sr-select-wrap">
-                                    <select id="contact-portfolio" name="portfolio_size" class="sr-form-select">
-                                        <option value="" disabled {{ old('portfolio_size') ? '' : 'selected' }}>Select portfolio size</option>
-                                        <option value="Under $50,000" @selected(old('portfolio_size') === 'Under $50,000')>Under $50,000</option>
-                                        <option value="$50,000 - $250,000" @selected(old('portfolio_size') === '$50,000 - $250,000')>$50,000 - $250,000</option>
-                                        <option value="$250,000 - $1,000,000" @selected(old('portfolio_size') === '$250,000 - $1,000,000')>$250,000 - $1,000,000</option>
-                                        <option value="$1,000,000+" @selected(old('portfolio_size') === '$1,000,000+')>$1,000,000+</option>
-                                    </select>
-                                    <svg class="sr-select-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                                </div>
-                            </div>
                         </div>
 
-                        <!-- Row 5: Message -->
+                        <!-- Row 3: Message -->
                         <div class="sr-form-group">
                             <label class="sr-form-label" for="contact-message">
                                 Message<span class="req">*</span>
@@ -352,7 +207,7 @@
                             @error('message')<span class="sr-field-err">{{ $message }}</span>@enderror
                         </div>
 
-                        <!-- Row 6: Consent Checkbox -->
+                        <!-- Row 4: Consent Checkbox -->
                         <div class="sr-form-group">
                             <label class="sr-checkbox-label" for="contact-consent">
                                 <input 
@@ -370,7 +225,7 @@
                             @error('consent')<span class="sr-field-err">{{ $message }}</span>@enderror
                         </div>
 
-                        <!-- Row 7: Submit Button -->
+                        <!-- Row 5: Submit Button -->
                         <button type="submit" class="sr-contact-submit-btn">
                             <span>Send Enquiry</span>
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>

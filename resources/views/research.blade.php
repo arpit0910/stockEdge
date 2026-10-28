@@ -53,57 +53,7 @@
 
 <!-- Main Research Layout -->
 <section class="container sr-library-section">
-    <div class="sr-library-layout">
-        <!-- Sidebar Filters -->
-        <aside class="sr-filters-sidebar">
-            <div class="sr-filters-card">
-                <div class="sr-filters-header">
-                    <h3>Refine Coverage</h3>
-                    @if(request()->hasAny(['q', 'category', 'sector', 'cap']))
-                        <a href="{{ route('research') }}" class="sr-clear-all-link">Reset all</a>
-                    @endif
-                </div>
-
-                <form action="{{ route('research') }}" method="GET" class="sr-filters-form">
-                    @if(request('q')) <input type="hidden" name="q" value="{{ request('q') }}"> @endif
-
-                    <!-- Market Cap -->
-                    <div class="sr-filter-group">
-                        <label class="sr-filter-label">Market Capitalisation</label>
-                        <div class="sr-cap-pills">
-                            <a href="{{ route('research', array_merge(request()->except(['cap', 'page']))) }}"
-                               @class(['sr-cap-btn', 'active' => !request('cap')])>
-                                All
-                            </a>
-                            @foreach(['Blue Chip', 'Mid Cap', 'Small Cap'] as $cap)
-                                <a href="{{ route('research', array_merge(request()->except('page'), ['cap' => $cap])) }}"
-                                   @class(['sr-cap-btn', 'active' => request('cap') === $cap])>
-                                    {{ $cap }}
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <!-- Sector -->
-                    <div class="sr-filter-group">
-                        <label class="sr-filter-label" for="sector-select">ASX Sector</label>
-                        <select id="sector-select" name="sector" class="sr-select" onchange="this.form.submit()">
-                            <option value="">All Sectors</option>
-                            @foreach(config('stockedge.sectors', []) as $s)
-                                <option value="{{ $s }}" @selected(request('sector') === $s)>{{ $s }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    @if(request('cap')) <input type="hidden" name="cap" value="{{ request('cap') }}"> @endif
-                    @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
-
-                    <button type="submit" class="btn-green sr-filter-submit">Apply filters</button>
-                </form>
-            </div>
-
-        </aside>
-
+    <div>
         <!-- Main Results Grid -->
         <main class="sr-results-main">
             <!-- Results Header & Active Tags -->

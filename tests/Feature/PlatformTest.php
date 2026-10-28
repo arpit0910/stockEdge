@@ -52,6 +52,24 @@ class PlatformTest extends TestCase
         $this->get('/not-a-page')->assertNotFound();
     }
 
+    public function test_home_displays_the_latest_three_published_insights(): void
+    {
+        $older = Article::factory()->create(['created_at' => now()->subDay()]);
+        $first = Article::factory()->create(['created_at' => now(), 'image_path' => 'uploads/latest-insight.jpg', 'image_alt' => 'Latest insight cover']);
+        $second = Article::factory()->create(['created_at' => $first->created_at]);
+        $third = Article::factory()->create(['created_at' => $first->created_at]);
+        $draft = Article::factory()->create(['published' => false, 'created_at' => now()->addDay()]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertViewHas('articles', fn ($articles): bool => $articles->modelKeys() === [$third->id, $second->id, $first->id])
+            ->assertSeeInOrder([$third->title, $second->title, $first->title])
+            ->assertSee(route('media.file', 'latest-insight.jpg'), false)
+            ->assertSee('Latest insight cover')
+            ->assertDontSee($older->title)
+            ->assertDontSee($draft->title);
+    }
+
     public function test_research_search_and_filters_find_only_matching_content(): void
     {
         $this->seed();

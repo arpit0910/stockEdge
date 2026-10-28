@@ -420,7 +420,7 @@ $testimonialSection = $siteSections->get('testimonials');
             @forelse($articles as $article)
             <article class="sr-news-card">
                 <a href="{{ route('article', $article->slug) }}" class="sr-news-thumb">
-                    <img src="{{ asset('images/' . ($article->image ?: 'city') . '.jpg') }}" alt="{{ $article->title }}" loading="lazy">
+                    <img src="{{ $article->image_path ? route('media.file', basename($article->image_path)) : asset('images/' . ($article->image ?: 'city') . '.jpg') }}" alt="{{ $article->image_alt ?: $article->title }}" loading="lazy">
                     <span class="sr-news-badge">{{ $article->topic }}</span>
                 </a>
                 <div class="sr-news-content">
