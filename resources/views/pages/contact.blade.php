@@ -156,7 +156,6 @@
                         </div>
 
                         <!-- Row 2: Mobile Number -->
-                        <div class="sr-form-row-2">
                             <div class="sr-form-group">
                                 <label class="sr-form-label" for="contact-phone">
                                     Mobile number
@@ -187,8 +186,6 @@
                                 </div>
                                 @error('phone')<span class="sr-field-err">{{ $message }}</span>@enderror
                             </div>
-
-                        </div>
 
                         <!-- Row 3: Message -->
                         <div class="sr-form-group">

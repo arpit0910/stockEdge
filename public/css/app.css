@@ -5785,7 +5785,7 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
 }
 
 .sr-enquiry-heading h2 {
-  margin-bottom: 8px;
+  margin: 0;
   font-size: 28px;
 }
 
@@ -5826,13 +5826,14 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
 
 .sr-form-row-2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
 .sr-form-group {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .sr-form-label {
@@ -5950,9 +5951,11 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
 .sr-phone-input-group {
   display: flex;
   position: relative;
+  min-width: 0;
 }
 .sr-country-prefix {
   position: relative;
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -5978,6 +5981,8 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   outline: none;
 }
 .sr-phone-input-group .phone-field {
+  flex: 1 1 0;
+  min-width: 0;
   border-radius: 0 9px 9px 0;
 }
 
@@ -6016,6 +6021,7 @@ html.dashboard-theme[data-theme=dark] .dashboard-page .button.outline { color: v
   height: 16px;
   margin-top: 2px;
   flex-shrink: 0;
+  padding: 0;
 }
 .sr-checkbox-label a {
   color: #059669;
