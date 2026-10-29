@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use App\Models\Stock;
 use App\Support\AdminResources;
 use App\Support\ReportHtmlImporter;
@@ -221,6 +222,9 @@ class AdminWorkspaceController extends Controller
             }
             if ($resource === 'plans' && $current && $current->name !== $data['name']) {
                 DB::table('subscription_requests')->where('plan', $current->name)->update(['plan' => $data['name'], 'updated_at' => $this->timestamp()]);
+            }
+            if ($resource === 'articles') {
+                $data['slug'] = Article::slugFromTitle($data['title'], $id);
             }
             $values = $data + ['updated_at' => $this->timestamp()];
             if ($id) {

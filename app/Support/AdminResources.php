@@ -61,7 +61,6 @@ class AdminResources
             ]],
             'articles' => ['table' => 'articles', 'singular' => 'Article', 'title' => 'Editorial library', 'description' => 'Create considered market stories and manage their imagery and publication.', 'columns' => ['title' => 'Story', 'topic' => 'Topic', 'published' => 'Status'], 'search' => ['title', 'slug', 'topic'], 'status' => 'published', 'fields' => [
                 'title' => self::field('Article title', 'text', 'required|string|max:200', 'Content'),
-                'slug' => self::field('URL slug', 'slug', 'required|alpha_dash|max:200', 'Content'),
                 'topic' => self::field('Editorial topic', 'select', ['required', Rule::in(config('stockedge.topics'))], 'Classification', self::options(config('stockedge.topics'))),
                 'summary' => self::field('Standfirst / summary', 'textarea', 'required|string|max:2000', 'Content'),
                 'body' => self::field('Article body', 'editor', 'required|string|max:50000', 'Content', [], 'Use a heading and paragraph, with a blank line between sections.'),

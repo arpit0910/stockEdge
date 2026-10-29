@@ -23,8 +23,11 @@ class AdminController extends Controller
         abort_unless(in_array($type, ['report', 'article']), 404);
         $table = $type === 'report' ? 'reports' : 'articles';
         $id = $request->input('id');
-        $data = $request->validate(['id' => ['nullable', 'integer', Rule::exists($table, 'id')], 'title' => 'required|string|max:200', 'slug' => ['required', 'alpha_dash', 'max:200', Rule::unique($table)->ignore($id)], 'summary' => 'required|string|max:2000', 'body' => 'required|string|max:50000', 'published' => 'nullable|boolean']);
+        $data = $request->validate(['id' => ['nullable', 'integer', Rule::exists($table, 'id')], 'title' => 'required|string|max:200', 'slug' => $type === 'article' ? ['exclude'] : ['required', 'alpha_dash', 'max:200', Rule::unique($table)->ignore($id)], 'summary' => 'required|string|max:2000', 'body' => 'required|string|max:50000', 'published' => 'nullable|boolean']);
         unset($data['id']);
+        if ($type === 'article') {
+            $data['slug'] = Article::slugFromTitle($data['title'], $id ? (int) $id : null);
+        }
         $data['published'] = $request->boolean('published');
         if ($type === 'report') {
             $data += $request->validate([
