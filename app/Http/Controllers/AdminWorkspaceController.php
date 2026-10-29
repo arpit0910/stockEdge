@@ -75,8 +75,8 @@ class AdminWorkspaceController extends Controller
         if (in_array($resource, ['sections', 'taxonomies', 'report-categories', 'plans'])) {
             $query->orderBy('position')->orderBy('id');
         } else {
-            match ($request->input('sort', 'updated')) {
-                'oldest' => $query->orderBy('created_at'),'name' => $query->orderBy(array_key_first($definition['columns'])),default => $query->orderByDesc('updated_at')->orderByDesc('id')
+            match ($request->input('sort') ?: ($resource === 'stocks' ? 'oldest' : 'updated')) {
+                'oldest' => $query->orderBy('created_at')->orderBy('id'),'name' => $query->orderBy(array_key_first($definition['columns'])),default => $query->orderByDesc('updated_at')->orderByDesc('id')
             };
         }
         $records = $query->paginate(15)->withQueryString();

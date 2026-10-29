@@ -12,6 +12,19 @@ class StockVisibilityTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_company_coverage_defaults_to_creation_date_ascending(): void
+    {
+        $this->actingAs(User::factory()->admin()->create());
+        $newer = Stock::factory()->create(['created_at' => '2026-10-20 10:00:00', 'updated_at' => '2026-10-20 10:00:00']);
+        $older = Stock::factory()->create(['created_at' => '2026-10-01 10:00:00', 'updated_at' => '2026-10-29 10:00:00']);
+        $sameDate = Stock::factory()->create(['created_at' => '2026-10-01 10:00:00']);
+
+        $this->get(route('admin.records', 'stocks'))->assertOk()
+            ->assertViewHas('records', fn ($records): bool => $records->pluck('id')->all() === [$older->id, $sameDate->id, $newer->id]);
+        $this->get(route('admin.records', ['resource' => 'stocks', 'sort' => 'updated']))->assertOk()
+            ->assertViewHas('records', fn ($records): bool => $records->last()->id === $newer->id);
+    }
+
     public function test_admin_can_change_each_visibility_flag_without_changing_other_values(): void
     {
         $this->actingAs(User::factory()->admin()->create());
