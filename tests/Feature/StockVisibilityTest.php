@@ -33,6 +33,31 @@ class StockVisibilityTest extends TestCase
             ->assertDontSee('class="a-switch-row"', false);
     }
 
+    public function test_homepage_card_visibility_is_independent(): void
+    {
+        $this->actingAs(User::factory()->admin()->create());
+        $stock = Stock::factory()->create(['show_on_homepage' => false, 'show_in_latest_coverage' => false]);
+
+        foreach ([[true, false], [true, true], [false, true], [false, false]] as [$radar, $latest]) {
+            foreach (['show_on_homepage' => $radar, 'show_in_latest_coverage' => $latest] as $field => $value) {
+                $this->patch(route('admin.stocks.visibility', $stock), [
+                    'field' => $field,
+                    'value' => (int) $value,
+                    '_version' => DB::table('stocks')->where('id', $stock->id)->value('updated_at'),
+                ])->assertSessionHasNoErrors()->assertRedirect();
+            }
+
+            $this->get(route('home'))->assertOk()
+                ->assertViewHas('homepageStocks', fn ($stocks): bool => $stocks->contains('id', $stock->id) === $radar)
+                ->assertViewHas('latestCoverageStocks', fn ($stocks): bool => $stocks->contains('id', $stock->id) === $latest);
+        }
+
+        $this->get(route('admin.records', 'stocks'))->assertOk()
+            ->assertSee('COMPANIES ON OUR RADAR')
+            ->assertSee('THE LATEST COMPANY COVERAGE')
+            ->assertSee('role="switch"', false);
+    }
+
     public function test_non_admins_cannot_change_visibility(): void
     {
         $stock = Stock::factory()->create(['show_on_homepage' => false]);

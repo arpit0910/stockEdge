@@ -71,7 +71,7 @@ class AdminResources
                 'image_alt' => self::field('Image description', 'text', 'nullable|string|max:200', 'Presentation'),
                 'published' => self::field('Published on website', 'checkbox', 'boolean', 'Publication'),
             ]],
-            'stocks' => ['table' => 'stocks', 'singular' => 'Company', 'title' => 'Company coverage', 'description' => 'Maintain the company universe and the market data displayed on the homepage.', 'columns' => ['symbol' => 'Symbol', 'name' => 'Company', 'sector' => 'Sector', 'price' => 'Demo price', 'change' => 'Change %', 'show_on_homepage' => 'Homepage', 'top_asx_pick' => 'Top ASX pick'], 'search' => ['symbol', 'name', 'sector'], 'fields' => [
+            'stocks' => ['table' => 'stocks', 'singular' => 'Company', 'title' => 'Company coverage', 'description' => 'Maintain the company universe and the market data displayed on the homepage.', 'columns' => ['symbol' => 'Symbol', 'name' => 'Company', 'sector' => 'Sector', 'price' => 'Demo price', 'change' => 'Change %', 'show_on_homepage' => 'Companies on our radar', 'show_in_latest_coverage' => 'The latest company coverage', 'top_asx_pick' => 'Top ASX pick'], 'search' => ['symbol', 'name', 'sector'], 'fields' => [
                 'symbol' => self::field('ASX symbol', 'text', 'required|alpha_dash|max:12', 'Company', [], 'Keep symbols consistent with company disclosures.'),
                 'name' => self::field('Company name', 'text', 'required|string|max:200', 'Company'),
                 'sector' => self::field('Sector', 'select', ['required', Rule::in(config('stockedge.sectors'))], 'Company', self::options(config('stockedge.sectors'))),
@@ -89,7 +89,8 @@ class AdminResources
                 'recommendation_status' => self::field('Coverage status', 'select', ['required', Rule::in(['Active', 'Target Achieved', 'Closed'])], 'Homepage coverage', self::options(['Active', 'Target Achieved', 'Closed'])),
                 'investment_rating' => self::field('Investment rating', 'select', ['nullable', Rule::in(StockCsvImporter::INVESTMENT_RATINGS)], 'Homepage coverage', self::options(StockCsvImporter::INVESTMENT_RATINGS)),
                 'homepage_position' => self::field('Homepage display order', 'integer', 'required|integer|min:0|max:9999', 'Homepage coverage', [], 'Lower numbers appear first in both company tables.'),
-                'show_on_homepage' => self::field('Show in homepage company tables', 'checkbox', 'boolean', 'Homepage coverage'),
+                'show_on_homepage' => self::field('Companies on our radar', 'checkbox', 'boolean', 'Homepage coverage'),
+                'show_in_latest_coverage' => self::field('The latest company coverage', 'checkbox', 'boolean', 'Homepage coverage'),
                 'top_asx_pick' => self::field('Show as a Top ASX Pick', 'checkbox', 'boolean', 'Homepage coverage', [], 'Selected companies rotate in the homepage hero on mobile.'),
             ]],
             'taxonomies' => ['table' => 'taxonomies', 'singular' => 'Classification', 'title' => 'Collections & sectors', 'description' => 'Add research collections, company sectors and editorial topics. Renames update linked content.', 'columns' => ['name' => 'Name', 'kind' => 'Used for', 'position' => 'Order'], 'search' => ['name', 'kind'], 'fields' => [
@@ -119,7 +120,7 @@ class AdminResources
                 'description' => self::field('Description', 'textarea', 'nullable|string|max:5000', 'Content'),
                 'button_label' => self::field('Button text', 'text', 'nullable|string|max:80', 'Action'),
                 'button_url' => self::field('Button destination', 'url', 'nullable|regex:~^/[a-zA-Z0-9/_?=&%#.-]*$~D|max:250', 'Action', [], 'Use a local path such as /research or /contact.'),
-                'image_path' => self::field('Image', 'media', ['nullable', Rule::in(self::mediaPaths())], 'Presentation', self::mediaOptions(), 'Used by the text layout.'),
+                'image_path' => self::field('Image', 'media', ['nullable', Rule::in(self::mediaPaths())], 'Presentation', self::mediaOptions(), 'Used as the opening story background banner, or as an image in the text layout. Upload a JPG, PNG or WebP in the media library, then select it here.'),
                 'image_alt' => self::field('Image description', 'text', 'nullable|string|max:200', 'Presentation'),
                 'published' => self::field('Visible on homepage', 'checkbox', 'boolean', 'Publication'),
             ]],

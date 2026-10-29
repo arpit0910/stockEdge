@@ -340,7 +340,7 @@ class AdminWorkspaceController extends Controller
     public function updateStockVisibility(Request $request, Stock $stock): RedirectResponse
     {
         $data = $request->validate([
-            'field' => ['required', Rule::in(['show_on_homepage', 'top_asx_pick'])],
+            'field' => ['required', Rule::in(['show_on_homepage', 'show_in_latest_coverage', 'top_asx_pick'])],
             'value' => 'required|boolean',
             '_version' => 'required|string',
         ]);
@@ -585,16 +585,27 @@ class AdminWorkspaceController extends Controller
 
     public function upload(Request $request): RedirectResponse
     {
-        $data = $request->validate(['name' => 'required|string|max:120', 'alt_text' => 'required|string|max:200', 'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:4096|dimensions:max_width=6000,max_height=6000']);
+        $data = $request->validate(['name' => 'required|string|max:120', 'alt_text' => 'required|string|max:200', 'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:4096|dimensions:max_width=6000,max_height=6000', 'section_id' => ['nullable', 'integer', Rule::exists('site_sections', 'id')->where('layout', 'hero')], 'banner_type' => ['required_with:section_id', Rule::in(['web', 'mobile'])]]);
         $path = $request->file('file')->store('media', 'public');
         try {
             DB::transaction(function () use ($request, $data, $path): void {
                 $id = DB::table('media_assets')->insertGetId(['name' => $data['name'], 'alt_text' => $data['alt_text'], 'path' => $path, 'size' => $request->file('file')->getSize(), 'mime' => $request->file('file')->getMimeType(), 'created_at' => $this->timestamp(), 'updated_at' => $this->timestamp()]);
                 $this->audit($request, 'uploaded', 'media', $id, $data['name'], []);
+                if (! empty($data['section_id'])) {
+                    $section = DB::table('site_sections')->where('id', $data['section_id'])->lockForUpdate()->first();
+                    $imageField = $data['banner_type'] === 'mobile' ? 'mobile_image_path' : 'image_path';
+                    $descriptionField = $data['banner_type'] === 'mobile' ? 'mobile_image_alt' : 'image_alt';
+                    DB::table('site_sections')->where('id', $section->id)->update([$imageField => $path, $descriptionField => $data['alt_text'], 'updated_at' => $this->timestamp()]);
+                    $this->audit($request, 'updated', 'sections', $section->id, $section->name, [$imageField, $descriptionField]);
+                }
             });
         } catch (\Throwable $e) {
             Storage::disk('public')->delete($path);
             throw $e;
+        }
+
+        if (! empty($data['section_id'])) {
+            return redirect()->route('admin.edit', ['sections', $data['section_id']])->with('success', 'Homepage banner uploaded and applied.');
         }
 
         return back()->with('success', 'Image uploaded. You can now select it in an article or homepage section.');

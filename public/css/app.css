@@ -6246,3 +6246,10 @@ input, select, textarea, button { max-width: 100%; }
   .sr-dash-metric:nth-child(3) { grid-column: auto; }
   .sr-dash-footer-row { grid-template-columns: 1fr; gap: 12px; }
 }
+
+.sr-hero-banner{position:relative;isolation:isolate;overflow:hidden;min-height:620px;background:#031728}
+.sr-hero-banner .sr-hero-background{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:-2}
+.sr-hero-banner::before{display:block;content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(2,15,29,.85),rgba(2,15,29,.4) 48%,rgba(2,15,29,.05));z-index:-1;pointer-events:none}
+.sr-hero-banner .sr-hero-grid{display:block;position:relative}
+.sr-hero-banner .sr-hero-content{max-width:620px}
+@media(max-width:767px){.sr-hero-banner{min-height:560px}.sr-hero-banner .sr-hero-background{object-position:65% center}.sr-hero-banner::before{background:rgba(2,15,29,.72)}}

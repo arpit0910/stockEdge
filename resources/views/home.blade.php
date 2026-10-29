@@ -14,7 +14,15 @@ $collectionsSection = $siteSections->get('collections');
 $editorialSection = $siteSections->get('editorial');
 $testimonialSection = $siteSections->get('testimonials');
 @endphp
-<section class="sr-hero">
+<section class="sr-hero sr-hero-banner">
+    @if($heroSection?->image_path || $heroSection?->mobile_image_path)
+    <picture>
+        @if($heroSection->mobile_image_path)
+        <source media="(max-width: 767px)" srcset="{{ route('media.file', basename($heroSection->mobile_image_path)) }}">
+        @endif
+        <img class="sr-hero-background" src="{{ route('media.file', basename($heroSection->image_path ?: $heroSection->mobile_image_path)) }}" alt="" fetchpriority="high">
+    </picture>
+    @endif
     <div class="container sr-hero-grid">
         <!-- Left Content -->
         <div class="sr-hero-content">
@@ -64,103 +72,6 @@ $testimonialSection = $siteSections->get('testimonials');
             </div>
         </div>
 
-        <!-- Right Visual Mockup (Multi-Device Terminal UI) -->
-        <div class="sr-hero-mockup-wrap">
-            <div class="sr-mockup-glow"></div>
-
-            <!-- Desktop / Tablet Dashboard Mockup -->
-            <div class="sr-device-screen">
-                <div class="sr-screen-header">
-                    <div class="sr-screen-dots">
-                        <span></span><span></span><span></span>
-                    </div>
-                    <div class="sr-screen-url">SharesRise research workspace</div>
-                    <span class="sr-screen-badge">COVERAGE SNAPSHOT</span>
-                </div>
-
-                <div class="sr-screen-body">
-                    @if($workspaceStock)
-                    @php
-                        $workspacePrice = (float) $workspaceStock->price;
-                        $workspaceTarget = $workspaceStock->target_price !== null ? (float) $workspaceStock->target_price : null;
-                        $workspaceUpside = $workspaceTarget !== null && $workspacePrice > 0 ? ($workspaceTarget - $workspacePrice) / $workspacePrice * 100 : null;
-                        $workspaceScale = max($workspacePrice, $workspaceTarget ?? 0, 1) * 1.2;
-                        $workspacePriceY = 115 - ($workspacePrice / $workspaceScale * 100);
-                        $workspaceTargetY = $workspaceTarget !== null ? 115 - ($workspaceTarget / $workspaceScale * 100) : null;
-                    @endphp
-                    <!-- Top metrics row -->
-                    <div class="sr-dash-metrics">
-                        <div class="sr-dash-metric sr-workspace-company">
-                            <small>ASX: {{ $workspaceStock->symbol }} · {{ $workspaceStock->sector }}</small>
-                            <strong>{{ $workspaceStock->name }}</strong>
-                            <a href="{{ route('stock', $workspaceStock->symbol) }}">View company coverage</a>
-                        </div>
-                        <div class="sr-dash-metric">
-                            <small>Snapshot price</small>
-                            <strong>${{ number_format($workspacePrice, 2) }}</strong>
-                            <span @class(['pos' => $workspaceStock->change !== null && $workspaceStock->change >= 0, 'neg' => $workspaceStock->change !== null && $workspaceStock->change < 0])>{{ $workspaceStock->change !== null ? sprintf('%+.2f%%', $workspaceStock->change) : 'Change unavailable' }}</span>
-                        </div>
-                        <div class="sr-dash-metric">
-                            <small>Target comparison</small>
-                            <strong>{{ $workspaceTarget === null ? 'NOT SET' : ($workspacePrice < $workspaceTarget ? 'BELOW TARGET' : ($workspacePrice > $workspaceTarget ? 'ABOVE TARGET' : 'AT TARGET')) }}</strong>
-                            <span class="sr-fair-val">Target: {{ $workspaceTarget !== null ? '$'.number_format($workspaceTarget, 2) : 'Unavailable' }}</span>
-                        </div>
-                    </div>
-
-                    <!-- Interactive Chart Preview -->
-                    @if($workspacePrice > 0 && $workspaceTarget !== null && $workspaceTarget > 0)
-                    <div class="sr-dash-chart">
-                        <div class="sr-chart-header">
-                            <span>ASX: {{ $workspaceStock->symbol }} — Price vs Coverage Target</span>
-                            <span class="sr-chart-legend">
-                                <i class="dot-green"></i> Target
-                                <i class="dot-blue"></i> Price
-                            </span>
-                        </div>
-                        <svg viewBox="0 0 400 130" class="sr-svg-chart" role="img" aria-label="{{ $workspaceStock->symbol }} snapshot price ${{ number_format($workspacePrice, 2) }}{{ $workspaceTarget !== null ? ', coverage target $'.number_format($workspaceTarget, 2) : ', target unavailable' }}">
-                            <!-- Grid lines -->
-                            <line x1="0" y1="30" x2="400" y2="30" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4" />
-                            <line x1="0" y1="70" x2="400" y2="70" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4" />
-                            <line x1="0" y1="110" x2="400" y2="110" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4" />
-
-                            @if($workspaceTargetY !== null)
-                            <line x1="15" y1="{{ $workspaceTargetY }}" x2="385" y2="{{ $workspaceTargetY }}" stroke="#10b981" stroke-width="2.5" stroke-dasharray="6 4" />
-                            @endif
-                            <line x1="15" y1="{{ $workspacePriceY }}" x2="385" y2="{{ $workspacePriceY }}" stroke="#60a5fa" stroke-width="2.5" />
-                        </svg>
-                    </div>
-                    @endif
-
-                    <!-- Mini Orderbook / Highlights -->
-                    <div class="sr-dash-footer-row">
-                        <div class="sr-workspace-stat"><small>Coverage status</small><strong>{{ $workspaceStock->recommendation_status ?: 'Unavailable' }}</strong></div>
-                        <div class="sr-workspace-stat"><small>Target upside</small><strong>{{ $workspaceUpside !== null ? sprintf('%+.1f%%', $workspaceUpside) : 'Unavailable' }}</strong></div>
-                        <div class="sr-workspace-stat"><small>Dividend yield</small><strong>{{ $workspaceStock->yield !== null ? number_format($workspaceStock->yield, 2).'%' : 'Unavailable' }}</strong></div>
-                    </div>
-                    <p class="sr-workspace-note">Manually maintained coverage snapshot · Updated {{ $workspaceStock->updated_at?->format('d M Y') ?? 'date unavailable' }}</p>
-                    @else
-                    <p>Company coverage will appear here when a company is selected as a Top ASX Pick or shown on the homepage.</p>
-                    @endif
-                </div>
-            </div>
-
-            <!-- Overlapping Mobile Phone Mockup -->
-            @if($topAsxPicks->isNotEmpty())
-            <div class="sr-phone-screen" data-top-picks-carousel role="region" aria-label="Top ASX picks">
-                @foreach($topAsxPicks as $stock)
-                <a class="sr-top-pick-slide" href="{{ route('stock', $stock->symbol) }}">
-                    <span class="sr-phone-header">
-                        <small>Top ASX Pick</small>
-                        <strong>{{ $stock->name }} ({{ $stock->symbol }})</strong>
-                    </span>
-                    <span class="sr-phone-badge-row">
-                        <span class="tag-buy">BUY</span>
-                    </span>
-                </a>
-                @endforeach
-            </div>
-            @endif
-        </div>
     </div>
 </section>
 
@@ -218,7 +129,7 @@ $testimonialSection = $siteSections->get('testimonials');
                 </div>
 
                 <div class="sr-company-list">
-                            @forelse($homepageStocks->take($researchSection->item_limit) as $company)
+                            @forelse($latestCoverageStocks->take($researchSection->item_limit) as $company)
                             @php
                             $buyPrice = (float) ($company->buy_price ?? $company->price);
                             $targetPrice = (float) ($company->target_price ?? $company->price);
@@ -242,7 +153,7 @@ $testimonialSection = $siteSections->get('testimonials');
                             @endforelse
                 </div>
 
-                @if($homepageStocks->take($researchSection->item_limit)->count() > 3)
+                @if($latestCoverageStocks->take($researchSection->item_limit)->count() > 3)
                 <button class="sr-market-view-all" type="button" data-market-view-all aria-expanded="false">View all</button>
                 @endif
 

@@ -33,6 +33,7 @@ class SiteController extends Controller
             'siteSections' => DB::table('site_sections')->where('published', true)->get()->keyBy('layout'),
             'collections' => Taxonomy::query()->categories()->published()->ordered()->get(),
             'homepageStocks' => $homepageStocks,
+            'latestCoverageStocks' => Stock::query()->where('show_in_latest_coverage', true)->orderBy('homepage_position')->orderBy('id')->get(),
             'topAsxPicks' => $topAsxPicks,
             'workspaceStock' => $topAsxPicks->first() ?? $homepageStocks->first(),
             'reports' => Report::with('stock')->where('published', true)->latest()->take(12)->get(),

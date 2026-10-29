@@ -209,6 +209,7 @@ class PlatformTest extends TestCase
         Stock::factory()->create([
             'symbol' => 'HPC',
             'name' => 'Homepage Company',
+            'show_in_latest_coverage' => true,
             'sector' => 'Mining',
             'price' => 51.25,
             'day_high' => 53,

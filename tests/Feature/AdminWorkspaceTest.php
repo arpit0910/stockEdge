@@ -316,7 +316,7 @@ CSV;
             ->assertOk()
             ->assertSee('Day high (AUD)')
             ->assertSee('Coverage target (AUD)')
-            ->assertSee('Show in homepage company tables');
+            ->assertSee('Companies on our radar');
 
         $this->actingAs($admin)->put('/admin/manage/stocks/'.$stock->id, [
             '_version' => (string) DB::table('stocks')->where('id', $stock->id)->value('updated_at'),
